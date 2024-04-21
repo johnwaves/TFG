@@ -31,20 +31,17 @@
 % Re-usable information
 % ********************************************************************
 \newcommand{\myTitle}{Título del proyecto\xspace}
-\newcommand{\myDegree}{Grado en ...\xspace}
-\newcommand{\myName}{Nombre Apllido1 Apellido2 (alumno)\xspace}
-\newcommand{\myProf}{Nombre Apllido1 Apellido2 (tutor1)\xspace}
-\newcommand{\myOtherProf}{Nombre Apllido1 Apellido2 (tutor2)\xspace}
+\newcommand{\myDegree}{Grado en Ingeniería Informática\xspace}
+\newcommand{\myName}{VIDICAN, MIHNEA IOAN (alumno)\xspace}
+\newcommand{\myProf}{GUIRAO MIRAS, JOSÉ MARÍA (tutor1)\xspace}
 %\newcommand{\mySupervisor}{Put name here\xspace}
-\newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de
-Telecomunicación\xspace}
-\newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de
-Telecomunicación\xspace}
-\newcommand{\myDepartment}{Departamento de ...\xspace}
+\newcommand{\myFaculty}{Escuela Técnica Superior de Ingenierías Informática y de Telecomunicación\xspace}
+\newcommand{\myFacultyShort}{E.T.S. de Ingenierías Informática y de Telecomunicación\xspace}
+\newcommand{\myDepartment}{Departamento de Lenguajes y Sistemas Informáticos\xspace}
 \newcommand{\myUni}{\protect{Universidad de Granada}\xspace}
 \newcommand{\myLocation}{Granada\xspace}
 \newcommand{\myTime}{\today\xspace}
-\newcommand{\myVersion}{Version 0.1\xspace}
+\newcommand{\myVersion}{Version 1.0\xspace}
 
 
 \hypersetup{
@@ -75,14 +72,14 @@ pdfproducer = {pdflatex}
 %\renewcommand{\glossaryname}{Glosario}
 
 \pagestyle{fancy}
-\fancyhf{}
-\fancyhead[LO]{\leftmark}
-\fancyhead[RE]{\rightmark}
-\fancyhead[RO,LE]{\textbf{\thepage}}
-\renewcommand{\chaptermark}[1]{\markboth{\textbf{#1}}{}}
-\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection. #1}}}
+%\fancyhead[LO]{\leftmark} % Encabezado izquierdo en páginas impares
+%\fancyhead[RE]{\rightmark} % Encabezado derecho en páginas pares
+%\fancyhead[RO,LE]{\textbf{\thepage}} % Número de página en el encabezado
+%\fancyfoot[LE,RO]{\thepage} % Número de página en el pie para páginas izquierdas y derechas
 
-\setlength{\headheight}{1.5\headheight}
+\renewcommand{\headrulewidth}{0.5mm} % Grosor de la línea del encabezado
+\renewcommand{\footrulewidth}{0.5mm} % Grosor de la línea del pie de página
+
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 %Definimos los tipos teorema, ejemplo y definición podremos usar estos tipos
@@ -170,21 +167,27 @@ pdfproducer = {pdflatex}
 }
 \makeatother
 
+
 \usepackage{pdfpages}
 \begin{document}
 \input{portada/portada}
 \input{prefacios/prefacio}
-%\frontmatter
-%\tableofcontents
+\frontmatter
+\tableofcontents
 %\listoffigures
 %\listoftables
 %
 %\mainmatter
 %\setlength{\parskip}{5pt}
 
-%\input{capitulos/01_Introduccion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% CONFIGURACIÓN PROPIA
+\pagenumbering{arabic}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{capitulos/01_Introduccion}
 %
-%\input{capitulos/02_EspecificacionRequisitos}
+\input{capitulos/02_EspecificacionRequisitos}
 %
 %\input{capitulos/03_Planificacion}
 %
@@ -198,12 +201,13 @@ pdfproducer = {pdflatex}
 %
 %\input{capitulos/08_Conclusiones}
 %
-%%\chapter{Conclusiones y Trabajos Futuros}
+%\chapter{Conclusiones y Trabajos Futuros}
 %
 %
 %%\nocite{*}
-%\bibliography{bibliografia/bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
-%\bibliographystyle{miunsrturl}
+\bibliographystyle{apalike}
+\bibliography{bibliography/biblio}\addcontentsline{toc}{chapter}{Bibliografía}
+
 %
 %\appendix
 %\input{apendices/manual_usuario/manual_usuario}
@@ -211,7 +215,6 @@ pdfproducer = {pdflatex}
 %\input{glosario/entradas_glosario}
 % \addcontentsline{toc}{chapter}{Glosario}
 % \printglossary
-\chapter*{}
 \thispagestyle{empty}
 
 \end{document}
