@@ -72,14 +72,14 @@ pdfproducer = {pdflatex}
 %\renewcommand{\glossaryname}{Glosario}
 
 \pagestyle{fancy}
-%\fancyhead[LO]{\leftmark} % Encabezado izquierdo en páginas impares
-%\fancyhead[RE]{\rightmark} % Encabezado derecho en páginas pares
-%\fancyhead[RO,LE]{\textbf{\thepage}} % Número de página en el encabezado
-%\fancyfoot[LE,RO]{\thepage} % Número de página en el pie para páginas izquierdas y derechas
+\fancyhf{}
+\fancyhead[LO]{\leftmark}
+\fancyhead[RE]{\rightmark}
+\fancyhead[RO,LE]{\textbf{\thepage}}
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection. #1}}}
 
-\renewcommand{\headrulewidth}{0.5mm} % Grosor de la línea del encabezado
-\renewcommand{\footrulewidth}{0.5mm} % Grosor de la línea del pie de página
-
+\setlength{\headheight}{1.5\headheight}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 %Definimos los tipos teorema, ejemplo y definición podremos usar estos tipos
@@ -167,7 +167,6 @@ pdfproducer = {pdflatex}
 }
 \makeatother
 
-
 \usepackage{pdfpages}
 \begin{document}
 \input{portada/portada}
@@ -177,17 +176,12 @@ pdfproducer = {pdflatex}
 %\listoffigures
 %\listoftables
 %
-%\mainmatter
-%\setlength{\parskip}{5pt}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% CONFIGURACIÓN PROPIA
-\pagenumbering{arabic}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\mainmatter
+\setlength{\parskip}{5pt}
 
 \input{capitulos/01_Introduccion}
 %
-\input{capitulos/02_EspecificacionRequisitos}
+%\input{capitulos/02_EspecificacionRequisitos}
 %
 %\input{capitulos/03_Planificacion}
 %
@@ -205,9 +199,9 @@ pdfproducer = {pdflatex}
 %
 %
 %%\nocite{*}
-\bibliographystyle{plain}
+\bibliographystyle{miunsrturl}
 \bibliography{bibliography/biblio}\addcontentsline{toc}{chapter}{Bibliografía}
-
+%
 %
 %\appendix
 %\input{apendices/manual_usuario/manual_usuario}
@@ -215,6 +209,7 @@ pdfproducer = {pdflatex}
 %\input{glosario/entradas_glosario}
 % \addcontentsline{toc}{chapter}{Glosario}
 % \printglossary
+\chapter*{}
 \thispagestyle{empty}
 
 \end{document}

@@ -2,11 +2,11 @@
 
 La adherencia terapéutica hace referencia al grado de concordancia entre el comportamiento de un paciente y las instrucciones y/o recomendaciones recibidas por parte de un profesional de salud en cuanto a la toma de medicamentos, la implementación de cambios dietéticos y de estilo de vida. Esta adherencia resulta crítica tanto para asegurar la eficacia de los tratamientos, así como para optimizar los resultados de salud y minimizar los riesgos asociados a la morbilidad y resistencia a los mismos. \\
 
-La labor de seguimiento supone un proceso interactivo entre el farmacéutico y el paciente. Son varios los métodos que se utilizan para ello, aunque para este proyecto se tendrán en cuenta únicamente los que se encuentran al alcance de los farmacéuticos comunitarios. Por tanto, estos métodos se pueden dividir en dos grupos:
+La labor de seguimiento supone un proceso interactivo entre el farmacéutico y el paciente. Son varios los métodos que se utilizan para ello, aunque para este proyecto se tendrán en cuenta únicamente los que se encuentran al alcance de los farmacéuticos comunitarios\footnote{Una farmacia comunitaria es un establecimiento sanitario privado de interés público que presta un servicio de atención farmacéutica. Dicho servicio comprende el aseoramiento y resolución de dudas e incertidumbres relacionadas con tratamientos farmacológicos, la dispensación de los mismos, así como la prevención de enfermedades, asesoramiento y promoción de hábitos saludables. \label{farmaciaComunitaria}}. Por tanto, estos métodos se pueden dividir en dos grupos:
 \begin{itemize}
-	\item \textbf{Directos.} Aquí se incluye la terapia directamente observada (TDO), que puede ser llevada a cabo en una Farmacia Comunitaria, un centro médico o incluso en el domicilio del paciente \cite{pages2018metodos}. Un ejemplo puede ser la medida de la tensión en un paciente diagnosticado con hipertensión.
+	\item \textbf{Directos.} Aquí se incluye la terapia directamente observada (TDO), que puede ser llevada a cabo en una farmacia comunitaria\footref{farmaciaComunitaria}, un centro médico o incluso en el domicilio del paciente \cite{pages2018metodos}. Un ejemplo puede ser la medida de la tensión en un paciente diagnosticado con hipertensión.
 	
-	\item \textbf{Indirectos.} Este grupo abarca la evaluación de la información proporcionada por el paciente, o la persona a cargo, a partir de una entrevista clínica o un cuestionario validado, el recuento de medicación, el uso de dispositivos electrónicos o el análisis del registro de dispensaciones. Algunas de las ventajas que presentan estos procedimientos son la sencillez y la facilidad de aplicación en la práctica clínica diaria, tanto en la Farmacia Comunitaria como en el Servicio de Farmacia Hospitalaria \cite{pages2018metodos}.
+	\item \textbf{Indirectos.} Este grupo abarca la evaluación de la información proporcionada por el paciente, o la persona a cargo, a partir de una entrevista clínica o un cuestionario validado, el recuento de medicación, el uso de dispositivos electrónicos o el análisis del registro de dispensaciones. Algunas de las ventajas que presentan estos procedimientos son la sencillez y la facilidad de aplicación en la práctica clínica diaria, tanto en la farmacia comunitaria como en el servicio de farmacia hospitalaria \cite{pages2018metodos}.
 \end{itemize} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -18,26 +18,28 @@ A pesar de mostrar resultados favorecedores, se trata de sistemas diseñados y p
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Motivación}
 
-Dado que el problema de la falta de adherencia por parte de los pacientes está generalizado y se contempla en más rangos de edad, este proyecto propone mejorar dicha adherencia facilitando a los farmacéuticos la elaboración, preparación y seguimiento del tratamiento, así como la recomendación y advertencia sobre la toma de la medicación incluida de acuerdo a directrices específicas. 
+El problema de la falta de adherencia por parte de los pacientes está generalizado y se contempla en más rangos de edad, no solo en las personas mayores. Esto, como se ha indicado previamente, incrementa el riesgo de reaparición de la enfermedad y, en la mayoría de los casos, conlleva a realizar numerosas visitas a los servicios de urgencias de los hospitales, saturando el personal y alargando las colas de espera. Es aquí donde los farmacéuticos comunitarios juegan un papel primordial, dado que son profesionales cuya formación les capacita para atender, prescribir y asesorar los problemas de salud de los pacientes, siempre que su estado de salud no requiera la intervención de médicos.
+
+Partiendo de lo anterior, este proyecto propone mejorar dicha adherencia facilitando a los farmacéuticos la elaboración, preparación y seguimiento del tratamiento, así como la recomendación y advertencia sobre la toma de la medicación incluida de acuerdo a directrices específicas. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Objetivos}
 Para solucionar el problema propuesto se plantean los siguientes objetivos:
 
-	\begin{enumerate}
-		\item Crear una plataforma que albergue la información de cada paciente y que muestre qué enfermedades padece y qué necesidades tiene.
-		\begin{itemize}
-			\item Subobjetivo 1: registrar y crear perfiles para los pacientes en la plataforma.
-			
-			\item Subobjetivo 2: disponer del historial clínico reciente.
-		\end{itemize}
-	
-		\item Crear un módulo o una sección donde los farmacéuticos puedan preparar un tratamiento personalizado.
-			\begin{itemize}
-				\item Subobjetivo 1: permitir la retroalimentación por parte de los pacientes para posibilitar a los farmacéuticos la labor de realizar un seguimiento del tratamiento vigente.
-				
-				\item Subobjetivo 2: diseñar recordatorios y notificar a los pacientes de forma automática para recordar la toma de la medicación.
-				
-			\end{itemize}
+\begin{enumerate}
+	\item Crear una plataforma que albergue la información de cada paciente y que muestre qué enfermedades padece y qué necesidades tiene.
+	\begin{itemize}
+		\item Subobjetivo 1: registrar y crear perfiles para los pacientes en la plataforma.
 		
-	\end{enumerate}
+		\item Subobjetivo 2: disponer del historial clínico reciente.
+	\end{itemize}
+	
+	\item Crear un módulo o una sección donde los farmacéuticos puedan preparar un tratamiento personalizado.
+	\begin{itemize}
+		\item Subobjetivo 1: permitir la retroalimentación por parte de los pacientes para posibilitar a los farmacéuticos la labor de realizar un seguimiento del tratamiento vigente.
+		
+		\item Subobjetivo 2: diseñar recordatorios y notificar a los pacientes de forma automática para recordar la toma de la medicación.
+		
+	\end{itemize}
+	
+\end{enumerate}

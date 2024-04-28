@@ -1,5 +1,11 @@
 \begin{thebibliography}{1}
 
+\bibitem{pages2018metodos}
+Neus Pagès-Puigdemont and M.~Isabel Valverde-Merino.
+\newblock Métodos para medir la adherencia terapeútica.
+\newblock {\em Ars Pharm}, 59(3):163--172, 9 2018.
+\newblock Epub 19-Oct-2020.
+
 \bibitem{CONTHE2014336}
 P.~Conthe, E.~{Márquez Contreras}, A.~{Aliaga Pérez}, B.~{Barragán García},
   M.N. {Fernández de Cano Martín}, M.~{González Jurado}, M.~{Ollero
@@ -7,6 +13,14 @@ P.~Conthe, E.~{Márquez Contreras}, A.~{Aliaga Pérez}, B.~{Barragán García},
 \newblock Adherencia terapéutica en la enfermedad crónica: estado de la
   situación y perspectiva de futuro.
 \newblock {\em Revista Clínica Española}, 214(6):336--344, 2014.
+
+\bibitem{programa_consigue}
+Farmacéuticos.com.
+\newblock Programa consigue.
+\newblock
+\url{https://www.farmaceuticos.com/farmaceuticos/farmacia/farmacia-asistencial/proyectos-de-investigacion/programa-consigue/},
+abril 2016.
+\newblock Último acceso: [21 abril 2024].
 
 \bibitem{programa_adhierete_2015}
 El~Farmacéutico.
@@ -17,18 +31,8 @@ El~Farmacéutico.
   junio 2015.
 \newblock Último acceso: [21 abril 2024].
 
-\bibitem{programa_consigue}
-Farmacéuticos.com.
-\newblock Programa consigue.
-\newblock
-  \url{https://www.farmaceuticos.com/farmaceuticos/farmacia/farmacia-asistencial/proyectos-de-investigacion/programa-consigue/},
-  abril 2016.
-\newblock Último acceso: [21 abril 2024].
 
-\bibitem{pages2018metodos}
-Neus Pagès-Puigdemont and M.~Isabel Valverde-Merino.
-\newblock Métodos para medir la adherencia terapeútica.
-\newblock {\em Ars Pharm}, 59(3):163--172, 9 2018.
-\newblock Epub 19-Oct-2020.
+
+
 
 \end{thebibliography}
