@@ -1,5 +1,280 @@
-\chapter{Manolo}
+\chapter{Análisis y especificaciones del proyecto}
 
-\section{Sección Uno}
-\subsection{Subsección Uno}
-\subsection{Subsección Dos}
+En la base de todo proyecto informático reside una idea concreta acompañada de objetivos específicos que se desean alcanzar. Para cumplir con lo propuesto, resulta necesario establecer un punto de partida que desarrolle detalladamente dicha idea. Este proceso incluye la identificación de los actores que intervendrán en el proyecto y la comprensión de sus necesidades, las cuales serán aspectos a tener en cuenta para la consecución del producto deseado.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Identificación de actores}
+Se definen tres categorías de actores:
+\begin{itemize}
+	\item \textbf{Personal sanitario.} Dado que este proyecto está orientado de forma exclusiva a farmacias comunitarias\footnote{Las farmacias comunitarias son establecimientos sanitarios de carácter privado pero de interés público donde el farmacéutico titular-propietario, asistido, en su caso, de ayudantes o auxiliares, presta servicios básicos a la población: dispensación de los medicamentos y productos sanitarios, control y custodia de las recetas médicas dispensadas, seguimiento de los tratamientos farmacológicos y no farmacológicos a los pacientes, entre otros. \cite{Ley16_1997}}, se distinguen los siguientes tipos de personal sanitario:
+	\begin{itemize}
+		\item \textbf{Farmacéutico.} Es la persona cualificada y encargada para elaborar y dispensar medicación, recomendar la implantación de hábitos de vida, dietas, controlar las recetas médicas dispensadas y realizar un seguimiento del tratamiento en los pacientes con el fin de determinar la adherencia y ofrecer recomendaciones para mejorarla. A los farmacéuticos se les atribuye más tareas y cargos dentro de una oficina de farmacia, pero las  funciones anteriores serán las principales para el desarrollo de este proyecto.
+		
+		\item \textbf{Técnico de farmacia.} Es una persona con formación en el campo de la farmacia que asiste al farmacéutico titular en diferentes tareas: dispensación de productos farmacéuticos junto con sus indicaciones de uso, toma de constantes vitales, bajo la supervisión del facultativo, y parámetros somatométricos (como el peso y la altura), además de realizar tareas administrativas.
+	\end{itemize}
+
+	\item \textbf{Clientes.} En esta categoría existen dos perfiles:
+	\begin{itemize}
+		\item \textbf{Paciente.} Se trata del individuo que busca atención o recibe cuidados de salud debido a enfermedades, lesiones, para mejorar su bienestar, para prevenir otras enfermedades o para obtener diagnósticos sobre su estado de salud. \cite{UniNavarra}
+		
+		\item \textbf{Tutor o acompañante del paciente}. En el caso en que el paciente no sea una persona independiente, como un menor o un anciano, será el tutor, representante o acompañante del mismo quien realizará todas las tareas de recogida de mediación y de proporción de información en su lugar.
+	\end{itemize}
+
+	\item \textbf{Administrador del sistema.} Será el encargado de llevar a cabo tareas de monitorización de la actividad de la plataforma final, ofrecer soporte y manejar la creación y eliminación de oficinas de farmacia dentro del proyecto. 
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Historias de usuario}
+Las historias de usuario en el desarrollo de software son descripciones informales expresadas en lenguaje natural sobre una o varias acciones que un actor desea realizar y su justificación. Sirven como referencia para crear un requisito que deberá cumplir el sistema final. 
+
+Para este proyecto se detallan las siguientes historias de usuario, las cuales irán nombradas de la forma HU-XX, siendo XX el número de historia en orden creciente:
+
+\begin{itemize}
+	\item \textbf{HU-01: Farmacéutico.} El farmacéutico titular de una farmacia atiende a una variedad de clientes a lo largo de un día. La mayoría de ellos acude a recoger la medicación prescrita, otros para que se les dispense una medicación personalizada y algunos llegan para aclarar sus dudas o incertidumbres sobre la toma de medicamentos y comunicar sus avances en cuanto a todo tipo de tratamientos. El farmacéutico despacha a todas las personas de igual manera, aunque emplea un mayor tiempo en aquellas consultas más complejas, como es el caso del seguimiento de un tratamiento, su cumplimiento o el estudio del uso individualizado de los medicamentos, con el propósito de detectar reacciones adversas que puedan producirse. Para poder ser más eficiente en su jornada laboral, requiere que muchas de estas tareas se automaticen, pues algunos de los datos que recoge manualmente son de carácter estadístico y no se precisa su presencia obligatoria.
+	
+	\item \textbf{HU-02: Técnico de farmacia.} El técnico de farmacia es añadido a una farmacia por su farmacéutico titular y no tiene las mismas responsabilidades que el este, pero también puede dispensar medicamentos y atender consultas de los pacientes sobre sus tratamientos en curso. El farmacéutico delega en el técnico varias funciones, como contribuir al análisis del cumplimiento de tratamientos, dietas o hábitos de vida, y medir constantes vitales y parámetros somatométricos. Además, el técnico es responsable de registrar a los pacientes en el sistema de la farmacia, 
+	
+	\item \textbf{HU-03. Paciente.} Un paciente llega a la farmacia para retirar su medicación recetada. Tras comenzar el tratamiento, puede regresar para que se le dispense nuevamente el medicamento necesario o para realizar un seguimiento de su tratamiento o hábito prescrito. Sin embargo, en algunas ocasiones no es necesaria la dispensación de nueva medicación y el paciente sólo necesita informar sobre el cumplimiento de lo prescrito. Estas tareas son algo que el paciente puede, y a menudo prefiere, realizar desde su domicilio, sin necesidad de acudir presencialmente a la farmacia.
+	
+	\item \textbf{HU-03. Acompañante del paciente.} Un paciente menor de edad debe informar sobre su estado de salud unos días después de iniciar su tratamiento. Sin embargo, debido a su corta edad, son sus padres quienes deben realizar esta tarea, ya que el menor no puede acudir solo a la farmacia. Los padres preferirían que esta gestión pudiera realizarse desde su domicilio o desde cualquier lugar donde se encuentren, ya que es posible que estén lejos de la farmacia donde registraron el inicio del tratamiento.
+
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Requisitos}
+Los requisitos son especificaciones que el producto final debe cumplir para satisfacer las necesidades de los usuarios finales. El objetivo que plantean es guiar el diseño, el desarrollo y las pruebas y mantenimiento del software. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Requisitos funcionales}
+Los requisitos funcionales especifican lo que debe realizar el sistema en cuanto a funciones o servicios. Los que se listan a continuación vienen nombrados por RFXX, donde XX es el número del requisito en orden creciente.
+
+\begin{itemize}
+	\item \textbf{RF1: Registro de pacientes.} El sistema permitirá al personal sanitario registrar pacientes en la farmacia.
+	
+	\begin{itemize}
+		 
+		\item \textbf{RF1.1}: El farmacéutico y el técnico de farmacia podrán registrar nuevos pacientes en el sistema.
+		\item \textbf{RF1.2}: El sistema permitirá al farmacéutico y al técnico de farmacia actualizar la información de pacientes existentes.
+		\item \textbf{RF1.3}: El sistema permitirá registrar la información de contacto del tutor o acompañante del paciente, en caso de que el paciente sea un menor o una persona dependiente.
+	\end{itemize}
+
+	\item \textbf{RF2: Dispensación de medicamentos.} El sistema permitirá la dispensación de medicamentos recetados a los pacientes.
+	
+	\begin{itemize}
+		\item \textbf{RF2.1}: El farmacéutico podrá registrar la dispensación de medicamentos recetados a los pacientes.
+		\item \textbf{RF2.2}: El técnico de farmacia podrá asistir en la dispensación de medicamentos, bajo la supervisión del farmacéutico.
+		\item \textbf{RF2.3}: El sistema registrará la fecha y hora de cada dispensación, así como la identidad del personal que realizó la dispensación.
+	\end{itemize}
+	
+	\item \textbf{RF3: Análisis de la adherencia.} El sistema permitirá al personal sanitario realizar el seguimiento de los tratamientos de los pacientes para determinar el nivel de adherencia.
+	
+	\begin{itemize}
+		\item \textbf{RF3.1}: El farmacéutico podrá registrar observaciones sobre el progreso del tratamiento de un paciente.
+		\item \textbf{RF3.2}: El técnico de farmacia podrá ingresar datos de seguimiento como constantes vitales y parámetros somatométricos del paciente.
+		\item \textbf{RF3.3}: El paciente, o su tutor o acompañante, podrá ingresar datos de sequimiento de un tratamiento y notificar problemas surgidos en el sistema.
+		\item \textbf{RF3.4}: El sistema generará alertas y recordatorios para el seguimiento de tratamientos a pacientes con condiciones críticas o crónicas.
+		\item \textbf{RF3.5}: El sistema realizará un análisis del seguimiento del tratamiento e informará sobre las estadísticas obtenidas para determinar el grado de adherencia 
+	\end{itemize}
+	
+	\item \textbf{RF4: Consulta de información médica.} El sistema permitirá al personal sanitario y a los pacientes consultar información sobre los tratamientos y medicamentos.
+	
+	\begin{itemize}
+		\item \textbf{RF4.1}: El farmacéutico podrá consultar el historial de tratamiento de un paciente.
+		\item \textbf{RF4.2}: El técnico de farmacia podrá acceder a la información relevante para la dispensación y seguimiento del tratamiento, bajo la supervisión del farmacéutico.
+		\item \textbf{RF4.3}: El paciente podrá consultar su historial de medicación y tratamiento en el sistema.
+		\item \textbf{RF4.4}: El acompañante del paciente, en caso de ser un menor o dependiente, podrá acceder a la información médica del paciente mediante un acceso autorizado.
+	\end{itemize}
+	
+	\item \textbf{RF5: Automatización de tareas administrativas.} El sistema automatizará ciertas tareas administrativas para mejorar la eficiencia del personal sanitario.
+	
+	\begin{itemize}
+		\item \textbf{RF5.1}: El sistema automatizará la generación de informes estadísticos sobre la dispensación de medicamentos.
+		\item \textbf{RF5.2}: El sistema permitirá la programación automática de seguimientos para tratamientos continuos o crónicos.
+	\end{itemize}
+	
+	\item \textbf{RF6: Gestión de usuarios del sistema.} El sistema permitirá la gestión de usuarios, incluyendo la creación, modificación y eliminación de cuentas para el personal sanitario y administrativo.
+	
+	\begin{itemize}
+		\item \textbf{RF6.1}: El administrador del sistema podrá crear, modificar y eliminar cuentas de usuarios para farmacéuticos y técnicos de farmacia.
+		\item \textbf{RF6.2}: El sistema permitirá asignar roles y permisos específicos según el perfil del usuario.
+	\end{itemize}
+	
+	\item \textbf{RF7: Seguimiento de tratamientos no farmacológicos.} El sistema permitirá al personal sanitario registrar y realizar el seguimiento de tratamientos no farmacológicos.
+	
+	\begin{itemize}
+		\item \textbf{RF7.1}: El farmacéutico podrá registrar recomendaciones de hábitos de vida saludables, como dietas, ejercicio físico, y otros tratamientos no farmacológicos.
+		\item \textbf{RF7.2}: El técnico de farmacia podrá asistir en el seguimiento del cumplimiento de estos hábitos de vida por parte del paciente.
+		\item \textbf{RF7.3}: El sistema permitirá al paciente o su tutor registrar su progreso en la adopción de estos hábitos de vida en el mismo.
+		\item \textbf{RF7.4}: El sistema generará alertas o recordatorios para el paciente sobre el cumplimiento de los tratamientos no farmacológicos, como recordar la realización de ejercicios o adherencia a una dieta específica.
+	\end{itemize}
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Requisitos no funcionales}
+
+\begin{itemize}
+	\item \textbf{RFN1: Seguridad de la información.} El sistema garantizará la seguridad y confidencialidad de la información médica y personal de los pacientes.
+	
+	\begin{itemize}
+		\item \textbf{RFN1.1}: El sistema utilizará un cifrado seguro para proteger los datos sensibles almacenados y transmitidos.
+		\item \textbf{RFN1.2}: Solo el personal autorizado, como farmacéuticos, técnicos de farmacia, y administradores del sistema, tendrán acceso a la información médica y personal de los pacientes. Los pacientes también tendrán acceso a dicha información, pero no podrán consultar la información de otros pacientes si no son tutores o acompañantes autorizados.
+		\item \textbf{RFN1.3}: El sistema requerirá autenticación para acceder a funciones administrativas o a información confidencial.
+	\end{itemize}
+	
+	\item \textbf{RFN2: Disponibilidad del sistema.} El sistema deberá estar disponible para su uso en las farmacias comunitarias en todo momento.
+	
+	\begin{itemize}
+		\item \textbf{RFN2.1}: El sistema garantizará una alta disponibilidad para asegurar que los servicios no se vean interrumpidos durante el horario de atención de las farmacias.
+		\item \textbf{RFN2.2}: El sistema deberá contar con mecanismos de respaldo y recuperación ante fallos o desastres, para minimizar el tiempo de inactividad.
+	\end{itemize}
+	
+	\item \textbf{RFN3: Rendimiento.} El sistema deberá ser capaz de manejar un alto volumen de transacciones y consultas sin afectar su rendimiento.
+	
+	\begin{itemize}
+		\item \textbf{RFN3.1}: El sistema deberá procesar la dispensación de medicamentos y la asignación de tratamientos no farmacológicos en un tiempo mínimo por transacción.
+		\item \textbf{RFN3.2}: El sistema deberá soportar la gestión simultánea de un número elevado de usuarios sin degradación en el rendimiento.
+	\end{itemize}
+	
+	\item \textbf{RFN4: Usabilidad.} El sistema deberá ser fácil de usar para todo el personal sanitario, considerando su nivel de familiaridad con las tecnologías.
+	
+	\begin{itemize}
+		\item \textbf{RFN4.1}: La interfaz de usuario deberá ser intuitiva, permitiendo a los usuarios realizar con fluidez sus tareas.
+		\item \textbf{RFN4.3}: El sistema deberá ser compatible con una amplia gama de dispositivos, permitiendo a los usuarios acceder a sus funciones de manera flexible y desde cualquier lugar.
+	\end{itemize}
+	
+	\item \textbf{RFN5: Escalabilidad.} El sistema deberá ser escalable para adaptarse al crecimiento del número de usuarios y farmacias integradas.
+	
+	\begin{itemize}
+		\item \textbf{RFN5.1}: El sistema deberá poder integrar nuevas farmacias comunitarias sin necesidad de interrupciones en el servicio.
+		\item \textbf{RFN5.2}: El sistema deberá poder integrar nuevo personal sanitarios y nuevos pacientes sin necesidad de interrupciones en el servicio.
+	\end{itemize}
+	
+	\item \textbf{RFN6: Cumplimiento normativo.} El sistema deberá cumplir con todas las normativas y regulaciones vigentes en el sector de la salud y la farmacia.
+	
+	\begin{itemize}
+		\item \textbf{RFN6.1}: El sistema deberá cumplir con las normativas de protección de datos personales, como el Reglamento General de Protección de Datos (GDPR) en Europa.
+		\item \textbf{RFN6.2}: El sistema deberá cumplir con las normativas de almacenamiento y dispensación de medicamentos impuestas por las autoridades sanitarias locales.
+	\end{itemize}
+	
+	\item \textbf{RFN7: Mantenimiento.} El sistema deberá ser fácilmente mantenible para asegurar su operación continua y eficiente.
+	
+	\begin{itemize}
+		\item \textbf{RFN7.1}: El sistema deberá permitir actualizaciones y parches sin necesidad de detener las operaciones críticas.
+		\item \textbf{RFN7.2}: El sistema deberá proporcionar herramientas de diagnóstico y monitoreo para detectar y corregir problemas rápidamente.
+	\end{itemize}
+	
+\end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Casos de uso}
+
+
+\begin{longtable}{|p{3cm}|p{9cm}|p{2cm}|}
+	\hline
+	\textbf{Caso de uso} & \textbf{Descripción detallada} & \textbf{Requisitos satisfechos} \\
+	\hline
+	\textbf{CU01: Registro de pacientes} & 
+	\textbf{Descripción:} El personal sanitario podrá registrar y actualizar los datos de pacientes en el sistema. Además, se incluirá la opción de añadir la información del tutor o acompañante en caso de que el paciente lo requiera.
+	\newline \textbf{Precondiciones:} Usuario autenticado como farmacéutico o técnico de farmacia.
+	\newline \textbf{Postcondiciones:} Paciente registrado en el sistema.
+	\newline \textbf{Flujo principal:}
+	\begin{enumerate}
+		\item El usuario selecciona la opción de registrar paciente.
+		\item El usuario ingresa los datos del paciente.
+		\item El sistema valida la información.
+		\item El sistema guarda los datos del paciente.
+	\end{enumerate}
+	& RF1, RFN1, RFN4 \\
+	\hline
+	
+	\textbf{CU02: Dispensación de medicamentos} & 
+	\textbf{Descripción:} El sistema registrará la dispensación de medicamentos, incluyendo detalles como fecha, hora e identidad del personal que realizó la dispensación.
+	\newline \textbf{Precondiciones:} Prescripción válida.
+	\newline \textbf{Postcondiciones:} Registro de dispensación almacenado.
+	\newline \textbf{Flujo principal:}
+	\begin{enumerate}
+		\item El usuario selecciona la opción de dispensar medicamento.
+		\item El usuario ingresa la prescripción y la identifica con el paciente.
+		\item El sistema valida la prescripción.
+		\item El sistema guarda el registro de dispensación.
+	\end{enumerate}
+	& RF2, RFN3, RFN6 \\
+	\hline
+	
+	\textbf{CU03: Análisis de adherencia} & 
+	\textbf{Descripción:} El sistema permitirá al personal sanitario realizar el seguimiento de los tratamientos de los pacientes para determinar la adherencia. Se podrán registrar observaciones, ingresar datos de seguimiento como constantes vitales y generar alertas de seguimiento.
+	\newline \textbf{Precondiciones:} Paciente registrado en el sistema.
+	\newline \textbf{Postcondiciones:} Nivel de adherencia calculado y registrado.
+	\newline \textbf{Flujo principal:}
+	\begin{enumerate}
+		\item El usuario selecciona al paciente y el tratamiento a seguir.
+		\item El usuario ingresa los datos de seguimiento (vitales, somatométricos, etc.).
+		\item El sistema genera alertas o recordatorios si es necesario.
+		\item El sistema calcula y muestra el nivel de adherencia.
+	\end{enumerate}
+	& RF3, RF4, RFN5, RFN7 \\
+	\hline
+	
+	\textbf{CU04: Consulta de información médica} & 
+	\textbf{Descripción:} El sistema permitirá a los actores consultar información sobre tratamientos y medicamentos, accesible de manera segura y según los permisos correspondientes.
+	\newline \textbf{Precondiciones:} Usuario autenticado con permisos de consulta.
+	\newline \textbf{Postcondiciones:} Información médica consultada.
+	\newline \textbf{Flujo principal:}
+	\begin{enumerate}
+		\item El usuario inicia sesión y selecciona la opción de consulta.
+		\item El sistema verifica los permisos del usuario.
+		\item El usuario selecciona el tipo de información a consultar (tratamientos, medicamentos).
+		\item El sistema muestra la información solicitada.
+	\end{enumerate}
+	& RF4, RFN1, RFN2, RFN4 \\
+	\hline
+	
+	\textbf{CU05: Automatización de tareas administrativas} & 
+	\textbf{Descripción:} El sistema automatizará ciertas tareas administrativas, como la generación de informes y la programación de seguimientos, mejorando la eficiencia y reduciendo la carga de trabajo manual.
+	\newline \textbf{Precondiciones:} Usuario autenticado con permisos de administrador.
+	\newline \textbf{Postcondiciones:} Tareas administrativas automatizadas.
+	\newline \textbf{Flujo principal:}
+	\begin{enumerate}
+		\item El usuario selecciona la opción para generar informes o programar seguimientos.
+		\item El sistema recopila y procesa la información necesaria.
+		\item El sistema genera el informe o programa el seguimiento automáticamente.
+		\item El usuario recibe una notificación del proceso completado.
+	\end{enumerate}
+	& RF5, RFN3, RFN5, RFN6 \\
+	\hline
+	
+	\textbf{CU06: Gestión de usuarios del sistema} & 
+	\textbf{Descripción:} El administrador del sistema podrá gestionar las cuentas de usuarios, incluyendo la creación, modificación y eliminación de cuentas, así como la asignación de roles y permisos.
+	\newline \textbf{Precondiciones:} Usuario autenticado como administrador.
+	\newline \textbf{Postcondiciones:} Cambios en las cuentas de usuario aplicados.
+	\newline \textbf{Flujo principal:}
+	\begin{enumerate}
+		\item El administrador selecciona la opción de gestión de usuarios.
+		\item El administrador crea, modifica o elimina una cuenta de usuario.
+		\item El sistema valida los cambios y los guarda.
+		\item El usuario afectado recibe una notificación de los cambios.
+	\end{enumerate}
+	& RF6, RFN1, RFN7 \\
+	\hline
+	
+	\textbf{CU07: Seguimiento de tratamientos no farmacológicos} & 
+	\textbf{Descripción:} El sistema permitirá registrar y realizar el seguimiento de tratamientos no farmacológicos, como hábitos de vida saludables. Se generarán alertas y recordatorios para el cumplimiento de estos tratamientos.
+	\newline \textbf{Precondiciones:} Paciente registrado y tratamiento asignado.
+	\newline \textbf{Postcondiciones:} Seguimiento del tratamiento registrado.
+	\newline \textbf{Flujo principal:}
+	\begin{enumerate}
+		\item El usuario selecciona el paciente y el tratamiento no farmacológico.
+		\item El usuario ingresa o consulta los datos de seguimiento.
+		\item El sistema genera alertas o recordatorios si es necesario.
+		\item El sistema registra el progreso del paciente.
+	\end{enumerate}
+	& RF7, RFN1, RFN3, RFN4 \\
+	\hline
+	
+	\caption{Casos de uso del sistema de forma detallada.}
+\end{longtable}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

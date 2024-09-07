@@ -4,6 +4,17 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 
+\usepackage{geometry}
+\geometry{a4paper, left=25mm, right=25mm, top=30mm, bottom=30mm}
+
+\usepackage{booktabs} % Para usar \toprule, \midrule y \bottomrule
+\usepackage[table,xcdraw]{xcolor} % Colores en la tabla
+\addto\captionsspanish{
+	\renewcommand{\tablename}{Tabla} % Cambiar "Cuadro" por "Tabla"
+}
+
+
+
 % \usepackage[style=list, number=none]{glossary} %
 %\usepackage{titlesec}
 %\usepackage{pailatino}
@@ -168,20 +179,23 @@ pdfproducer = {pdflatex}
 \makeatother
 
 \usepackage{pdfpages}
+
+
 \begin{document}
 \input{portada/portada}
 \input{prefacios/prefacio}
 \frontmatter
 \tableofcontents
-%\listoffigures
-%\listoftables
+\listoffigures
+
+\listoftables
 %
 \mainmatter
 \setlength{\parskip}{5pt}
 
 \input{capitulos/01_Introduccion}
 %
-%\input{capitulos/02_EspecificacionRequisitos}
+\input{capitulos/02_EspecificacionRequisitos}
 %
 %\input{capitulos/03_Planificacion}
 %
@@ -199,7 +213,7 @@ pdfproducer = {pdflatex}
 %
 %
 %%\nocite{*}
-\bibliographystyle{miunsrturl}
+\bibliographystyle{unsrt}
 \bibliography{bibliography/biblio}\addcontentsline{toc}{chapter}{Bibliografía}
 %
 %

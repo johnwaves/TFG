@@ -1,10 +1,35 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
-\bibitem{pages2018metodos}
-Neus Pagès-Puigdemont and M.~Isabel Valverde-Merino.
-\newblock Métodos para medir la adherencia terapeútica.
-\newblock {\em Ars Pharm}, 59(3):163--172, 9 2018.
-\newblock Epub 19-Oct-2020.
+\bibitem{who2003adherence}
+{World Health Organization (WHO)}.
+\newblock {\em Adherence to long-term therapies: evidence for action}.
+\newblock WHO Library Cataloguing-in-Publication Data. 2003.
+
+\bibitem{ibarra2017adherencia}
+Olatz~Ibarra Barrueta and Ram{\'o}n~Morillo Verdugo.
+\newblock {\em Lo que debes saber sobre la adherencia al tratamiento}.
+\newblock Sociedad Espa{\~n}ola de Farmacia Hospitalaria, 2017.
+\newblock Grupo de Adherencia Terap{\'e}utica ADHEFAR de la SEFH, Edici{\'o}n
+  patrocinada por Boehringer Ingelheim.
+
+\bibitem{farmaindustria2023adherencia}
+Farmaindustria.
+\newblock Plan de adherencia al tratamiento.
+\newblock \url{https://www.farmaindustria.es/adherencia/}, 2023.
+\newblock Accedido en agosto de 2024.
+
+\bibitem{libroblanco2021}
+Grupo OAT~Observatorio de~la Salud and Fundación Weber.
+\newblock {\em Libro Blanco de la Adherencia en España}.
+\newblock Grupo OAT Observatorio de la Salud, S.L.; Fundación Weber, Las Rozas
+  de Madrid; Madrid, 2021.
+\newblock Depósito Legal: M-10617-2022.
+
+\bibitem{Claxton2001}
+A.~J. Claxton, J.~Cramer, and C.~Pierce.
+\newblock A systematic review of the associations between dose regimens and
+  medication compliance.
+\newblock {\em Clinical Therapeutics}, 23(8):1296--1310, 2001.
 
 \bibitem{CONTHE2014336}
 P.~Conthe, E.~{Márquez Contreras}, A.~{Aliaga Pérez}, B.~{Barragán García},
@@ -18,8 +43,8 @@ P.~Conthe, E.~{Márquez Contreras}, A.~{Aliaga Pérez}, B.~{Barragán García},
 Farmacéuticos.com.
 \newblock Programa consigue.
 \newblock
-\url{https://www.farmaceuticos.com/farmaceuticos/farmacia/farmacia-asistencial/proyectos-de-investigacion/programa-consigue/},
-abril 2016.
+  \url{https://www.farmaceuticos.com/farmaceuticos/farmacia/farmacia-asistencial/proyectos-de-investigacion/programa-consigue/},
+  abril 2016.
 \newblock Último acceso: [21 abril 2024].
 
 \bibitem{programa_adhierete_2015}
@@ -31,8 +56,24 @@ El~Farmacéutico.
   junio 2015.
 \newblock Último acceso: [21 abril 2024].
 
+\bibitem{hazadherencia2024}
+{Consejo General de Colegios Oficiales de Farmacéuticos}.
+\newblock Hazadherencia: Servicio de adherencia terapéutica a pacientes con
+  enfermedades crónicas.
+\newblock
+  \url{https://www.farmaceuticos.com/farmaceuticos/agenda/hazadherencia-servicio-de-adherencia-terapeutica-a-pacientes-con-enfermedades-cronicas-13902/},
+  2024.
+\newblock Accedido en agosto de 2024.
 
+\bibitem{Ley16_1997}
+{Ministerio de Sanidad y Consumo}.
+\newblock Ley 16/1997, de 25 de abril, de regulación de servicios de las
+  oficinas de farmacia, 1997.
+\newblock Accedido en agosto de 2024.
 
-
+\bibitem{UniNavarra}
+{Clínica Universidad de Navarra}.
+\newblock Paciente. diccionario médico, 2024.
+\newblock Accedido: 1-sep-2024.
 
 \end{thebibliography}
