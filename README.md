@@ -1,4 +1,4 @@
-# Trabajo de Fin de Grafo (Final Degree Project)
+# Trabajo de Fin de Grado (Final Degree Project)
 
 ## Descripción
 ES: La adherencia terapéutica hace referencia al grado de concordancia entre el comportamiento de un paciente y las instrucciones y/o recomendaciones recibidas por parte de un profesional de salud en cuanto a la toma de medicamentos, la implementación de cambios dietéticos y de estilo de vida. 
