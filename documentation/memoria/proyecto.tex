@@ -4,6 +4,17 @@
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 
+\usepackage{geometry}
+\geometry{a4paper, left=25mm, right=25mm, top=30mm, bottom=30mm}
+
+\usepackage{booktabs} % Para usar \toprule, \midrule y \bottomrule
+\usepackage[table,xcdraw]{xcolor} % Colores en la tabla
+\addto\captionsspanish{
+	\renewcommand{\tablename}{Tabla} % Cambiar "Cuadro" por "Tabla"
+}
+
+
+
 % \usepackage[style=list, number=none]{glossary} %
 %\usepackage{titlesec}
 %\usepackage{pailatino}
@@ -72,14 +83,14 @@ pdfproducer = {pdflatex}
 %\renewcommand{\glossaryname}{Glosario}
 
 \pagestyle{fancy}
-%\fancyhead[LO]{\leftmark} % Encabezado izquierdo en páginas impares
-%\fancyhead[RE]{\rightmark} % Encabezado derecho en páginas pares
-%\fancyhead[RO,LE]{\textbf{\thepage}} % Número de página en el encabezado
-%\fancyfoot[LE,RO]{\thepage} % Número de página en el pie para páginas izquierdas y derechas
+\fancyhf{}
+\fancyhead[LO]{\leftmark}
+\fancyhead[RE]{\rightmark}
+\fancyhead[RO,LE]{\textbf{\thepage}}
+\renewcommand{\chaptermark}[1]{\markboth{\textbf{#1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textbf{\thesection. #1}}}
 
-\renewcommand{\headrulewidth}{0.5mm} % Grosor de la línea del encabezado
-\renewcommand{\footrulewidth}{0.5mm} % Grosor de la línea del pie de página
-
+\setlength{\headheight}{1.5\headheight}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 %Definimos los tipos teorema, ejemplo y definición podremos usar estos tipos
@@ -167,29 +178,26 @@ pdfproducer = {pdflatex}
 }
 \makeatother
 
-
 \usepackage{pdfpages}
+
+
 \begin{document}
 \input{portada/portada}
 \input{prefacios/prefacio}
 \frontmatter
 \tableofcontents
-%\listoffigures
-%\listoftables
-%
-%\mainmatter
-%\setlength{\parskip}{5pt}
+\listoffigures
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% CONFIGURACIÓN PROPIA
-\pagenumbering{arabic}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\listoftables
+%
+\mainmatter
+\setlength{\parskip}{5pt}
 
 \input{capitulos/01_Introduccion}
 %
 \input{capitulos/02_EspecificacionRequisitos}
 %
-%\input{capitulos/03_Planificacion}
+\input{capitulos/03_Planificacion}
 %
 %\input{capitulos/04_Analisis}
 %
@@ -205,9 +213,9 @@ pdfproducer = {pdflatex}
 %
 %
 %%\nocite{*}
-\bibliographystyle{apalike}
+\bibliographystyle{unsrt}
 \bibliography{bibliography/biblio}\addcontentsline{toc}{chapter}{Bibliografía}
-
+%
 %
 %\appendix
 %\input{apendices/manual_usuario/manual_usuario}
@@ -215,6 +223,7 @@ pdfproducer = {pdflatex}
 %\input{glosario/entradas_glosario}
 % \addcontentsline{toc}{chapter}{Glosario}
 % \printglossary
+\chapter*{}
 \thispagestyle{empty}
 
 \end{document}
