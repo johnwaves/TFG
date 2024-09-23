@@ -1,0 +1,165 @@
+\chapter{Diseño general y herramientas}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Entorno de diseño general}
+Tras analizar detenidamente las especificaciones y los requisitos del sistema, se ha decidido desarrollar el proyecto en un entorno web en lugar de crear una aplicación nativa para dispositivos móviles. A continuación, se presentan las razones que sustentan esta decisión:
+
+\begin{enumerate} 
+	\item \textbf{Accesibilidad multidispositivo y compatibilidad (RFN4.3)}
+	Un entorno web permite que el sistema sea accesible desde una variedad de dispositivos, como ordenadores de sobremesa, portátiles, tabletas y una amplia gama de \textit{smartphones}. Esto es especialmente relevante porque tanto el personal sanitario como los pacientes pueden utilizar diferentes dispositivos para acceder al sistema. La compatibilidad con múltiples plataformas facilita el cumplimiento del requisito de usabilidad y ofrece flexibilidad de acceso desde cualquier lugar.
+	
+	\item \textbf{Facilidad de actualización y mantenimiento (RFN7)}
+	
+	El desarrollo web centraliza el mantenimiento y las actualizaciones del sistema. Cualquier mejora o corrección se implementa directamente en el servidor, y los cambios se reflejan de inmediato para todos los usuarios sin que se requieran acciones adicionales por su parte. Esto cumple con el requisito de mantenimiento, que exige actualizaciones sin interrupciones en las operaciones críticas.
+	
+	\item \textbf{Usabilidad para el personal sanitario (RFN4)}
+	
+	El personal sanitario en las farmacias está acostumbrado a utilizar sistemas basados en navegadores web en computadoras de escritorio o tablets. Una interfaz web intuitiva facilita la adopción del sistema y reduce la curva de aprendizaje, alineándose con el requisito de usabilidad que considera el nivel de familiaridad con las tecnologías existentes.
+	
+	\item \textbf{Seguridad y cumplimiento normativo (RFN1 y RFN6)}
+	
+	Dado que el sistema manejará información médica y personal sensible, la seguridad es un aspecto fundamental. Un entorno web permite implementar medidas de seguridad robustas en el servidor, como cifrado de datos y autenticación segura, controlando eficazmente el acceso y protegiendo los datos conforme a normativas vigentes como el Reglamento General de Protección de Datos (RGPD). El control centralizado facilita el cumplimiento normativo y la aplicación coherente de políticas de seguridad.
+	
+	\item \textbf{Disponibilidad y rendimiento (RFN2 y RFN3)}
+	
+	Un sistema web alojado en servidores confiables puede garantizar una alta disponibilidad y un rendimiento óptimo, aspectos esenciales para las operaciones continuas en las farmacias comunitarias. La infraestructura puede escalarse según sea necesario para manejar altos volúmenes de transacciones y consultas sin afectar el rendimiento, satisfaciendo así los requisitos de disponibilidad y rendimiento.
+	
+	\item \textbf{Escalabilidad e integración (RFN5)}
+	
+	El entorno web facilita la escalabilidad del sistema para adaptarse al crecimiento en el número de usuarios y farmacias integradas. Nuevas farmacias y personal pueden añadirse sin necesidad de desplegar o actualizar aplicaciones en múltiples dispositivos, lo que agiliza la expansión y adopción del sistema.
+	
+	\item \textbf{Gestión centralizada de usuarios (RF6)}
+	
+	La gestión de usuarios es más eficiente en un entorno web, donde las cuentas y permisos pueden administrarse de forma centralizada. Esto permite mantener un control adecuado sobre el acceso al sistema y garantiza que sólo el personal autorizado tenga acceso a la información sensible.
+	
+	\item \textbf{Acceso para pacientes y tutores o acompañantes}
+	
+	Dado que el sistema también será utilizado por pacientes y, en algunos casos, por sus tutores o acompañantes, el acceso web elimina la necesidad de descargar e instalar una aplicación móvil. Esto facilita la participación de los pacientes en el seguimiento de sus tratamientos y mejora la comunicación con el personal sanitario.
+	
+	\item \textbf{Costos y tiempo de desarrollo}
+	
+	El desarrollo de una aplicación web suele ser más rápido y económico que crear aplicaciones nativas para múltiples plataformas móviles (iOS, Android). Esto permite optimizar los recursos y cumplir con los plazos del proyecto sin sacrificar la calidad o funcionalidad del sistema.
+	
+	\item \textbf{Evitar dependencia de plataformas y tiendas de aplicaciones}
+	
+	Las aplicaciones móviles dependen de las tiendas de aplicaciones para su distribución, lo que puede introducir retrasos y requisitos adicionales para su aprobación. Además, existen políticas y restricciones que pueden afectar la implementación de ciertas funcionalidades. Un entorno web elimina estas dependencias, permitiendo un control total sobre el despliegue y las actualizaciones del sistema.
+	
+	\item \textbf{Facilidad de integración con sistemas existentes}
+	
+	Las farmacias pueden contar con sistemas existentes con los que el nuevo sistema debe interactuar. Las aplicaciones web son más flexibles para integrarse con otros sistemas y bases de datos, facilitando la interoperabilidad y cumpliendo con los requisitos de escalabilidad e integración.
+	
+	\item \textbf{Consistencia en la experiencia de usuario}
+	
+	Un diseño web responsivo garantiza una experiencia de usuario consistente en todos los dispositivos. Esto es importante para mantener la eficiencia en las operaciones diarias del personal sanitario y en la interacción de los pacientes con el sistema.
+	
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Selección de herramientas y tecnologías para el desarrollo}
+
+En esta sección se realiza un estudio comparativo de diversas herramientas y tecnologías para el desarrollo del sistema, y se justifica la elección de las siguientes: \textbf{PostgreSQL}, \textbf{PrismaJS}, \textbf{Node.js}, \textbf{Fastify}, \textbf{Astro} y \textbf{React}. La selección se basa en los requisitos funcionales y no funcionales especificados, así como en la necesidad de ofrecer una solución eficiente, escalable y segura.
+
+\subsection{Base de datos: PostgreSQL}
+
+\textbf{Alternativas consideradas:} MySQL, MongoDB, Oracle Database, Microsoft SQL Server.
+
+\textbf{Comparación y justificación:}
+
+\begin{itemize} 
+	\item \textbf{Conformidad con estándares SQL:} PostgreSQL es un sistema de gestión de bases de datos relacionales de código abierto que cumple con los estándares SQL, lo que facilita la integridad y consistencia de los datos. Esto es fundamental para manejar información médica sensible, alineándose con los requisitos de seguridad y cumplimiento normativo (RFN1, RFN6).
+	
+	\item \textbf{Características avanzadas:} Ofrece soporte para transacciones ACID, claves foráneas, vistas, triggers y procedimientos almacenados. Estas funcionalidades son esenciales para operaciones críticas en el sistema, cumpliendo con los requisitos de rendimiento y disponibilidad (RFN2, RFN3).
+	
+	\item \textbf{Extensibilidad y flexibilidad:} Permite la definición de tipos de datos personalizados, funciones y operadores, lo que facilita la adaptación a las necesidades específicas del sistema y contribuye a la escalabilidad (RFN5).
+	
+	\item \textbf{Comunidad y soporte:} Cuenta con una amplia comunidad de usuarios y desarrolladores, garantizando soporte continuo y actualizaciones, lo que cumple con los requisitos de mantenimiento (RFN7).
+	
+	\item \textbf{Alternativas:} Aunque MySQL es popular y también de código abierto, PostgreSQL ofrece un conjunto más completo de características avanzadas. Oracle Database y Microsoft SQL Server son soluciones propietarias con costos de licencia elevados, lo que no se alinea con el objetivo de optimizar recursos. MongoDB, al ser una base de datos NoSQL, no es tan adecuada para las relaciones complejas y la integridad transaccional que requiere el sistema.
+	
+\end{itemize}
+
+\subsection{ORM: PrismaJS}
+
+\textbf{Alternativas consideradas:} Sequelize, TypeORM, Knex.js.
+
+\textbf{Comparación y justificación:}
+
+\begin{itemize} 
+	\item \textbf{Tipado estático y autocompletado:} PrismaJS es un ORM moderno para Node.js y TypeScript que proporciona tipado estático y autocompletado. Esto reduce errores y mejora la productividad, alineándose con los requisitos de mantenimiento y usabilidad (RFN7, RFN4).
+	
+	\item \textbf{Migraciones de esquema:} Incluye herramientas para gestionar migraciones de esquema de forma segura y eficiente, esencial para el mantenimiento continuo del sistema.
+	
+	\item \textbf{Rendimiento:} Ofrece consultas eficientes y optimizadas, contribuyendo al rendimiento general del sistema (RFN3).
+	
+	\item \textbf{Alternativas:} Aunque Sequelize y TypeORM son opciones maduras, PrismaJS ofrece una experiencia más moderna y simplificada, con mejor soporte para TypeScript y herramientas de desarrollo más avanzadas.
+	
+\end{itemize}
+
+\subsection{Entorno de Ejecución: Node.js}
+
+\textbf{Alternativas consideradas:} Python (Django, Flask), Ruby on Rails, PHP (Laravel).
+
+\textbf{Comparación y justificación:}
+
+\begin{itemize} 
+	\item \textbf{Eficiencia y rendimiento:} Node.js es un entorno de ejecución de JavaScript en el lado del servidor que utiliza un modelo de E/S no bloqueante y basado en eventos. Esto permite manejar un gran número de conexiones simultáneas sin degradación del rendimiento, cumpliendo con los requisitos de rendimiento y escalabilidad (RFN3, RFN5).
+	
+	\item \textbf{Unificación del stack tecnológico:} Al utilizar JavaScript tanto en el servidor como en el cliente, se facilita el desarrollo y mantenimiento, mejorando la productividad y cumpliendo con el requisito de mantenimiento (RFN7).
+	
+	\item \textbf{Ecosistema y comunidad:} Node.js cuenta con una amplia variedad de paquetes y herramientas disponibles, lo que acelera el desarrollo y facilita la implementación de funcionalidades.
+	
+	\item \textbf{Alternativas:} Aunque lenguajes como Python y PHP son populares para el desarrollo web, Node.js ofrece ventajas en aplicaciones en tiempo real y de alta concurrencia, relevantes para los requisitos del sistema.
+	
+\end{itemize}
+
+\subsection{Framework Backend: Fastify}
+
+\textbf{Alternativas consideradas:} Express.js, Koa.js, Hapi.js.
+
+\textbf{Comparación y justificación:}
+
+\begin{itemize} 
+	\item \textbf{Alto rendimiento:} Fastify es un framework web para Node.js enfocado en ofrecer el máximo rendimiento. Esto contribuye al cumplimiento de los requisitos de rendimiento (RFN3).
+	
+	\item \textbf{Modularidad y extensibilidad:} Su sistema de plugins permite una gran modularidad, facilitando el mantenimiento y la escalabilidad del sistema (RFN5, RFN7).
+	
+	\item \textbf{Validación de esquemas:} Incorpora validación de esquemas JSON, mejorando la seguridad y confiabilidad de las API, alineándose con los requisitos de seguridad (RFN1).
+	
+	\item \textbf{Alternativas:} Aunque Express.js es el framework más popular para Node.js, Fastify ofrece un rendimiento superior y características modernas que mejoran la eficiencia del desarrollo.
+	
+\end{itemize}
+
+\subsection{Generador de Sitios Estáticos: Astro}
+
+\textbf{Alternativas consideradas:} Next.js, Gatsby, Nuxt.js.
+
+\textbf{Comparación y justificación:}
+
+\begin{itemize} 
+	\item \textbf{Optimización de rendimiento:} Astro es un moderno generador de sitios estáticos diseñado para crear sitios web rápidos y optimizados, mejorando la experiencia del usuario y cumpliendo con los requisitos de rendimiento (RFN3).
+	
+	\item \textbf{Flexibilidad en el desarrollo:} Permite utilizar componentes de diferentes frameworks como React, ofreciendo flexibilidad en el desarrollo del frontend.
+	
+	\item \textbf{Reducción de JavaScript en el cliente:} Genera páginas estáticas con mínima carga de JavaScript en el cliente, mejorando el tiempo de carga y la usabilidad (RFN4).
+	
+	\item \textbf{Alternativas:} Aunque Next.js y Gatsby son opciones populares, Astro ofrece ventajas en rendimiento y simplicidad para proyectos donde el contenido estático es predominante.
+	
+
+\end{itemize}
+
+\subsection{Biblioteca Frontend: React}
+
+\textbf{Alternativas consideradas:} Vue.js, Angular, Svelte.
+
+\textbf{Comparación y justificación:}
+
+\begin{itemize} 
+	\item \textbf{Adopción y comunidad:} React es una biblioteca de JavaScript ampliamente utilizada para construir interfaces de usuario interactivas y cuenta con una gran comunidad, facilitando el acceso a recursos y soporte.
+	
+\item \textbf{Componentización:} Su enfoque en componentes permite crear interfaces de usuario reutilizables y mantenibles, cumpliendo con el requisito de mantenimiento (RFN7).
+
+\item \textbf{Integración con Astro:} React es compatible con Astro, lo que permite aprovechar las ventajas de ambos en el desarrollo del frontend.
+
+\item \textbf{Alternativas:} Si bien Vue.js y Angular son también opciones viables, React ofrece una curva de aprendizaje manejable y gran flexibilidad, beneficiosos para el equipo de desarrollo y los plazos del proyecto.
+\end{itemize}
