@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.4.2)  23 SEP 2024 18:58
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2024.4.2)  22 SEP 2024 13:39
+>>>>>>> 91a70eb7e254176ebb02506596eed9bfa34f38fd
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -72,6 +76,7 @@ Missing character: There is no n in font nullfont!
 Missing character: There is no t in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no s in font nullfont!
+<<<<<<< HEAD
 
 Overfull \hbox (30.55559pt too wide) in paragraph at lines 1--2
 []\/cmr/m/n/10 ~n
@@ -10684,6 +10689,8 @@ Overfull \hbox (4.44444pt too wide) in paragraph at lines 164--165
 \/cmr/m/n/10 ^^Se
  []
 
+=======
+>>>>>>> 91a70eb7e254176ebb02506596eed9bfa34f38fd
 )
 ! Emergency stop.
 <*> 04_Herramientas.tex
@@ -10692,6 +10699,7 @@ Overfull \hbox (4.44444pt too wide) in paragraph at lines 164--165
 
  
 Here is how much of TeX's memory you used:
+<<<<<<< HEAD
  41 strings out of 480144
  642 string characters out of 5893199
  296489 words of memory out of 5000000
@@ -10699,4 +10707,13 @@ Here is how much of TeX's memory you used:
  469913 words of font info for 30 fonts, out of 8000000 for 9000
  62 hyphenation exceptions out of 8191
  25i,5n,32p,554b,163s stack positions out of 5000i,500n,10000p,200000b,80000s
+=======
+ 26 strings out of 480144
+ 490 string characters out of 5893199
+ 284251 words of memory out of 5000000
+ 18084 multiletter control sequences out of 15000+600000
+ 469259 words of font info for 28 fonts, out of 8000000 for 9000
+ 62 hyphenation exceptions out of 8191
+ 23i,1n,32p,94b,92s stack positions out of 5000i,500n,10000p,200000b,80000s
+>>>>>>> 91a70eb7e254176ebb02506596eed9bfa34f38fd
 !  ==> Fatal error occurred, no output PDF file produced!

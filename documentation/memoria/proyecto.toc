@@ -25,4 +25,13 @@
 \contentsline {subsection}{\numberline {3.1.3}Planificación con Scrum}{18}{subsection.3.1.3}%
 \contentsline {section}{\numberline {3.2}Organización y planificación temporal}{19}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Control de versiones}{20}{section.3.3}%
-\contentsline {chapter}{Bibliografía}{21}{chapter*.12}%
+\contentsline {chapter}{\numberline {4}Diseño general y herramientas}{21}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Entorno de diseño general}{21}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Selección de herramientas y tecnologías para el desarrollo}{23}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Base de datos: PostgreSQL}{23}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}ORM: PrismaJS}{23}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}Entorno de Ejecución: Node.js}{24}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Framework Backend: Fastify}{24}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Generador de Sitios Estáticos: Astro}{25}{subsection.4.2.5}%
+\contentsline {subsection}{\numberline {4.2.6}Biblioteca Frontend: React}{25}{subsection.4.2.6}%
+\contentsline {chapter}{Bibliografía}{27}{chapter*.12}%
