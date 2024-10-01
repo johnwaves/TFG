@@ -83,25 +83,31 @@ enum TipoTratamiento {
 }
 
 model Tratamiento {
-  id            Int        @id @unique @default(autoincrement())
-  nombre        String     @db.VarChar(100)
+  id            Int                   @id @unique @default(autoincrement())
+  nombre        String                @db.VarChar(100)
   tipo          TipoTratamiento
-  descripcion   String     @db.VarChar(500)
-  dosis         Dosis      @relation(fields: [dosisId], references: [id])
-  dosisId       Int        @unique
+  descripcion   String                @db.VarChar(500)
+  dosis         Dosis                 @relation(fields: [dosisId], references: [id])
+  dosisId       Int                   @unique
   fecha_inicio  DateTime
   fecha_fin     DateTime
-  dni_sanitario String?    @unique @db.VarChar(9)
-  sanitario     Sanitario? @relation(fields: [dni_sanitario], references: [dni])
+  dni_sanitario String?               @unique @db.VarChar(9)
+  sanitario     Sanitario?            @relation(fields: [dni_sanitario], references: [dni])
+  registro      RegistroTratamiento[]
 }
 
 model DetallesTratamiento {
-  id   Int      @id @unique @default(autoincrement())
-  hora DateTime
+  id                      Int                  @id @unique @default(autoincrement())
+  fecha                   DateTime             @default(now())
+  descripcion             String               @db.VarChar(500)
+  cumplimiento            Boolean
+  registro                RegistroTratamiento? @relation(fields: [id_registro_tratamiento], references: [id])
+  id_registro_tratamiento Int?                 @unique
 }
 
 model RegistroTratamiento {
-  id           Int       @id @unique @default(autoincrement())
-  descripcion  String
-  cumplimiento Boolean[] @db.Boolean()
+  id             Int                   @id @unique @default(autoincrement())
+  detalles       DetallesTratamiento[]
+  tratamiento    Tratamiento           @relation(fields: [id_tratamiento], references: [id])
+  id_tratamiento Int                   @unique
 }
