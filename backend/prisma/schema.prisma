@@ -12,3 +12,96 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Farmacia {
+  id         Int         @id @unique @default(autoincrement())
+  nombre     String      @unique
+  direccion  String
+  sanitarios Sanitario[]
+  pacientes  Paciente[]
+
+  @@index([id], type: Hash)
+}
+
+enum TipoSanitario {
+  FARMACEUTICO
+  TECNICO_FARMACIA
+}
+
+model Sanitario {
+  dni              String        @id @unique @db.VarChar(9)
+  nombre           String
+  apellidos        String
+  email            String
+  tipo             TipoSanitario
+  id_farmacia      Int           @unique
+  farmacia         Farmacia      @relation(fields: [id_farmacia], references: [id])
+  fecha_nacimiento DateTime
+  tratamiento      Tratamiento?
+
+  @@index([dni], type: Hash)
+}
+
+model Paciente {
+  dni              String   @id @unique @db.VarChar(9)
+  nombre           String
+  apellidos        String
+  email            String
+  id_farmacia      Int      @unique
+  farmacia         Farmacia @relation(fields: [id_farmacia], references: [id])
+  fecha_nacimiento DateTime
+  direccion        String
+  tutor            Tutor?   @relation(fields: [tutorDni], references: [dni])
+  tutorDni         String?  @unique @db.VarChar(9)
+
+  @@index([dni], type: Hash)
+}
+
+model Tutor {
+  dni              String     @id @unique @db.VarChar(9)
+  nombre           String
+  apellidos        String
+  dni_paciente     String     @unique @db.VarChar(9)
+  pacientes        Paciente[]
+  fecha_nacimiento DateTime
+  direccion        String
+
+  @@index([dni], type: Hash)
+}
+
+model Dosis {
+  id          Int          @id @unique @default(autoincrement())
+  cantidad    Int
+  intervalo   Int
+  duracion    Int
+  tratamiento Tratamiento?
+}
+
+enum TipoTratamiento {
+  FARMACOLOGICO
+  NO_FARMACOLOGICO
+}
+
+model Tratamiento {
+  id            Int        @id @unique @default(autoincrement())
+  nombre        String     @db.VarChar(100)
+  tipo          TipoTratamiento
+  descripcion   String     @db.VarChar(500)
+  dosis         Dosis      @relation(fields: [dosisId], references: [id])
+  dosisId       Int        @unique
+  fecha_inicio  DateTime
+  fecha_fin     DateTime
+  dni_sanitario String?    @unique @db.VarChar(9)
+  sanitario     Sanitario? @relation(fields: [dni_sanitario], references: [dni])
+}
+
+model DetallesTratamiento {
+  id   Int      @id @unique @default(autoincrement())
+  hora DateTime
+}
+
+model RegistroTratamiento {
+  id           Int       @id @unique @default(autoincrement())
+  descripcion  String
+  cumplimiento Boolean[] @db.Boolean()
+}
