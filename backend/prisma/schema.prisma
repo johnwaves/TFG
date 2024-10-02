@@ -37,22 +37,23 @@ model Sanitario {
   id_farmacia      Int           @unique
   farmacia         Farmacia      @relation(fields: [id_farmacia], references: [id])
   fecha_nacimiento DateTime
-  tratamiento      Tratamiento?
+  tratamiento      Tratamiento[]
 
   @@index([dni], type: Hash)
 }
 
 model Paciente {
-  dni              String   @id @unique @db.VarChar(9)
+  dni              String       @id @unique @db.VarChar(9)
   nombre           String
   apellidos        String
   email            String
-  id_farmacia      Int      @unique
-  farmacia         Farmacia @relation(fields: [id_farmacia], references: [id])
+  id_farmacia      Int          @unique
+  farmacia         Farmacia     @relation(fields: [id_farmacia], references: [id])
   fecha_nacimiento DateTime
   direccion        String
-  tutor            Tutor?   @relation(fields: [tutorDni], references: [dni])
-  tutorDni         String?  @unique @db.VarChar(9)
+  tutor            Tutor?       @relation(fields: [tutorDni], references: [dni])
+  tutorDni         String?      @unique @db.VarChar(9)
+  tratamiento      Tratamiento[]
 
   @@index([dni], type: Hash)
 }
@@ -83,17 +84,20 @@ enum TipoTratamiento {
 }
 
 model Tratamiento {
-  id            Int                   @id @unique @default(autoincrement())
-  nombre        String                @db.VarChar(100)
+  id            Int             @id @unique @default(autoincrement())
+  nombre        String          @db.VarChar(100)
   tipo          TipoTratamiento
-  descripcion   String                @db.VarChar(500)
-  dosis         Dosis                 @relation(fields: [dosisId], references: [id])
-  dosisId       Int                   @unique
+  createdAt     DateTime        @default(now())
+  descripcion   String          @db.VarChar(500)
+  dosis         Dosis           @relation(fields: [dosisId], references: [id])
+  dosisId       Int             @unique
   fecha_inicio  DateTime
   fecha_fin     DateTime
-  dni_sanitario String?               @unique @db.VarChar(9)
-  sanitario     Sanitario?            @relation(fields: [dni_sanitario], references: [dni])
-  registro      RegistroTratamiento[]
+  dni_sanitario String          @unique @db.VarChar(9)
+  sanitario     Sanitario       @relation(fields: [dni_sanitario], references: [dni])
+  dni_paciente  String         @db.VarChar(9)
+  paciente      Paciente       @relation(fields: [dni_paciente], references: [dni])
+  registro RegistroTratamiento[]
 }
 
 model DetallesTratamiento {
@@ -101,8 +105,8 @@ model DetallesTratamiento {
   fecha                   DateTime             @default(now())
   descripcion             String               @db.VarChar(500)
   cumplimiento            Boolean
-  registro                RegistroTratamiento? @relation(fields: [id_registro_tratamiento], references: [id])
-  id_registro_tratamiento Int?                 @unique
+  registro                RegistroTratamiento @relation(fields: [id_registro_tratamiento], references: [id])
+  id_registro_tratamiento Int                 @unique
 }
 
 model RegistroTratamiento {
