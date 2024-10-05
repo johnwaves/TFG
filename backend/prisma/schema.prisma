@@ -23,6 +23,17 @@ model Farmacia {
   @@index([id], type: Hash)
 }
 
+model User {
+  dni        String      @id @unique @db.VarChar(9)
+  password   String
+  email      String
+  sanitarios Sanitario[]
+  pacientes  Paciente[]
+  tutores    Tutor[]
+
+  @@index([dni], type: Hash)
+}
+
 enum TipoSanitario {
   FARMACEUTICO
   TECNICO_FARMACIA
@@ -30,9 +41,9 @@ enum TipoSanitario {
 
 model Sanitario {
   dni              String        @id @unique @db.VarChar(9)
+  user             User          @relation(fields: [dni], references: [dni])
   nombre           String
   apellidos        String
-  email            String
   tipo             TipoSanitario
   id_farmacia      Int           @unique
   farmacia         Farmacia      @relation(fields: [id_farmacia], references: [id])
@@ -44,9 +55,9 @@ model Sanitario {
 
 model Paciente {
   dni              String        @id @unique @db.VarChar(9)
+  user             User          @relation(fields: [dni], references: [dni])
   nombre           String
   apellidos        String
-  email            String
   id_farmacia      Int           @unique
   farmacia         Farmacia      @relation(fields: [id_farmacia], references: [id])
   fecha_nacimiento DateTime
@@ -60,6 +71,7 @@ model Paciente {
 
 model Tutor {
   dni              String     @id @unique @db.VarChar(9)
+  user             User       @relation(fields: [dni], references: [dni])
   nombre           String
   apellidos        String
   dni_paciente     String     @unique @db.VarChar(9)
@@ -109,5 +121,3 @@ model RegistroTratamiento {
   tratamiento    Tratamiento @relation(fields: [id_tratamiento], references: [id])
   id_tratamiento Int         @unique
 }
-
-
