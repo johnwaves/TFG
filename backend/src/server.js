@@ -1,6 +1,6 @@
 // Import the framework and instantiate it
 import Fastify from 'fastify'
-import { PORT } from './init.js'
+import { PORT } from './config/init.js'
 
 const fastify = Fastify({
   logger: true

@@ -1,6 +1,6 @@
 import * as chai from 'chai'
 import Fastify from 'fastify'
-import { PORT } from '../init.js'
+import { PORT } from '../config/init.js'
 
 const { expect } = chai
 const app = Fastify()
