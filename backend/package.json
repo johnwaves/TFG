@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "start": "nodemon --env-file .env ./src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./src/test/*.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.7.3",
     "prisma": "^5.20.0"
   },
   "dependencies": {
