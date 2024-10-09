@@ -17,69 +17,79 @@ model Farmacia {
   id         Int         @id @unique @default(autoincrement())
   nombre     String      @unique
   direccion  String
+  createdAt  DateTime    @default(now())
   sanitarios Sanitario[]
   pacientes  Paciente[]
 
   @@index([id], type: Hash)
 }
 
-model User {
-  dni        String      @id @unique @db.VarChar(9)
-  password   String
-  email      String
-  sanitarios Sanitario[]
-  pacientes  Paciente[]
-  tutores    Tutor[]
-
-  @@index([dni], type: Hash)
+enum UserRole {
+  ADMIN
+  SANITARIO
+  PACIENTE
+  TUTOR
 }
 
 enum TipoSanitario {
   FARMACEUTICO
-  TECNICO_FARMACIA
+  TECNICO
+}
+
+enum TipoTratamiento {
+  FARMACOLOGICO
+  NO_FARMACOLOGICO
+}
+
+model User {
+  dni              String     @id @unique @db.VarChar(9)
+  password         String
+  email            String
+  nombre           String
+  apellidos        String
+  createdAt        DateTime @default(now())
+  fecha_nacimiento DateTime
+  direccion        String
+  foto             String?
+  role             UserRole
+  sanitario        Sanitario? @relation("UserToSanitario")
+  paciente         Paciente?  @relation("UserToPaciente")
+  tutor            Tutor?     @relation("UserToTutor")
+
+  @@index([dni], type: Hash)
 }
 
 model Sanitario {
-  dni              String        @id @unique @db.VarChar(9)
-  user             User          @relation(fields: [dni], references: [dni])
-  nombre           String
-  apellidos        String
-  tipo             TipoSanitario
-  id_farmacia      Int           @unique
-  farmacia         Farmacia      @relation(fields: [id_farmacia], references: [id])
-  fecha_nacimiento DateTime
-  tratamiento      Tratamiento[]
+  id           Int           @id @default(autoincrement())
+  user         User          @relation(fields: [userId], references: [dni], name: "UserToSanitario")
+  userId       String        @unique
+  tipo         TipoSanitario
+  idFarmacia   Int
+  farmacia     Farmacia      @relation(fields: [idFarmacia], references: [id])
+  tratamientos Tratamiento[]
 
-  @@index([dni], type: Hash)
+  @@index([idFarmacia], type: Hash)
 }
 
 model Paciente {
-  dni              String        @id @unique @db.VarChar(9)
-  user             User          @relation(fields: [dni], references: [dni])
-  nombre           String
-  apellidos        String
-  id_farmacia      Int           @unique
-  farmacia         Farmacia      @relation(fields: [id_farmacia], references: [id])
-  fecha_nacimiento DateTime
-  direccion        String
-  tutor            Tutor?        @relation(fields: [tutorDni], references: [dni])
-  tutorDni         String?       @unique @db.VarChar(9)
-  tratamiento      Tratamiento[]
-
-  @@index([dni], type: Hash)
+  id            Int           @id @default(autoincrement())
+  user          User          @relation(fields: [userId], references: [dni], name: "UserToPaciente")
+  userId        String        @unique
+  esDependiente Boolean       @default(false)
+  tutor         Tutor?        @relation(fields: [tutorId], references: [id])
+  tutorId       Int?          @unique
+  tratamientos  Tratamiento[]
+  Farmacia      Farmacia?     @relation(fields: [idFarmacia], references: [id])
+  idFarmacia    Int?
 }
 
 model Tutor {
-  dni              String     @id @unique @db.VarChar(9)
-  user             User       @relation(fields: [dni], references: [dni])
-  nombre           String
-  apellidos        String
-  dni_paciente     String     @unique @db.VarChar(9)
-  pacientes        Paciente[]
-  fecha_nacimiento DateTime
-  direccion        String
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [dni], name: "UserToTutor")
+  userId    String     @unique
+  pacientes Paciente[]
 
-  @@index([dni], type: Hash)
+  @@index([id], type: Hash)
 }
 
 model Dosis {
@@ -90,27 +100,22 @@ model Dosis {
   tratamiento Tratamiento?
 }
 
-enum TipoTratamiento {
-  FARMACOLOGICO
-  NO_FARMACOLOGICO
-}
-
 model Tratamiento {
-  id            Int                   @id @unique @default(autoincrement())
-  nombre        String                @db.VarChar(100)
-  tipo          TipoTratamiento
-  createdAt     DateTime              @default(now())
-  descripcion   String                @db.VarChar(500)
-  dosis         Dosis                 @relation(fields: [dosisId], references: [id])
-  dosisId       Int                   @unique
-  fecha_inicio  DateTime
-  fecha_fin     DateTime
-  dni_sanitario String                @unique @db.VarChar(9)
-  sanitario     Sanitario             @relation(fields: [dni_sanitario], references: [dni])
-  dni_paciente  String                @db.VarChar(9)
-  paciente      Paciente              @relation(fields: [dni_paciente], references: [dni])
-  registro      RegistroTratamiento[]
-  puntuacion    Int                   @default(0)
+  id           Int                   @id @unique @default(autoincrement())
+  nombre       String                @db.VarChar(100)
+  tipo         TipoTratamiento
+  createdAt    DateTime              @default(now())
+  descripcion  String                @db.VarChar(500)
+  dosis        Dosis                 @relation(fields: [idDosis], references: [id])
+  idDosis      Int                   @unique
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  idSanitario  Int
+  sanitario    Sanitario             @relation(fields: [idSanitario], references: [id])
+  idPaciente   Int
+  paciente     Paciente              @relation(fields: [idPaciente], references: [id])
+  registro     RegistroTratamiento[]
+  puntuacion   Int                   @default(0)
 }
 
 model RegistroTratamiento {
@@ -118,6 +123,6 @@ model RegistroTratamiento {
   fecha_registro DateTime    @default(now())
   cumplimiento   Boolean
   detalles       String[]
-  tratamiento    Tratamiento @relation(fields: [id_tratamiento], references: [id])
-  id_tratamiento Int         @unique
+  tratamiento    Tratamiento @relation(fields: [idTratamiento], references: [id])
+  idTratamiento  Int         @unique
 }
