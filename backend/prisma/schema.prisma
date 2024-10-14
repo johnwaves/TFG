@@ -47,7 +47,8 @@ model User {
   email            String
   nombre           String
   apellidos        String
-  createdAt        DateTime @default(now())
+  createdAt        DateTime   @default(now())
+  telefono         String
   fecha_nacimiento DateTime
   direccion        String
   foto             String?
@@ -60,9 +61,8 @@ model User {
 }
 
 model Sanitario {
-  id           Int           @id @default(autoincrement())
-  user         User          @relation(fields: [userId], references: [dni], name: "UserToSanitario")
-  userId       String        @unique
+  user         User          @relation(fields: [idUser], references: [dni], name: "UserToSanitario")
+  idUser       String        @id @unique
   tipo         TipoSanitario
   idFarmacia   Int
   farmacia     Farmacia      @relation(fields: [idFarmacia], references: [id])
@@ -72,24 +72,23 @@ model Sanitario {
 }
 
 model Paciente {
-  id            Int           @id @default(autoincrement())
-  user          User          @relation(fields: [userId], references: [dni], name: "UserToPaciente")
-  userId        String        @unique
-  esDependiente Boolean       @default(false)
-  tutor         Tutor?        @relation(fields: [tutorId], references: [id])
-  tutorId       Int?          @unique
+  user          User          @relation(fields: [idUser], references: [dni], name: "UserToPaciente")
+  idUser        String        @id @unique
+  tutor         Tutor?        @relation(fields: [idTutor], references: [idUser])
+  idTutor       String?
   tratamientos  Tratamiento[]
   Farmacia      Farmacia?     @relation(fields: [idFarmacia], references: [id])
   idFarmacia    Int?
+
+  @@index([idFarmacia], type: Hash)
 }
 
 model Tutor {
-  id        Int        @id @default(autoincrement())
-  user      User       @relation(fields: [userId], references: [dni], name: "UserToTutor")
-  userId    String     @unique
+  user      User       @relation(fields: [idUser], references: [dni], name: "UserToTutor")
+  idUser    String     @id @unique
   pacientes Paciente[]
 
-  @@index([id], type: Hash)
+  @@index([idUser], type: Hash)
 }
 
 model Dosis {
@@ -110,10 +109,10 @@ model Tratamiento {
   idDosis      Int                   @unique
   fecha_inicio DateTime
   fecha_fin    DateTime
-  idSanitario  Int
-  sanitario    Sanitario             @relation(fields: [idSanitario], references: [id])
-  idPaciente   Int
-  paciente     Paciente              @relation(fields: [idPaciente], references: [id])
+  idSanitario  String
+  sanitario    Sanitario             @relation(fields: [idSanitario], references: [idUser])
+  idPaciente   String
+  paciente     Paciente              @relation(fields: [idPaciente], references: [idUser])
   registro     RegistroTratamiento[]
   puntuacion   Int                   @default(0)
 }
