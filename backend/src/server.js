@@ -3,7 +3,10 @@ import Fastify from 'fastify'
 import { PORT } from './config/init.js'
 
 const fastify = Fastify({
-  logger: true
+  logger: {
+    level: 'trace',
+    prettyPrint: true,
+  }
 })
 
 // Declare a route
