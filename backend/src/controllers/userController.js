@@ -137,7 +137,7 @@ const getAllUsers = async (res) => {
 
 const getSanitarioData = async (req, res) => {
     try {
-        const user = getUserByDNI(req.params.dni)
+        const user = await getUserByDNI(req.params.dni)
         if (!user) return res.status(404).send({ error: 'User not found.' })
 
         if (user.role !== ROLES.SANITARIO) return res.status(400).send({ error: 'El usuario no es un sanitario.' })
@@ -165,7 +165,7 @@ const getSanitarioData = async (req, res) => {
 
 const getPacienteData = async (req, res) => {
     try {
-        const user = getUserByDNI(req.params.dni)
+        const user = await getUserByDNI(req.params.dni)
         if (!user) return res.status(404).send({ error: 'User not found.' })
 
         if (user.role !== ROLES.PACIENTE) return res.status(400).send({ error: 'El usuario no es un paciente.' })
@@ -194,7 +194,7 @@ const getPacienteData = async (req, res) => {
 
 const getTutorData = async (req, res) => {
     try {
-        const user = getUserByDNI(req.params.dni)
+        const user = await getUserByDNI(req.params.dni)
         if (!user) return res.status(404).send({ error: 'User not found.' })
 
         if (user.role !== ROLES.TUTOR) return res.status(400).send({ error: 'El usuario no es un tutor.' })
