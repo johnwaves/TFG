@@ -72,13 +72,13 @@ model Sanitario {
 }
 
 model Paciente {
-  user          User          @relation(fields: [idUser], references: [dni], name: "UserToPaciente")
-  idUser        String        @id @unique
-  tutor         Tutor?        @relation(fields: [idTutor], references: [idUser])
-  idTutor       String?
-  tratamientos  Tratamiento[]
-  Farmacia      Farmacia?     @relation(fields: [idFarmacia], references: [id])
-  idFarmacia    Int?
+  user         User          @relation(fields: [idUser], references: [dni], name: "UserToPaciente")
+  idUser       String        @id @unique
+  tutor        Tutor?        @relation(fields: [idTutor], references: [idUser])
+  idTutor      String?
+  tratamientos Tratamiento[]
+  Farmacia     Farmacia?     @relation(fields: [idFarmacia], references: [id])
+  idFarmacia   Int?
 
   @@index([idFarmacia], type: Hash)
 }
@@ -97,7 +97,6 @@ model Dosis {
   intervalo   Int
   duracion    Int
   tratamiento Tratamiento?
-  
 }
 
 model Tratamiento {
@@ -106,10 +105,10 @@ model Tratamiento {
   tipo         TipoTratamiento
   createdAt    DateTime              @default(now())
   descripcion  String                @db.VarChar(500)
-  dosis        Dosis                 @relation(fields: [idDosis], references: [id])
-  idDosis      Int                   @unique
-  fecha_inicio DateTime
-  fecha_fin    DateTime
+  dosis        Dosis?                @relation(fields: [idDosis], references: [id])
+  idDosis      Int?                  @unique
+  fecha_inicio DateTime?
+  fecha_fin    DateTime?
   idSanitario  String
   sanitario    Sanitario             @relation(fields: [idSanitario], references: [idUser])
   idPaciente   String
@@ -124,7 +123,7 @@ model RegistroTratamiento {
   id             Int         @id @unique @default(autoincrement())
   fecha_registro DateTime    @default(now())
   cumplimiento   Boolean
-  detalles       String[]
+  detalles       String?
   tratamiento    Tratamiento @relation(fields: [idTratamiento], references: [id])
-  idTratamiento  Int         @unique
+  idTratamiento  Int
 }
