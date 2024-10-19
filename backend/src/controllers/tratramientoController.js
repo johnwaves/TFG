@@ -263,7 +263,9 @@ const registroTratamiento = async (res, req) => {
             }
 
 
-        } else if (tratamiento.tipo === 'NO_FARMACOLOGICO') {
+        } // elseif
+        
+        if (tratamiento.tipo === 'NO_FARMACOLOGICO') {
 
             if (user.role === ROLES.SANITARIO && user.sanitario.idFarmacia !== tratamiento.paciente.idFarmacia)
                 return res.status(403).send({ error: 'UNAUTHORIZED. You can only add treatments for patients from your own pharmacy.' })
@@ -272,6 +274,7 @@ const registroTratamiento = async (res, req) => {
                 where: {
                     idTratamiento,
                     fecha_registro: {
+                        // Se verifica desde el inicio del día
                         gte: new Date(new Date().setHours(0,0,0,0))
                     }
                 }
@@ -299,7 +302,143 @@ const registroTratamiento = async (res, req) => {
 
 }
 
+const getPendingTratamientos = async (req, res) => {
+    try {
+        const user = req.user
 
+        let tratamientos = []
+        if (user.role === ROLES.PACIENTE){
+            tratamientos = await prisma.tratamiento.findMany({
+                where: { 
+                    idPaciente: user.dni,
+                    fecha_inicio: null,
+                    fecha_fin: null
+                 }
+            })
+
+        } else if (user.role === ROLES.TUTOR){
+            tratamientos = await prisma.tratamiento.findMany({
+                where:{
+                    paciente: {
+                        idTutor: user.dni
+                    },
+                    fecha_inicio: null,
+                    fecha_fin: null
+                }
+            })
+
+        } else if (user.role === ROLES.SANITARIO){
+            tratamientos = await prisma.tratamiento.findMany({
+                where: {
+                    paciente: {
+                        idFarmacia: user.sanitario.idFarmacia
+                    },
+                    fecha_inicio: null,
+                    fecha_fin: null
+                }
+            })
+
+        }
+
+        return res.status(200).send(tratamientos)
+
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error: 'Error fetching pending tratamientos.' })
+    }
+
+}
+
+// Los sanitarios podrán registrar datos adicionales sobre los tratamientos
+// no farmacológicos (de forma presencial, en la farmacia)
+const registroDatosEnFarmacia = async (req, res) => {
+    try {
+        const { idTratamiento, detalles } = req.body
+        const user = req.user
+        if (user.role !== ROLES.SANITARIO)
+            return res.status(403).send({ error: 'UNAUTHORIZED: Only SANITARIOS can register additional data' })
+        
+        const tratamiento = await prisma.tratamiento.findUnique({
+            where: {
+                id: idTratamiento
+            },
+            include: {
+                paciente: true
+            }
+        })
+
+        if (!tratamiento)
+            return res.status(404).send({ error: 'No se ha encontrado el tratamiento.'})
+
+        const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.paciente.idUser)
+        if (!sameFarmacia)
+            return res.status(403).send({ error: 'Usuarios no pertenecen a la misma farmacia'})
+
+        const existingRegistro = await prisma.registroTratamiento.findFirst({
+            where:{
+                idTratamiento,
+                fecha_registro: {
+                    gte: new Date(new Date().setHours(0, 0, 0, 0))
+                }
+            }
+        })
+
+        if (existingRegistro)
+            return res.status(400).send({ error: 'Sólo se puede realizar un registro por día.'})
+
+        const registro = await prisma.registroTratamiento.create({
+            data: {
+                idTratamiento,
+                cumplimiento: true,
+                detalles: detalles || '',
+                fecha_registro: new Date()
+            }
+        })
+
+        return res.status(201).send(registro)
+
+    } catch (error){
+        console.error(error)
+        return res.status(500).send({ error: 'Error rgistering additional data'})
+    }
+}
+
+const verifyCumplimiento = async (req, res) => {
+    try {
+        const {idTratamiento } = req.body
+
+        const tratamiento = await prisma.tratamiento.findUnique({
+            where: {
+                id: idTratamiento
+            },
+            include: {
+                registros: true
+            }
+        })
+
+        if (!tratamiento)
+            return res.status(404).send({ error: 'No se ha encontrado el tratamiento.'})
+
+        const now =  new Date()
+        const lastRegistro = tratamiento.registro[tratamiento.registro.length - 1]
+        const nextRegistroTime = new Date(lastRegistro.fecha_registro)
+        nextRegistroTime.setHours(nextRegistroTime.getHours() + tratamiento.dosis.intervalo)
+
+        if (now > nextRegistroTime)
+            return res.status(400).send({ error: 'No se ha registrado el cumplimiento del tratamiento a tiempo.'})
+
+        return res.status(200).send({ message: 'Cumplimiento registrado a tiempo.'})
+
+    } catch (error){
+        console.error(error)
+        return res.status(500).send({ error: 'Error verifying cumplimiento'})
+    }
+
+}
+
+
+
+// Añadir función para verificar si se ha marcado o no la casilla de cumplimiento
 
 const verifySameFarmacia = async (sanitarioID, pacienteID, tutorID = null) => {
     try {
@@ -357,6 +496,8 @@ const verifySameFarmacia = async (sanitarioID, pacienteID, tutorID = null) => {
 module.exports = {
     createTratamiento,
     updateTratamiento,
-    registroTratamiento
-
+    registroTratamiento,
+    getPendingTratamientos,
+    registroDatosEnFarmacia,
+    verifyCumplimiento
 }
