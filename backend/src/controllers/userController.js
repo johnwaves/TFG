@@ -293,7 +293,7 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { 
+export default { 
     createUser,
     getUserByDNI,
     getAllUsers,
