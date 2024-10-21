@@ -1,13 +1,22 @@
 // Import the framework and instantiate it
 import Fastify from 'fastify'
 import { PORT } from './config/init.js'
+import farmaciaRoutes from './routes/farmaciaRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import tratamientoRoutes from './routes/tratamientoRoutes.js'
 
 const fastify = Fastify({
   logger: {
     level: 'trace',
-    prettyPrint: true,
+    transport: {
+      target: 'pino-pretty',
+    }
   }
 })
+
+fastify.register(farmaciaRoutes)
+fastify.register(userRoutes)
+fastify.register(tratamientoRoutes)
 
 // Declare a route
 fastify.get('/', async function handler (request, reply) {
@@ -26,4 +35,5 @@ const startServer = async () => {
     }
 }
 
-startServer()
+export default fastify
+//startServer()
