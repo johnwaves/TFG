@@ -1,22 +1,22 @@
-const ROLES = {
+export const ROLES = {
   ADMIN: "ADMIN",
   SANITARIO: "SANITARIO",
   PACIENTE: "PACIENTE",
   TUTOR: "TUTOR",
-};
+}
 
-const TIPO_SANITARIO = {
+export const TIPO_SANITARIO = {
   FARMACEUTICO: "FARMACEUTICO",
   TECNICO: "TECNICO",
-};
+}
 
-const createUserPermissions = {
+export const createUserPermissions = {
   [ROLES.ADMIN]: [ROLES.ADMIN, ROLES.SANITARIO, ROLES.PACIENTE, ROLES.TUTOR],
   [TIPO_SANITARIO.FARMACEUTICO]: [ROLES.SANITARIO, ROLES.PACIENTE, ROLES.TUTOR],
   [TIPO_SANITARIO.TECNICO]: [ROLES.PACIENTE, ROLES.TUTOR],
-};
+}
 
-function checkPermissions(userModifier, userToUpdate) {
+export function checkPermissions(userModifier, userToUpdate) {
 
   if (userModifier.role === ROLES.ADMIN) return true
   
@@ -47,9 +47,3 @@ function checkPermissions(userModifier, userToUpdate) {
   return false 
 }
 
-module.exports = { 
-  ROLES, 
-  TIPO_SANITARIO, 
-  createUserPermissions,
-  checkPermissions 
-};

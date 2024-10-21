@@ -1,8 +1,8 @@
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 
 const SALT_ROUNDS = 12
 
-async function hashPassword(password) {
+export async function hashPassword(password) {
     try {
         return await bcrypt.hash(password, SALT_ROUNDS)
     } catch (error) {
@@ -10,5 +10,3 @@ async function hashPassword(password) {
         throw new Error('Failed to hash password');
     }
 }
-
-module.exports = { hashPassword}
