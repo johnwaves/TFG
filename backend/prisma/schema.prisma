@@ -77,7 +77,7 @@ model Paciente {
   tutor        Tutor?        @relation(fields: [idTutor], references: [idUser])
   idTutor      String?
   tratamientos Tratamiento[]
-  Farmacia     Farmacia?     @relation(fields: [idFarmacia], references: [id])
+  farmacia     Farmacia?     @relation(fields: [idFarmacia], references: [id])
   idFarmacia   Int?
 
   @@index([idFarmacia], type: Hash)
