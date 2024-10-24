@@ -4,6 +4,9 @@ import { PORT } from './config/init.js'
 import farmaciaRoutes from './routes/farmaciaRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import tratamientoRoutes from './routes/tratamientoRoutes.js'
+import authRoutes from './routes/authRoutes.js'
+import jwtPlugin from './plugins/jwtPlugin.js'
+
 
 const fastify = Fastify({
   logger: {
@@ -14,11 +17,17 @@ const fastify = Fastify({
   }
 })
 
+fastify.register(jwtPlugin)
+
+// Compatibilidad con JSON  
+fastify.addContentTypeParser('application/json', { parseAs: 'string' }, fastify.getDefaultJsonParser('strict'))
+
 fastify.register(farmaciaRoutes)
 fastify.register(userRoutes)
 fastify.register(tratamientoRoutes)
+fastify.register(authRoutes)
 
-// Declare a route
+// Ruta por defecto
 fastify.get('/', async function handler (request, reply) {
   return { hello: 'world' }
 })
