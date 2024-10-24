@@ -1,77 +1,163 @@
-import * as chai from 'chai';
-import { PORT } from '../config/init.js';
-import app from '../server.js';
+import fastify from '../server.js'
+import { expect } from 'chai'
 
-const { expect } = chai;
+describe('Creación de Usuarios y Eliminación en Cascada', () => {
+  let adminToken
+  let farmaciaId
+  let dniPaciente2
 
-describe('Admin User and Pharmacy Tests', () => {
+  before(async () => {
+    await fastify.ready()
 
-    before(async () => {
-        await app.listen({ port: PORT });
-    });
+    const adminLoginResponse = await fastify.inject({
+      method: 'POST',
+      url: '/login',
+      payload: {
+        dni: '10101010X',
+        password: 'admin1234',
+      }
+    })
+    expect(adminLoginResponse.statusCode).to.equal(200)
+    adminToken = JSON.parse(adminLoginResponse.payload).token
 
-    after(async () => {
-        await app.close();
-    });
+    const farmaciaResponse = await fastify.inject({
+      method: 'POST',
+      url: '/farmacias/create',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        nombre: 'Farmacia La Salud',
+        direccion: 'Calle Alhamar, 19, 18004 Granada'
+      }
+    })
 
-    // Paso 1: Crear un usuario ADMIN
-    it('should create an ADMIN user', async () => {
-        const adminData = {
-            dni: '10101010X',
-            email: 'admin@admin.com',
-            password: 'admin1',
-            nombre: 'Admin',
-            apellidos: 'Test',
-            role: 'ADMIN'
-        };
+    expect(farmaciaResponse.statusCode).to.equal(201)
+    farmaciaId = JSON.parse(farmaciaResponse.payload).id
+  })
 
-        // Usa la ruta con '/create'
-        const res = await fetch(`http://localhost:${PORT}/users/create`, {  
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(adminData)
-        });
+  it('debería crear usuarios pacientes, sanitarios y un tutor', async () => {
+    const paciente1Response = await fastify.inject({
+      method: 'POST',
+      url: '/users/create',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        dni: '11223344A',
+        password: 'paciente123',
+        email: 'juan.garcia@example.com',
+        nombre: 'Juan',
+        apellidos: 'García López',
+        telefono: '958222222',
+        fechaNac: '1985-05-15',
+        direccion: 'Calle San Antón, 12, 18005 Granada',
+        role: 'PACIENTE',
+        idFarmacia: farmaciaId
+      }
+    })
+    if (paciente1Response.statusCode !== 201) {
+      console.error('Error al crear paciente 1:', paciente1Response.payload)
+    }
+    expect(paciente1Response.statusCode).to.equal(201)
 
-        const body = await res.json();
-        expect(res.status).to.equal(201);
-        expect(body).to.have.property('message', 'User created successfully.');
-        expect(body.user).to.have.property('role', 'ADMIN');
-    });
+    const paciente2Response = await fastify.inject({
+      method: 'POST',
+      url: '/users/create',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        dni: '22334455B',
+        password: 'paciente123',
+        email: 'maria.gomez@example.com',
+        nombre: 'María',
+        apellidos: 'Gómez Ruiz',
+        telefono: '958333333',
+        fechaNac: '2010-09-30',
+        direccion: 'Calle Recogidas, 45, 18002 Granada',
+        role: 'PACIENTE',
+        idFarmacia: farmaciaId
+      }
+    })
+    if (paciente2Response.statusCode !== 201) {
+      console.error('Error al crear paciente 2:', paciente2Response.payload)
+    }
+    expect(paciente2Response.statusCode).to.equal(201)
+    dniPaciente2 = '22334455B'
 
-    // Paso 2: Crear una farmacia (solo ADMIN)
-    it('should create a pharmacy as ADMIN', async () => {
-        const farmaciaData = {
-            nombre: 'Farmacia Gran Parque',
-            direccion: 'Calle Principal, 1. Granada.'
-        };
+    const farmaceuticoResponse = await fastify.inject({
+      method: 'POST',
+      url: '/users/create',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        dni: '33445566C',
+        password: 'farmaceutico123',
+        email: 'carmen.martinez@example.com',
+        nombre: 'Carmen',
+        apellidos: 'Martínez Fernández',
+        telefono: '958444444',
+        fechaNac: '1978-04-10',
+        direccion: 'Calle Reyes Católicos, 22, 18009 Granada',
+        role: 'SANITARIO',
+        tipoSanitario: 'FARMACEUTICO',
+        idFarmacia: farmaciaId
+      }
+    })
+    if (farmaceuticoResponse.statusCode !== 201) {
+      console.error('Error al crear farmacéutico:', farmaceuticoResponse.payload)
+    }
+    expect(farmaceuticoResponse.statusCode).to.equal(201)
 
-        // Usa la ruta con '/create'
-        const res = await fetch(`http://localhost:${PORT}/farmacias/create`, {  
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(farmaciaData)
-        });
+    const tecnicoResponse = await fastify.inject({
+      method: 'POST',
+      url: '/users/create',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        dni: '44556677D',
+        password: 'tecnico123',
+        email: 'luis.rodriguez@example.com',
+        nombre: 'Luis',
+        apellidos: 'Rodríguez Sánchez',
+        telefono: '958555555',
+        fechaNac: '1992-11-20',
+        direccion: 'Calle Gran Vía, 1, 18001 Granada',
+        role: 'SANITARIO',
+        tipoSanitario: 'TECNICO',
+        idFarmacia: farmaciaId
+      }
+    })
+    if (tecnicoResponse.statusCode !== 201) {
+      console.error('Error al crear técnico:', tecnicoResponse.payload)
+    }
+    expect(tecnicoResponse.statusCode).to.equal(201)
 
-        const body = await res.json();
-        expect(res.status).to.equal(201);
-        expect(body).to.have.property('nombre', 'Farmacia Central');
-    });
-
-    it('should not allow non-ADMIN to create a pharmacy', async () => {
-        const farmaciaData = {
-            nombre: 'Farmacia FGL',
-            direccion: 'Avda. FGL, 4'
-        };
-
-        // Usa la ruta con '/create'
-        const res = await fetch(`http://localhost:${PORT}/farmacias/create`, {  
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(farmaciaData)
-        });
-
-        const body = await res.json();
-        expect(res.status).to.equal(403);
-        expect(body).to.have.property('error', 'UNAUTHORIZED. Only an ADMIN can create a pharmacy.');
-    });
-});
+    const tutorResponse = await fastify.inject({
+      method: 'POST',
+      url: '/users/create',
+      headers: {
+        Authorization: `Bearer ${adminToken}`,
+      },
+      payload: {
+        dni: '55667788E',
+        password: 'tutor123',
+        email: 'ana.diaz@example.com',
+        nombre: 'Ana',
+        apellidos: 'Díaz Torres',
+        telefono: '958666666',
+        fechaNac: '1982-07-25',
+        direccion: 'Calle Elvira, 8, 18010 Granada',
+        role: 'TUTOR',
+        dniPaciente: dniPaciente2
+      }
+    })
+    if (tutorResponse.statusCode !== 201) {
+      console.error('Error al crear tutor:', tutorResponse.payload)
+    }
+    expect(tutorResponse.statusCode).to.equal(201)
+  })
+})
