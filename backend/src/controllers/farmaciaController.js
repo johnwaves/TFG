@@ -1,37 +1,37 @@
 import prisma from '../config/prisma.js'
 import { ROLES, checkPermissions } from '../utils/roles.js'
 
-const createFarmacia = async (req, res) => {
+const createFarmacia = async (req, reply) => {
     try{
         const user = req.user
         const { nombre, direccion } = req.body
 
         if (user.role !== ROLES.ADMIN) 
-            return res.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can create farmacias.' })
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can create farmacias.' })
         
         const existingFarmacia = await prisma.farmacia.findUnique({ where: { nombre }})
         if (existingFarmacia) 
-            return res.status(400).send({ error: 'Farmacia already exists.' })
+            return reply.status(400).send({ error: 'Farmacia already exists.' })
 
         const farmacia = await prisma.farmacia.create({
             data: { nombre, direccion }
         })
 
-        return res.status(201).send(farmacia)
+        return reply.status(201).send(farmacia)
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error creating farmacia.' })
+        return reply.status(500).send({ error: 'Error creating farmacia.' })
     }
 }
 
-const getFarmaciaByID = async (req, res) => {
+const getFarmaciaByID = async (req, reply) => {
     try {
         const { id } = req.params
         const user = req.user
 
         if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO) 
-            return res.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' })
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' })
 
         const farmacia = await prisma.farmacia.findUnique({
             where: { id: parseInt(id) },
@@ -43,17 +43,17 @@ const getFarmaciaByID = async (req, res) => {
         })
 
         if (!farmacia) 
-            return res.status(404).send({ error: 'Farmacia not found.' })
+            return reply.status(404).send({ error: 'Farmacia not found.' })
 
-        return res.status(200).send(farmacia)
+        return reply.status(200).send(farmacia)
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error getting farmacia.' })
+        return reply.status(500).send({ error: 'Error getting farmacia.' })
     }
 }
 
-const getFarmaciaByNombre = async (req, res) => {
+const getFarmaciaByNombre = async (req, reply) => {
     try {
         const { nombre } = req.params
 
@@ -65,18 +65,18 @@ const getFarmaciaByNombre = async (req, res) => {
         })
 
         if (!farmacia) 
-            return res.status(404).send({ error: 'Farmacia not found.' })
+            return reply.status(404).send({ error: 'Farmacia not found.' })
 
-        return res.status(200).send(farmacia)
+        return reply.status(200).send(farmacia)
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error getting farmacia.' })
+        return reply.status(500).send({ error: 'Error getting farmacia.' })
     }
 
 }
 
-const getFarmaciaSanitariosByID = async (req, res) => {
+const getFarmaciaSanitariosByID = async (req, reply) => {
     try {
         const { id } = req.params
 
@@ -88,23 +88,23 @@ const getFarmaciaSanitariosByID = async (req, res) => {
         })
 
         if (!sanitarios) 
-            return res.status(404).send({ error: 'Farmacia not found.' })
+            return reply.status(404).send({ error: 'Farmacia not found.' })
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error fetching sanitarios.' })
+        return reply.status(500).send({ error: 'Error fetching sanitarios.' })
 
     }
 
 }
 
-const getFarmaciaPacientesByID = async (req, res) => {
+const getFarmaciaPacientesByID = async (req, reply) => {
     try {
         const user = req.user
         const { id } = req.params
 
         if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO)
-            return res.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' })
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' })
 
         const farmacia = await prisma.farmacia.findUnique({
             where: { id: parseInt(id) },
@@ -114,55 +114,55 @@ const getFarmaciaPacientesByID = async (req, res) => {
         })
 
         if (!farmacia)
-            return res.status(404).json({ error: 'Farmacia not found.' })
+            return reply.status(404).json({ error: 'Farmacia not found.' })
 
-        return res.status(200).send(farmacia.pacientes)
+        return reply.status(200).send(farmacia.pacientes)
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error getting farmacia.' })
+        return reply.status(500).send({ error: 'Error getting farmacia.' })
     }
 }
 
-const updateFarmacia = async (req, res) => {
+const updateFarmacia = async (req, reply) => {
     try {
         const user = req.user
         const { id } = req.params
         const { nombre, direccion } = req.body
 
         if (user.role !== ROLES.ADMIN)
-            return res.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can update farmacias.' })
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can update farmacias.' })
 
         const farmacia = await prisma.farmacia.update({
             where: { id: parseInt(id) },
             data: { nombre, direccion }
         })
 
-        return res.status(200).send(farmacia)
+        return reply.status(200).send(farmacia)
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error updating farmacia.' })
+        return reply.status(500).send({ error: 'Error updating farmacia.' })
     }
 }
 
-const deleteFarmacia = async (req, res) => {
+const deleteFarmacia = async (req, reply) => {
     try {
         const user = req.user
         const { id } = req.params
 
         if (user.role !== ROLES.ADMIN)
-            return res.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can delete farmacias.' })
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can delete farmacias.' })
 
         await prisma.farmacia.delete({
             where: { id: parseInt(id) }
         })
 
-        return res.status(200).send({ message: 'Farmacia deleted.' })
+        return reply.status(200).send({ message: 'Farmacia deleted.' })
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error deleting farmacia.' })
+        return reply.status(500).send({ error: 'Error deleting farmacia.' })
     }
 }
 

@@ -30,7 +30,7 @@ Los sanitarios pueden crear tratamientos para los pacientes.
 Los farmacéuticos serán el único tipo de sanitario que podrá
 modificar dichos tratamientos, añadiendo o eliminando dosis, cambiando
 el intervalo y la duración.
-Ni los técnicos ni los pacientes o tutores no podrán cambiar el tratamiento una vez creado.
+Ni los técnicos ni los pacientes o tutoreply no podrán cambiar el tratamiento una vez creado.
 
 Para los tratamientos, el paciente o su tutor (dadas las circunstancias),
 serán quieren añadan el registro manualmente (todos los registros se añaden manualmente). Por ejemplo, si el tratamiento es farmacológico y el paciente debe
@@ -55,51 +55,51 @@ realizar otro registro ese mismo día.
 
 */
 
-const createTratamiento = async (res, req) => {
+const createTratamiento = async (req, reply) => {
     try {
         const { nombre, descripcion, tipo, idPaciente, dosis, fecha_fin } = req.body
         const user = req.user
 
-        if (!user) return res.status(401).send({ error: 'UNAUTHORIZED. You must be logged in to create treatments.' })
+        if (!user) return reply.status(401).send({ error: 'UNAUTHORIZED. You must be logged in to create treatments.' })
         
         if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO)
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can create treatments.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can create treatments.' })
 
         if (user.role === ROLES.SANITARIO && ![TIPO_SANITARIO.FARMACEUTICO, TIPO_SANITARIO.TECNICO].includes(user.sanitario.tipo))
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only a FARMACEUTICO or TECNICO can create treatments.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only a FARMACEUTICO or TECNICO can create treatments.' })
 
         const paciente = await prisma.paciente.findUnique({
             where: {
                 idUser: idPaciente
             }
         })
-        if (!paciente) return res.status(400).send({ error: 'El paciente no existe.' })
+        if (!paciente) return reply.status(400).send({ error: 'El paciente no existe.' })
 
         const sameFarmacia = await verifySameFarmacia(user.id, paciente.idUser, paciente.idTutor)
         if (!sameFarmacia) 
-            return res.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
 
         
-        if (!fecha_fin) return res.status(400).send({ error: 'La fecha de fin es requerida.' })
-        if (!nombre) return res.status(400).send({ error: 'El nombre del tratamiento es requerido.' })
-        if (!descripcion) return res.status(400).send({ error: 'La descripción del tratamiento es requerida.' })
-        if (!tipo) return res.status(400).send({ error: 'El tipo del tratamiento es requerido.' })
+        if (!fecha_fin) return reply.status(400).send({ error: 'La fecha de fin es requerida.' })
+        if (!nombre) return reply.status(400).send({ error: 'El nombre del tratamiento es requerido.' })
+        if (!descripcion) return reply.status(400).send({ error: 'La descripción del tratamiento es requerida.' })
+        if (!tipo) return reply.status(400).send({ error: 'El tipo del tratamiento es requerido.' })
 
         if (tipo === 'FARMACOLOGICO') {
 
-            if (!dosis) return res.status(400).send({ error: 'La dosis es requerida.' })
+            if (!dosis) return reply.status(400).send({ error: 'La dosis es requerida.' })
 
             // Comprobaciones adicionales
-            if (!dosis.cantidad) return res.status(400).send({ error: 'La cantidad de medicación es requerida.' })
-            if (dosis.cantidad <= 0) return res.status(400).send({ error: 'La cantidad de medicación debe ser mayor que 0.' })
+            if (!dosis.cantidad) return reply.status(400).send({ error: 'La cantidad de medicación es requerida.' })
+            if (dosis.cantidad <= 0) return reply.status(400).send({ error: 'La cantidad de medicación debe ser mayor que 0.' })
             
-            if (!dosis.intervalo) return res.status(400).send({ error: 'El intervalo de tiempo (en horas) es requerido.' })
-            if (dosis.intervalo <= 0) return res.status(400).send({ error: 'El intervalo de tiempo (en horas) debe ser mayor que 0.' })
-            if (!Number.isInteger(dosis.intervalo)) return res.status(400).send({ error: 'El intervalo de tiempo (en horas) debe ser un número entero.' })
+            if (!dosis.intervalo) return reply.status(400).send({ error: 'El intervalo de tiempo (en horas) es requerido.' })
+            if (dosis.intervalo <= 0) return reply.status(400).send({ error: 'El intervalo de tiempo (en horas) debe ser mayor que 0.' })
+            if (!Number.isInteger(dosis.intervalo)) return reply.status(400).send({ error: 'El intervalo de tiempo (en horas) debe ser un número entero.' })
 
-            if (!dosis.duracion) return res.status(400).send({ error: 'La duración del tratamiento es requerida.' })
-            if (dosis.duracion <= 0) return res.status(400).send({ error: 'La duración del tratamiento (en días) debe ser mayor que 0.' })
-            if (!Number.isInteger(dosis.duracion)) return res.status(400).send({ error: 'La duración del tratamiento (en días) debe ser un número entero.' })
+            if (!dosis.duracion) return reply.status(400).send({ error: 'La duración del tratamiento es requerida.' })
+            if (dosis.duracion <= 0) return reply.status(400).send({ error: 'La duración del tratamiento (en días) debe ser mayor que 0.' })
+            if (!Number.isInteger(dosis.duracion)) return reply.status(400).send({ error: 'La duración del tratamiento (en días) debe ser un número entero.' })
 
             const newDosis = await prisma.dosis.create({
                 data: {
@@ -120,7 +120,7 @@ const createTratamiento = async (res, req) => {
                 }
             })
 
-            return res.status(201).send(tratamiento)
+            return reply.status(201).send(tratamiento)
         }
 
         if (tipo === 'NO_FARMACOLOGICO'){
@@ -137,42 +137,42 @@ const createTratamiento = async (res, req) => {
                 }
             })
 
-            return res.status(201).send(tratamiento)
+            return reply.status(201).send(tratamiento)
 
         }
 
-        return res.status(400).send({ error: 'El tipo de tratamiento no es válido.' })
+        return reply.status(400).send({ error: 'El tipo de tratamiento no es válido.' })
 
 
             
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error creating tratamiento.' })
+        return reply.status(500).send({ error: 'Error creating tratamiento.' })
     }
 
 }
 
-const updateTratamiento = async (res, req) => {
+const updateTratamiento = async (req, reply) => {
     try {
         const { idTratamiento, dosis, fecha_fin, tipo } = req.body
         const user = req.user
 
         if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO)
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can update treatments.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can update treatments.' })
 
         if (user.role !== ROLES.SANITARIO || user.sanitario.tipo !== TIPO_SANITARIO.FARMACEUTICO)
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only a FARMACEUTICO can update treatments.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only a FARMACEUTICO can update treatments.' })
 
         const tratamiento = await prisma.tratamiento.findUnique({
             where: {
                 id: idTratamiento
             }
         })
-        if (!tratamiento) return res.status(400).send({ error: 'No se ha encontrado el tratamiento.' })
+        if (!tratamiento) return reply.status(400).send({ error: 'No se ha encontrado el tratamiento.' })
 
         const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente)
         if (!sameFarmacia) 
-            return res.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
 
         if (tipo === 'FARMACOLOGICO' && dosis) {
             const updateDosis = await prisma.dosis.update({
@@ -186,7 +186,7 @@ const updateTratamiento = async (res, req) => {
                 }
             })
 
-            return res.status(200).send(updateDosis)
+            return reply.status(200).send(updateDosis)
 
         }
 
@@ -200,18 +200,18 @@ const updateTratamiento = async (res, req) => {
                 }
             })
 
-            return res.status(200).send(updateTratamiento)
+            return reply.status(200).send(updateTratamiento)
 
         }
 
         
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error updating tratamiento.' })
+        return reply.status(500).send({ error: 'Error updating tratamiento.' })
     }
 }
 
-const registroTratamiento = async (res, req) => {
+const registroTratamiento = async (req, reply) => {
     try {
         const { idTratamiento, cumplimiento, detalles, fecha_registro } = req.body
         const user = req.user
@@ -225,22 +225,22 @@ const registroTratamiento = async (res, req) => {
             }
         })
 
-        if (!tratamiento) return res.status(400).send({ error: 'No se ha encontrado el tratamiento.' })
+        if (!tratamiento) return reply.status(400).send({ error: 'No se ha encontrado el tratamiento.' })
         
         // Otra forma: tratamiento.paciente.idUser
         const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente, tratamiento.paciente.idTutor || null)
         if (!sameFarmacia) 
-            return res.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
 
 
 
         if (tratamiento.tipo === 'FARMACOLOGICO') {
 
             if (user.role === ROLES.PACIENTE && user.dni !== tratamiento.paciente.idUser)
-                return res.status(403).send({ error: 'UNAUTHORIZED. Only the patient can add a RegistroTratamiento.' })
+                return reply.status(403).send({ error: 'UNAUTHORIZED. Only the patient can add a RegistroTratamiento.' })
 
             if (user.role === ROLES.TUTOR && user.dni !== tratamiento.paciente.idTutor)
-                return res.status(403).send({ error: 'UNAUTHORIZED. Only the tutor can add a RegistroTratamiento.' })
+                return reply.status(403).send({ error: 'UNAUTHORIZED. Only the tutor can add a RegistroTratamiento.' })
 
             const lastRegistro = await prisma.registroTratamiento.findFirst({
                 where: {
@@ -258,7 +258,7 @@ const registroTratamiento = async (res, req) => {
                 nextAllowedTime.setHours(nextAllowedTime.getHours() + tratamiento.dosis.intervalo)
 
                 if (new Date(fecha_registro) < nextAllowedTime)
-                    return res.status(400).send({ error: `Se podrá añadir un nuevo registro después del intervalo de ${tratamiento.dosis.intervalo} horas.` })
+                    return reply.status(400).send({ error: `Se podrá añadir un nuevo registro después del intervalo de ${tratamiento.dosis.intervalo} horas.` })
 
             }
 
@@ -268,7 +268,7 @@ const registroTratamiento = async (res, req) => {
         if (tratamiento.tipo === 'NO_FARMACOLOGICO') {
 
             if (user.role === ROLES.SANITARIO && user.sanitario.idFarmacia !== tratamiento.paciente.idFarmacia)
-                return res.status(403).send({ error: 'UNAUTHORIZED. You can only add treatments for patients from your own pharmacy.' })
+                return reply.status(403).send({ error: 'UNAUTHORIZED. You can only add treatments for patients from your own pharmacy.' })
 
             const existingRegistro = await prisma.registroTratamiento.findFirst({
                 where: {
@@ -280,7 +280,7 @@ const registroTratamiento = async (res, req) => {
                 }
             })
 
-            if (existingRegistro) return res.status(400).send({ error: 'Sólo se puede añadir un registro al día para este tipo de tratamiento.' })
+            if (existingRegistro) return reply.status(400).send({ error: 'Sólo se puede añadir un registro al día para este tipo de tratamiento.' })
         }
 
         const registro = await prisma.registroTratamiento.create({
@@ -292,17 +292,17 @@ const registroTratamiento = async (res, req) => {
             }
         })
 
-        return res.status(201).send(registro)
+        return reply.status(201).send(registro)
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error registering treatment compliance.' })
+        return reply.status(500).send({ error: 'Error registering treatment compliance.' })
     }
 
 
 }
 
-const getPendingTratamientos = async (req, res) => {
+const getPendingTratamientos = async (req, reply) => {
     try {
         const user = req.user
 
@@ -340,23 +340,23 @@ const getPendingTratamientos = async (req, res) => {
 
         }
 
-        return res.status(200).send(tratamientos)
+        return reply.status(200).send(tratamientos)
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error fetching pending tratamientos.' })
+        return reply.status(500).send({ error: 'Error fetching pending tratamientos.' })
     }
 
 }
 
 // Los sanitarios podrán registrar datos adicionales sobre los tratamientos
-// no farmacológicos (de forma presencial, en la farmacia)
-const registroDatosEnFarmacia = async (req, res) => {
+// no farmacológicos (de forma preplyencial, en la farmacia)
+const registroDatosEnFarmacia = async (req, reply) => {
     try {
         const { idTratamiento, detalles } = req.body
         const user = req.user
         if (user.role !== ROLES.SANITARIO)
-            return res.status(403).send({ error: 'UNAUTHORIZED: Only SANITARIOS can register additional data' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED: Only SANITARIOS can register additional data' })
         
         const tratamiento = await prisma.tratamiento.findUnique({
             where: {
@@ -368,11 +368,11 @@ const registroDatosEnFarmacia = async (req, res) => {
         })
 
         if (!tratamiento)
-            return res.status(404).send({ error: 'No se ha encontrado el tratamiento.'})
+            return reply.status(404).send({ error: 'No se ha encontrado el tratamiento.'})
 
         const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.paciente.idUser)
         if (!sameFarmacia)
-            return res.status(403).send({ error: 'Usuarios no pertenecen a la misma farmacia'})
+            return reply.status(403).send({ error: 'Usuarios no pertenecen a la misma farmacia'})
 
         const existingRegistro = await prisma.registroTratamiento.findFirst({
             where:{
@@ -384,7 +384,7 @@ const registroDatosEnFarmacia = async (req, res) => {
         })
 
         if (existingRegistro)
-            return res.status(400).send({ error: 'Sólo se puede realizar un registro por día.'})
+            return reply.status(400).send({ error: 'Sólo se puede realizar un registro por día.'})
 
         const registro = await prisma.registroTratamiento.create({
             data: {
@@ -395,15 +395,15 @@ const registroDatosEnFarmacia = async (req, res) => {
             }
         })
 
-        return res.status(201).send(registro)
+        return reply.status(201).send(registro)
 
     } catch (error){
         console.error(error)
-        return res.status(500).send({ error: 'Error rgistering additional data'})
+        return reply.status(500).send({ error: 'Error rgistering additional data'})
     }
 }
 
-const verifyCumplimiento = async (req, res) => {
+const verifyCumplimiento = async (req, reply) => {
     try {
         const {idTratamiento } = req.body
 
@@ -417,7 +417,7 @@ const verifyCumplimiento = async (req, res) => {
         })
 
         if (!tratamiento)
-            return res.status(404).send({ error: 'No se ha encontrado el tratamiento.'})
+            return reply.status(404).send({ error: 'No se ha encontrado el tratamiento.'})
 
         const now =  new Date()
         const lastRegistro = tratamiento.registro[tratamiento.registro.length - 1]
@@ -425,27 +425,27 @@ const verifyCumplimiento = async (req, res) => {
         nextRegistroTime.setHours(nextRegistroTime.getHours() + tratamiento.dosis.intervalo)
 
         if (now > nextRegistroTime)
-            return res.status(400).send({ error: 'No se ha registrado el cumplimiento del tratamiento a tiempo.'})
+            return reply.status(400).send({ error: 'No se ha registrado el cumplimiento del tratamiento a tiempo.'})
 
-        return res.status(200).send({ message: 'Cumplimiento registrado a tiempo.'})
+        return reply.status(200).send({ message: 'Cumplimiento registrado a tiempo.'})
 
     } catch (error){
         console.error(error)
-        return res.status(500).send({ error: 'Error verifying cumplimiento'})
+        return reply.status(500).send({ error: 'Error verifying cumplimiento'})
     }
 
 }
 
-const deleteTratamiento = async (req, res) => {
+const deleteTratamiento = async (req, reply) => {
     try {
         const { id } = req.params
         const user = req.user
 
         if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO)
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can delete treatments.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can delete treatments.' })
 
         if (user.role !== ROLES.SANITARIO || user.sanitario.tipo !== TIPO_SANITARIO.FARMACEUTICO)
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only a FARMACEUTICO can delete treatments.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only a FARMACEUTICO can delete treatments.' })
 
         const tratamiento = await prisma.tratamiento.findUnique({
             where: {
@@ -453,11 +453,11 @@ const deleteTratamiento = async (req, res) => {
             }
         })
 
-        if (!tratamiento) return res.status(404).send({ error: 'Tratamiento not found.' })
+        if (!tratamiento) return reply.status(404).send({ error: 'Tratamiento not found.' })
 
         const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente)
         if (!sameFarmacia) 
-            return res.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
 
         await prisma.tratamiento.delete({
             where: {
@@ -465,16 +465,16 @@ const deleteTratamiento = async (req, res) => {
             }
         })
 
-        return res.status(204).send()
+        return reply.status(204).send()
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error deleting tratamiento.' })
+        return reply.status(500).send({ error: 'Error deleting tratamiento.' })
     }
 
 }
 
-const getTratamientoByID = async (req, res) => {
+const getTratamientoByID = async (req, reply) => {
     try {
         const { id } = req.params
         const user = req.user
@@ -491,23 +491,23 @@ const getTratamientoByID = async (req, res) => {
 
         })
 
-        if (!tratamiento) return res.status(404).send({ error: 'Tratamiento not found.' })
+        if (!tratamiento) return reply.status(404).send({ error: 'Tratamiento not found.' })
 
         if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO)
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can get treatments.' })
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can get treatments.' })
 
         if (user.role === ROLES.SANITARIO){
             const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.paciente.idUser)
             if (!sameFarmacia) 
-                return res.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
+                return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
         }
 
-        return res.status(200).send(tratamiento)
+        return reply.status(200).send(tratamiento)
 
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'Error getting tratamiento.' })
+        return reply.status(500).send({ error: 'Error getting tratamiento.' })
     }   
 
 }

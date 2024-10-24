@@ -1,59 +1,63 @@
 import prisma from '../config/prisma.js'
-import { hashPassword } from '../utils/pass.js';
-import { createUserPermissions, ROLES, TIPO_SANITARIO, checkPermissions } from '../utils/roles.js';
+import { hashPassword, comparePassword } from '../utils/pass.js'
+import { createUserPermissions, ROLES, TIPO_SANITARIO, checkPermissions } from '../utils/roles.js'
 
 
 // CRUD operations for users
-const createUser = async (req, res) => {
+const createUser = async (req, reply) => {
     try {
-        const { dni, email, password, nombre, apellidos, fechaNac, telefono, direccion, role, tipoSanitario, idFarmacia, foto, idPaciente } = req.body
-        const userCreator = req.user;
+        const { dni, email, password, nombre, apellidos, fechaNac, telefono, direccion, role, tipoSanitario, idFarmacia, foto, dniPaciente } = req.body
+        const userCreator = req.user
 
         const existingUser = await prisma.user.findUnique({
-            where: {
-                dni
-            }
+            where: { dni }
         })
 
-        if (existingUser) return res.status(400).send({ error: 'Ya existe un usuario con este DNI.' })
-
-        let allowedRoles = []
-
-        if (userCreator.role === ROLES.ADMIN)
-            allowedRoles = createUserPermissions[ROLES.ADMIN]
-        else if (userCreator.role === ROLES.SANITARIO)
-            allowedRoles = createUserPermissions[userCreator.sanitario.tipo] || []
-        else
-            return res.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can create users.' })
-
-        if (!allowedRoles.includes(role)) 
-            return res.status(403).send({ error: 'UNAUTHORIZED. You are not allowed to create a user with this role.' })
-
-        if (role === ROLES.SANITARIO && !tipoSanitario)
-            return res.status(400).send({ error: 'El tipo de sanitario es requerido.' })
-
-        if (role === ROLES.SANITARIO && !Object.values(TIPO_SANITARIO).includes(tipoSanitario))
-            return res.status(400).send({ error: 'El tipo de sanitario no es válido.' })
-
-        if (idFarmacia){
-            const farmacia = await prisma.farmacia.findUnique({
-                where: {
-                    id: idFarmacia
-                }
-            })
-            if (!farmacia) return res.status(400).send({ error: 'La farmacia no existe.' })
+        const fechaNacimiento = new Date(fechaNac);
+        if (isNaN(fechaNacimiento.getTime())) {
+            return reply.status(400).send({ error: 'Fecha de nacimiento no es válida.' })
         }
 
-        if (role === ROLES.TUTOR){
-            if (!idPaciente)
-                return res.status(400).send({ error: 'El paciente no existe.' })
-            
+        if (existingUser) return reply.status(400).send({ error: 'Ya existe un usuario con este DNI.' })
+
+        let allowedRoles = [];
+
+        if (userCreator.role === ROLES.ADMIN) {
+            allowedRoles = createUserPermissions[ROLES.ADMIN]
+        } else if (userCreator.role === ROLES.SANITARIO) {
+            allowedRoles = createUserPermissions[userCreator.sanitario.tipo] || []
+        } else {
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can create users.' })
+        }
+
+        if (!allowedRoles.includes(role)) {
+            return reply.status(403).send({ error: 'UNAUTHORIZED. You are not allowed to create a user with this role.' })
+        }
+
+        if (role === ROLES.SANITARIO && !tipoSanitario) {
+            return reply.status(400).send({ error: 'El tipo de sanitario es requerido.' })
+        }
+
+        if (role === ROLES.SANITARIO && !Object.values(TIPO_SANITARIO).includes(tipoSanitario)) {
+            return reply.status(400).send({ error: 'El tipo de sanitario no es válido.' })
+        }
+
+        if (idFarmacia) {
+            const farmacia = await prisma.farmacia.findUnique({
+                where: { id: idFarmacia }
+            });
+            if (!farmacia) return reply.status(400).send({ error: 'La farmacia no existe.' })
+        }
+
+        if (role === ROLES.TUTOR) {
+            if (!dniPaciente) {
+                return reply.status(400).send({ error: 'El DNI del paciente es requerido.' })
+            }
+
             const existingPatient = await prisma.paciente.findUnique({
-                where: {
-                    id: idPaciente
-                }
+                where: { idUser: dniPaciente }
             })
-            if (!existingPatient) return res.status(400).send({ error: 'El paciente no existe.' })
+            if (!existingPatient) return reply.status(400).send({ error: 'El paciente no existe.' })
         }
 
         const hashedPassword = await hashPassword(password)
@@ -65,23 +69,23 @@ const createUser = async (req, res) => {
                 password: hashedPassword,
                 nombre,
                 apellidos,
-                fecha_nacimiento: fechaNac,
+                fecha_nacimiento: fechaNacimiento,
                 telefono,
                 direccion,
                 foto,
                 role,
-                sanitrario: role === ROLES.SANITARIO ? {
+                sanitario: role === ROLES.SANITARIO ? {
                     create: {
                         tipo: tipoSanitario,
                         idFarmacia
                     }
                 } : undefined,
-                tutor : role === ROLES.TUTOR ? {
+                tutor: role === ROLES.TUTOR ? {
                     create: {
-                        pacientes: { connect: { idUser: idPaciente}}
+                        pacientes: { connect: { idUser: dniPaciente } } 
                     }
                 } : undefined,
-                paciente : role === ROLES.PACIENTE ? {
+                paciente: role === ROLES.PACIENTE ? {
                     create: {
                         idFarmacia
                     }
@@ -89,23 +93,22 @@ const createUser = async (req, res) => {
             }
         })
 
-        if (role === ROLES.TUTOR){
+        if (role === ROLES.TUTOR) {
             await prisma.paciente.update({
-                where: { idUser: idPaciente },
-                data: {idTutor: newUser.tutor.idUser }
+                where: { idUser: dniPaciente }, 
+                data: { idTutor: newUser.dni } 
             })
         }
 
-        return res.status(201).send({ message: 'User created successfully.', user: newUser })
+        return reply.status(201).send({ message: 'User created successfully.', user: newUser })
 
     } catch (error) {
         console.error(error)
-        res.code(500).send({ error: 'Error creating user.'})
-
+        reply.status(500).send({ error: 'Error creating user.' })
     }
 }
 
-const getUserByDNI = async (req, res) => {
+const getUserByDNI = async (req, reply) => {
     try {
         const { dni } = req.params
         const user = await prisma.user.findUnique({
@@ -113,111 +116,169 @@ const getUserByDNI = async (req, res) => {
                 dni
             }
         })
-        if (!user) return res.status(404).send({ error: 'User not found.' })
-        return res.status(200).send(user)
+        if (!user) return reply.status(404).send({ error: 'User not found.' })
+        return reply.status(200).send(user)
 
     } catch (error) {
         console.error(error)
-        res.code(500).send({ error: 'Error getting user.'})
+        reply.status(500).send({ error: 'Error getting user.'})
     }
 }
 
-const getAllUsers = async (res) => {
+const getAllUsers = async (req, reply) => {
     try {
         const users = await prisma.user.findMany()
 
-        if (!users) return res.status(404).send({ error: 'No users found.' })
-        return res.status(200).send(users)
+        if (!users) return reply.status(404).send({ error: 'No users found.' })
+        
+        return reply.status(200).send(users)
 
     } catch (error) {
         console.error(error)
-        res.code(500).send({ error: 'Error getting users.'})
+        reply.status(500).send({ error: 'Error getting users.'})
     }
 }
 
-const getSanitarioData = async (req, res) => {
+const getSanitarioData = async (req, reply) => {
     try {
-        const user = await getUserByDNI(req.params.dni)
-        if (!user) return res.status(404).send({ error: 'User not found.' })
+        const { dni } = req.params
+        const user = await prisma.user.findUnique({
+            where: {
+                dni
+            },
+            include: {
+                sanitario: true
+            }
+        })
+        if (!user) return reply.status(404).send({ error: 'User not found.' })
 
-        if (user.role !== ROLES.SANITARIO) return res.status(400).send({ error: 'El usuario no es un sanitario.' })
+        if (user.role !== ROLES.SANITARIO) return reply.status(400).send({ error: 'El usuario no es un sanitario.' })
 
         const sanitario =  await prisma.sanitario.findUnique({
             where: {
-                idUser: user.id
+                idUser: user.dni
             },
             include: {
-                tipo: true,
-                idFarmacia: true,
+                farmacia: true,
                 tratamientos: true
             }
         })
 
-        return res.status(200).send(sanitario)
+        if (!sanitario) return reply.status(404).send({ error: 'Sanitario not found.' })
 
-    } catch {
+        const response = {
+            ...sanitario,
+            tipo: user.sanitario.tipo
+        }
+
+        return reply.status(200).send(response)
+
+    } catch (error) {
         console.error(error)
-        res.code(500).send({ error: 'Error getting sanitario data.'})
+        reply.status(500).send({ error: 'Error getting sanitario data.'})
 
     }
     
 }
 
-const getPacienteData = async (req, res) => {
+const getPacienteData = async (req, reply) => {
     try {
-        const user = await getUserByDNI(req.params.dni)
-        if (!user) return res.status(404).send({ error: 'User not found.' })
+        const { dni } = req.params
+        const user = await prisma.user.findUnique({
+            where: {
+                dni
+            },
+            include: {
+                paciente: true
+            }
+        })
+        if (!user) return reply.status(404).send({ error: 'User not found.' })
 
-        if (user.role !== ROLES.PACIENTE) return res.status(400).send({ error: 'El usuario no es un paciente.' })
+        if (user.role !== ROLES.PACIENTE) return reply.status(400).send({ error: 'El usuario no es un paciente.' })
 
         const paciente =  await prisma.paciente.findUnique({
             where: {
-                idUser: user.id
+                idUser: user.dni
             },
             include: {
-                idFarmacia: true,
-                tutor: true,
-                idTutor: true,
-                tratamientos: true,
-
+                farmacia: true,
+                tutor: {
+                    include: {
+                        user: true
+                    }
+                },
+                tratamientos: true
             }
         })
 
-        return res.status(200).send(paciente)
+        if (!paciente) return reply.status(404).send({ error: 'Paciente not found.' })
 
-    } catch {
+        const response = {
+            idFarmacia: paciente.farmacia?.id,
+            tutor: paciente.tutor ? {
+                dni: paciente.tutor.idUser,
+                nombre: paciente.tutor.user?.nombre,
+                apellidos: paciente.tutor.user?.apellidos
+            } : null,
+            tratamientos: paciente.tratamientos
+        }
+
+        return reply.status(200).send(response)
+
+    } catch (error) {
         console.error(error)
-        res.code(500).send({ error: 'Error getting paciente data.'})
+        reply.status(500).send({ error: 'Error getting paciente data.'})
     }
-
 }
 
-const getTutorData = async (req, res) => {
+const getTutorData = async (req, reply) => {
     try {
-        const user = await getUserByDNI(req.params.dni)
-        if (!user) return res.status(404).send({ error: 'User not found.' })
-
-        if (user.role !== ROLES.TUTOR) return res.status(400).send({ error: 'El usuario no es un tutor.' })
-
-        const tutor =  await prisma.tutor.findUnique({
+        const { dni } = req.params
+        const user = await prisma.user.findUnique({
             where: {
-                idUser: user.id
+                dni
             },
             include: {
-                pacientes: true
+                tutor: true
+            }
+        })
+        if (!user) return reply.status(404).send({ error: 'User not found.' })
+
+        if (user.role !== ROLES.TUTOR) return reply.status(400).send({ error: 'El usuario no es un tutor.' })
+
+        const tutor = await prisma.tutor.findUnique({
+            where: {
+                idUser: user.dni
+            },
+            include: {
+                pacientes: {
+                    include: {
+                        user: true
+                    }
+                }
             }
         })
 
-        return res.status(200).send(tutor)
+        if (!tutor) return reply.status(404).send({ error: 'Tutor not found.' })
 
-    } catch {
+        const response = {
+            idUser: tutor.idUser,
+            pacientes: tutor.pacientes.map(p => ({
+                dni: p.user.dni,
+                nombre: p.user.nombre,
+                apellidos: p.user.apellidos
+            }))
+        }
+
+        return reply.status(200).send(response)
+
+    } catch (error) {
         console.error(error)
-        res.code(500).send({ error: 'Error getting tutor data.'})
+        reply.status(500).send({ error: 'Error getting tutor data.' })
     }
-
 }
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, reply) => {
     try {
         const { dni } = req.params
         const dataToUpdate = req.body
@@ -229,11 +290,11 @@ const updateUser = async (req, res) => {
             }
         })
 
-        if (!userToUpdate) return res.status(404).send({ error: 'User not found.' })
+        if (!userToUpdate) return reply.status(404).send({ error: 'User not found.' })
 
         const allowedToUpdate = checkPermissions(userModifier, userToUpdate)
 
-        if (!allowedToUpdate) return res.status(403).send({ error: 'You do not have permission to update this user.' })
+        if (!allowedToUpdate) return reply.status(403).send({ error: 'You do not have permission to update this user.' })
 
         const allowedFields = ['email', 'nombre', 'apellidos', 'telefono', 'fecha_nacimiento', 'direccion', 'foto']
         const filteredData = {}
@@ -247,7 +308,7 @@ const updateUser = async (req, res) => {
         // Validación adicional para el tipo de sanitario
         if (dataToUpdate.role === ROLES.SANITARIO && dataToUpdate.tipoSanitario){
             if (!Object.values(TIPO_SANITARIO).includes(dataToUpdate.tipoSanitario))
-                return res.status(400).send({ error: 'El tipo de sanitario no es válido.' })
+                return reply.status(400).send({ error: 'El tipo de sanitario no es válido.' })
         }
 
         const updatedUser = await prisma.user.update({
@@ -255,16 +316,16 @@ const updateUser = async (req, res) => {
             data: filteredData
         })
 
-        return res.status(200).send({ message: 'User updated successfully.', user: updatedUser })
+        return reply.status(200).send({ message: 'User updated successfully.', user: updatedUser })
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'An error occurred while updating the user.' })
+        return reply.status(500).send({ error: 'An error occurred while updating the user.' })
     }
     
 }
 
-const deleteUser = async (req, res) => {
+const deleteUser = async (req, reply) => {
     try {
         const { dni } = req.params
         const userModifier = req.user
@@ -275,21 +336,21 @@ const deleteUser = async (req, res) => {
             }
         })
 
-        if (!userToDelete) return res.status(404).send({ error: 'User not found.' })
+        if (!userToDelete) return reply.status(404).send({ error: 'User not found.' })
 
         const allowedToDelete = checkPermissions(userModifier, userToDelete)
 
-        if (!allowedToDelete) return res.status(403).send({ error: 'You do not have permission to delete this user.' })
+        if (!allowedToDelete) return reply.status(403).send({ error: 'You do not have permission to delete this user.' })
 
         await prisma.user.delete({
             where: { dni }
         })
 
-        return res.status(200).send({ message: 'User deleted successfully.' })
+        return reply.status(200).send({ message: 'User deleted successfully.' })
 
     } catch (error) {
         console.error(error)
-        return res.status(500).send({ error: 'An error occurred while deleting the user.' })
+        return reply.status(500).send({ error: 'An error occurred while deleting the user.' })
     }
 }
 
