@@ -1,7 +1,7 @@
 import fastify from '../server.js'
 import { expect } from 'chai'
 
-describe('Creación de Usuarios y Eliminación en Cascada', () => {
+describe('Creación de usuarios y asignación a farmacia', () => {
   let adminToken
   let farmaciaId
   let dniPaciente2
@@ -18,7 +18,9 @@ describe('Creación de Usuarios y Eliminación en Cascada', () => {
       }
     })
     expect(adminLoginResponse.statusCode).to.equal(200)
+
     adminToken = JSON.parse(adminLoginResponse.payload).token
+    console.log('Token de admin:', adminToken)
 
     const farmaciaResponse = await fastify.inject({
       method: 'POST',
@@ -34,6 +36,7 @@ describe('Creación de Usuarios y Eliminación en Cascada', () => {
 
     expect(farmaciaResponse.statusCode).to.equal(201)
     farmaciaId = JSON.parse(farmaciaResponse.payload).id
+    console.log('ID de farmacia:', farmaciaId)
   })
 
   it('debería crear usuarios pacientes, sanitarios y un tutor', async () => {
