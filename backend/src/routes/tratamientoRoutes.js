@@ -1,13 +1,13 @@
-import tratamientoController from '../controllers/tratamientoController.js';
+import tratamientoController from '../controllers/tratamientoController.js'
 
 async function tratamientoRoutes(fastify, options) {
-    fastify.post('/tratamientos/create', tratamientoController.createTratamiento);              
-    fastify.put('/tratamientos/:id', tratamientoController.updateTratamiento);           
-    fastify.post('/tratamientos/registro', tratamientoController.registroTratamiento);   
-    fastify.get('/tratamientos/pendientes', tratamientoController.getPendingTratamientos); 
-    fastify.post('/tratamientos/farmacia', tratamientoController.registroDatosEnFarmacia); 
-    fastify.get('/tratamientos/:id', tratamientoController.getTratamientoByID);          
-    fastify.delete('/tratamientos/:id', tratamientoController.deleteTratamiento);        
+    fastify.post('/tratamientos/create', {preValidation: [fastify.jwtAuth]}, tratamientoController.createTratamiento)            
+    fastify.put('/tratamientos/:id', {preValidation: [fastify.jwtAuth]}, tratamientoController.updateTratamiento)           
+    fastify.post('/tratamientos/registro', {preValidation: [fastify.jwtAuth]}, tratamientoController.registroTratamiento)   
+    fastify.get('/tratamientos/pendientes', { preValidation: [fastify.jwtAuth] }, tratamientoController.getPendingTratamientosByDNI) 
+    fastify.post('/tratamientos/registrodatos', {preValidation: [fastify.jwtAuth]}, tratamientoController.registroDatosEnFarmacia) 
+    fastify.get('/tratamientos/:id', {preValidation: [fastify.jwtAuth]}, tratamientoController.getTratamientoByID)          
+    fastify.delete('/tratamientos/:id', {preValidation: [fastify.jwtAuth]}, tratamientoController.deleteTratamiento)        
 }
 
-export default tratamientoRoutes;
+export default tratamientoRoutes
