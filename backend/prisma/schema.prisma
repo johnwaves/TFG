@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Farmacia {
+  id         Int         @id @unique @default(autoincrement())
+  nombre     String      @unique
+  direccion  String
+  createdAt  DateTime    @default(now())
+  sanitarios Sanitario[]
+  pacientes  Paciente[]
+
+  @@index([id], type: Hash)
+}
+
+enum UserRole {
+  ADMIN
+  SANITARIO
+  PACIENTE
+  TUTOR
+}
+
+enum TipoSanitario {
+  FARMACEUTICO
+  TECNICO
+}
+
+enum TipoTratamiento {
+  FARMACOLOGICO
+  NO_FARMACOLOGICO
+}
+
+model User {
+  dni              String     @id @unique @db.VarChar(9)
+  password         String
+  email            String
+  nombre           String
+  apellidos        String
+  createdAt        DateTime   @default(now())
+  telefono         String
+  fecha_nacimiento DateTime
+  direccion        String
+  foto             String?
+  role             UserRole
+  sanitario        Sanitario? @relation("UserToSanitario")
+  paciente         Paciente?  @relation("UserToPaciente")
+  tutor            Tutor?     @relation("UserToTutor")
+
+  @@index([dni], type: Hash)
+}
+
+model Sanitario {
+  user         User          @relation(fields: [idUser], references: [dni], name: "UserToSanitario")
+  idUser       String        @id @unique
+  tipo         TipoSanitario
+  idFarmacia   Int
+  farmacia     Farmacia      @relation(fields: [idFarmacia], references: [id])
+  tratamientos Tratamiento[]
+
+  @@index([idFarmacia], type: Hash)
+}
+
+model Paciente {
+  user         User          @relation(fields: [idUser], references: [dni], name: "UserToPaciente")
+  idUser       String        @id @unique
+  tutor        Tutor?        @relation(fields: [idTutor], references: [idUser])
+  idTutor      String?
+  tratamientos Tratamiento[]
+  farmacia     Farmacia?     @relation(fields: [idFarmacia], references: [id])
+  idFarmacia   Int?
+
+  @@index([idFarmacia], type: Hash)
+}
+
+model Tutor {
+  user      User       @relation(fields: [idUser], references: [dni], name: "UserToTutor")
+  idUser    String     @id @unique
+  pacientes Paciente[]
+
+  @@index([idUser], type: Hash)
+}
+
+model Dosis {
+  id          Int          @id @unique @default(autoincrement())
+  cantidad    Int
+  intervalo   Int
+  duracion    Int
+  tratamiento Tratamiento?
+}
+
+model Tratamiento {
+  id           Int                   @id @unique @default(autoincrement())
+  nombre       String                @db.VarChar(100)
+  tipo         TipoTratamiento
+  createdAt    DateTime              @default(now())
+  descripcion  String                @db.VarChar(500)
+  dosis        Dosis?                @relation(fields: [idDosis], references: [id])
+  idDosis      Int?                  @unique
+  fecha_inicio DateTime?
+  fecha_fin    DateTime?
+  idSanitario  String
+  sanitario    Sanitario             @relation(fields: [idSanitario], references: [idUser])
+  idPaciente   String
+  paciente     Paciente              @relation(fields: [idPaciente], references: [idUser])
+  registro     RegistroTratamiento[]
+  puntuacion   Int                   @default(0)
+
+  @@index([id], type: Hash)
+}
+
+model RegistroTratamiento {
+  id             Int         @id @unique @default(autoincrement())
+  fecha_registro DateTime    @default(now())
+  cumplimiento   Boolean
+  detalles       String?
+  tratamiento    Tratamiento @relation(fields: [idTratamiento], references: [id])
+  idTratamiento  Int
+}
