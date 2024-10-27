@@ -78,25 +78,27 @@ const getFarmaciaByNombre = async (req, reply) => {
 
 const getFarmaciaSanitariosByID = async (req, reply) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
 
-        const sanitarios = await prisma.farmacia.findUnique({
+        const farmacia = await prisma.farmacia.findUnique({
             where: { id: parseInt(id) },
             select: {
                 sanitarios: true
             }
         })
 
-        if (!sanitarios) 
+        if (!farmacia) {
             return reply.status(404).send({ error: 'Farmacia not found.' })
+        }
+
+        return reply.status(200).send(farmacia.sanitarios || [])
 
     } catch (error) {
-        console.error(error)
+        console.error(error);
         return reply.status(500).send({ error: 'Error fetching sanitarios.' })
-
     }
-
 }
+
 
 const getFarmaciaPacientesByID = async (req, reply) => {
     try {
@@ -148,20 +150,33 @@ const updateFarmacia = async (req, reply) => {
 
 const deleteFarmacia = async (req, reply) => {
     try {
-        const user = req.user
-        const { id } = req.params
+        const user = req.user;
+        const { id } = req.params;
 
-        if (user.role !== ROLES.ADMIN)
+        if (user.role !== ROLES.ADMIN) {
             return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can delete farmacias.' })
+        }
+
+        await prisma.paciente.deleteMany({
+            where: { idFarmacia: parseInt(id) },
+        })
+
+        await prisma.tutor.deleteMany({
+            where: { pacientes: { some: { idFarmacia: parseInt(id) } } },
+        })
+
+        await prisma.sanitario.deleteMany({
+            where: { idFarmacia: parseInt(id) },
+        })
 
         await prisma.farmacia.delete({
-            where: { id: parseInt(id) }
+            where: { id: parseInt(id) },
         })
 
         return reply.status(200).send({ message: 'Farmacia deleted.' })
 
     } catch (error) {
-        console.error(error)
+        console.error(error);
         return reply.status(500).send({ error: 'Error deleting farmacia.' })
     }
 }
