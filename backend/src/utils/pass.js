@@ -17,15 +17,15 @@ export const comparePassword = async (password, hashedPassword) => {
 
 /*
 async function generateHashedPassword() {
-    const plainPassword = 'admin1234'; // Reemplaza esto con la contraseña que deseas cifrar.
+    const plainPassword = 'admin1234'
 
     try {
         const hashedPassword = await hashPassword(plainPassword);
-        console.log('Contraseña cifrada:', hashedPassword);
+        console.log('Contraseña cifrada:', hashedPassword)
     } catch (error) {
-        console.error('Error generando la contraseña cifrada:', error);
+        console.error('Error generando la contraseña cifrada:', error)
     }
 }
 
-// Ejecutar la función
-generateHashedPassword();*/
+generateHashedPassword()
+*/
