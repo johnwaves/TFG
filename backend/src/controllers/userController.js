@@ -25,7 +25,17 @@ const createUser = async (req, reply) => {
         if (userCreator.role === ROLES.ADMIN) {
             allowedRoles = createUserPermissions[ROLES.ADMIN]
         } else if (userCreator.role === ROLES.SANITARIO) {
+            if (!userCreator.sanitario) {
+                userCreator.sanitario = await prisma.sanitario.findUnique({
+                    where: { idUser: userCreator.dni }
+                })
+
+                if (!userCreator.sanitario) 
+                    return reply.status(400).send({ error: 'El usuario sanitario no tiene información de tipo de sanitario.' })
+                
+            }
             allowedRoles = createUserPermissions[userCreator.sanitario.tipo] || []
+            
         } else {
             return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or SANITARIO can create users.' })
         }
@@ -331,16 +341,40 @@ const deleteUser = async (req, reply) => {
         const userModifier = req.user
 
         const userToDelete = await prisma.user.findUnique({
-            where: {
-                dni
+            where: { dni },
+            include: {
+                paciente: true,
+                sanitario: true,
+                tutor: true
             }
         })
 
-        if (!userToDelete) return reply.status(404).send({ error: 'User not found.' })
+        if (!userToDelete) {
+            return reply.status(404).send({ error: 'User not found.' })
+        }
 
         const allowedToDelete = checkPermissions(userModifier, userToDelete)
+        if (!allowedToDelete) {
+            return reply.status(403).send({ error: 'You do not have permission to delete this user.' })
+        }
 
-        if (!allowedToDelete) return reply.status(403).send({ error: 'You do not have permission to delete this user.' })
+        if (userToDelete.paciente) {
+            await prisma.paciente.delete({
+                where: { idUser: dni }
+            })
+        }
+
+        if (userToDelete.sanitario) {
+            await prisma.sanitario.delete({
+                where: { idUser: dni }
+            })
+        }
+
+        if (userToDelete.tutor) {
+            await prisma.tutor.delete({
+                where: { idUser: dni }
+            })
+        }
 
         await prisma.user.delete({
             where: { dni }
