@@ -4,5 +4,17 @@ export default {
 	theme: {
 		extend: {},
 	},
-	plugins: [],
+	plugins: [
+		require('daisyui'),
+	],
+
+	daisyui: {
+		themes: [
+			{
+				forest: {
+					"base-100": "#f3f4f6",
+				}
+			}
+		],
+	}
 }
