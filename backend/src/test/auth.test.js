@@ -13,7 +13,7 @@ describe("Prueba de Autenticación", () => {
   it("debería autenticar al usuario admin existente y devolver un token", async () => {
     const loginResponse = await fastify.inject({
       method: "POST",
-      url: "/login",
+      url: "/api/login",
       payload: {
         dni: "10101010X",
         password: "admin1234",
@@ -25,7 +25,7 @@ describe("Prueba de Autenticación", () => {
 
     const protectedResponse = await fastify.inject({
       method: "GET",
-      url: "/users",
+      url: "/api/users",
       headers: {
         Authorization: `Bearer ${token}`,
       },

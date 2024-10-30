@@ -9,7 +9,7 @@ describe('Tests de Tratamientos', () => {
 
         const adminLoginResponse = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '10101010X', password: 'admin1234' }
         })
         if (adminLoginResponse.statusCode !== 200) {
@@ -22,7 +22,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al administrador crear una farmacia', async () => {
         const farmaciaResponse = await fastify.inject({
             method: 'POST',
-            url: '/farmacias/create',
+            url: '/api/farmacias/create',
             headers: { Authorization: `Bearer ${adminToken}` },
             payload: {
                 nombre: 'Farmacia Nueva Esperanza',
@@ -39,7 +39,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al administrador crear sanitarios para la farmacia', async () => {
         const farmaceuticoResponse = await fastify.inject({
             method: 'POST',
-            url: '/users/create',
+            url: '/api/users/create',
             headers: { Authorization: `Bearer ${adminToken}` },
             payload: {
                 dni: '33445566G',
@@ -63,7 +63,7 @@ describe('Tests de Tratamientos', () => {
 
         const tecnicoResponse = await fastify.inject({
             method: 'POST',
-            url: '/users/create',
+            url: '/api/users/create',
             headers: { Authorization: `Bearer ${adminToken}` },
             payload: {
                 dni: '44556677H',
@@ -89,7 +89,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir a los sanitarios crear pacientes', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         })
         if (farmaceuticoLogin.statusCode !== 200) {
@@ -100,7 +100,7 @@ describe('Tests de Tratamientos', () => {
 
         const pacienteResponse1 = await fastify.inject({
             method: 'POST',
-            url: '/users/create',
+            url: '/api/users/create',
             headers: { Authorization: `Bearer ${farmaceuticoToken}` },
             payload: {
                 dni: '11223344E',
@@ -123,7 +123,7 @@ describe('Tests de Tratamientos', () => {
 
         const tecnicoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '44556677H', password: 'tecnico567' }
         })
         if (tecnicoLogin.statusCode !== 200) {
@@ -134,7 +134,7 @@ describe('Tests de Tratamientos', () => {
 
         const pacienteResponse2 = await fastify.inject({
             method: 'POST',
-            url: '/users/create',
+            url: '/api/users/create',
             headers: { Authorization: `Bearer ${tecnicoToken}` },
             payload: {
                 dni: '22334455F',
@@ -159,7 +159,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al farmacéutico crear un tratamiento farmacológico para un paciente', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         })
         if (farmaceuticoLogin.statusCode !== 200) {
@@ -170,7 +170,7 @@ describe('Tests de Tratamientos', () => {
     
         const tratamientoFarmacologicoResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/create',
+            url: '/api/tratamientos/create',
             headers: { Authorization: `Bearer ${farmaceuticoToken}` },
             payload: {
                 nombre: 'Tratamiento Antibiotico',
@@ -195,7 +195,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al farmacéutico crear un tratamiento no farmacológico para un paciente', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         })
         expect(farmaceuticoLogin.statusCode).to.equal(200)
@@ -203,7 +203,7 @@ describe('Tests de Tratamientos', () => {
 
         const tratamientoNoFarmacologicoResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/create',
+            url: '/api/tratamientos/create',
             headers: { Authorization: `Bearer ${farmaceuticoToken}` },
             payload: {
                 nombre: 'Rehabilitación',
@@ -221,7 +221,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al técnico crear un tratamiento farmacológico para un paciente', async () => {
         const tecnicoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '44556677H', password: 'tecnico567' }
         })
         expect(tecnicoLogin.statusCode).to.equal(200)
@@ -229,7 +229,7 @@ describe('Tests de Tratamientos', () => {
 
         const tratamientoFarmacologicoTecnicoResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/create',
+            url: '/api/tratamientos/create',
             headers: { Authorization: `Bearer ${tecnicoToken}` },
             payload: {
                 nombre: 'Tratamiento Antiinflamatorio',
@@ -249,7 +249,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al técnico crear un tratamiento no farmacológico para un paciente', async () => {
         const tecnicoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '44556677H', password: 'tecnico567' }
         })
         if (tecnicoLogin.statusCode !== 200) {
@@ -260,7 +260,7 @@ describe('Tests de Tratamientos', () => {
     
         const tratamientoNoFarmacologicoTecnicoResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/create',
+            url: '/api/tratamientos/create',
             headers: { Authorization: `Bearer ${tecnicoToken}` },
             payload: {
                 nombre: 'Masoterapia',
@@ -281,7 +281,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al farmacéutico modificar las dosis de los tratamientos farmacológicos de cada paciente', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         }) 
         if (farmaceuticoLogin.statusCode !== 200) {
@@ -292,7 +292,7 @@ describe('Tests de Tratamientos', () => {
     
         const modificarDosisResponse = await fastify.inject({
             method: 'PUT',
-            url: `/tratamientos/${tratamientoId1}`,
+            url: `/api/tratamientos/${tratamientoId1}`,
             headers: { Authorization: `Bearer ${farmaceuticoToken}` },
             payload: {
                 tipo: 'FARMACOLOGICO',
@@ -312,7 +312,7 @@ describe('Tests de Tratamientos', () => {
     it('No debería permitir al farmacéutico modificar el nombre o la descripción de ningún tratamiento', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         }) 
         if (farmaceuticoLogin.statusCode !== 200) {
@@ -323,7 +323,7 @@ describe('Tests de Tratamientos', () => {
     
         const modificarNombreDescripcionResponse = await fastify.inject({
             method: 'PUT',
-            url: `/tratamientos/${tratamientoId1}`,
+            url: `/api/tratamientos/${tratamientoId1}`,
             headers: { Authorization: `Bearer ${farmaceuticoToken}` },
             payload: {
                 nombre: 'Nuevo Nombre Tratamiento',
@@ -339,7 +339,7 @@ describe('Tests de Tratamientos', () => {
     it('No debería permitir al técnico modificar las dosis de los tratamientos farmacológicos', async () => {
         const tecnicoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '44556677H', password: 'tecnico567' }
         }) 
         if (tecnicoLogin.statusCode !== 200) {
@@ -350,7 +350,7 @@ describe('Tests de Tratamientos', () => {
     
         const modificarDosisResponse = await fastify.inject({
             method: 'PUT',
-            url: `/tratamientos/${tratamientoId2}`,
+            url: `/api/tratamientos/${tratamientoId2}`,
             headers: { Authorization: `Bearer ${tecnicoToken}` },
             payload: {
                 tipo: 'FARMACOLOGICO',
@@ -370,7 +370,7 @@ describe('Tests de Tratamientos', () => {
     it('No debería permitir al técnico modificar el nombre o la descripción de ningún tratamiento', async () => {
         const tecnicoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '44556677H', password: 'tecnico567' }
         }) 
         if (tecnicoLogin.statusCode !== 200) {
@@ -381,7 +381,7 @@ describe('Tests de Tratamientos', () => {
     
         const modificarNombreDescripcionResponse = await fastify.inject({
             method: 'PUT',
-            url: `/tratamientos/${tratamientoId2}`,
+            url: `/api/tratamientos/${tratamientoId2}`,
             headers: { Authorization: `Bearer ${tecnicoToken}` },
             payload: {
                 nombre: 'Otro Nombre Tratamiento',
@@ -397,7 +397,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al sanitario obtener información de un tratamiento específico', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         }) 
         if (farmaceuticoLogin.statusCode !== 200) {
@@ -408,7 +408,7 @@ describe('Tests de Tratamientos', () => {
         
         const tratamientoInfoResponse = await fastify.inject({
             method: 'GET',
-            url: `/tratamientos/${tratamientoId1}`,
+            url: `/api/tratamientos/${tratamientoId1}`,
             headers: { Authorization: `Bearer ${farmaceuticoToken}` }
         })
         expect(tratamientoInfoResponse.statusCode).to.equal(200)
@@ -421,7 +421,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al sanitario eliminar un tratamiento específico', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         }) 
         if (farmaceuticoLogin.statusCode !== 200) {
@@ -432,7 +432,7 @@ describe('Tests de Tratamientos', () => {
 
         const eliminarResponse = await fastify.inject({
             method: 'DELETE',
-            url: `/tratamientos/${tratamientoId2}`,
+            url: `/api/tratamientos/${tratamientoId2}`,
             headers: { Authorization: `Bearer ${farmaceuticoToken}` }
         }) 
         if (eliminarResponse.statusCode !== 204) {
@@ -442,7 +442,7 @@ describe('Tests de Tratamientos', () => {
 
         const verificarEliminacionResponse = await fastify.inject({
             method: 'GET',
-            url: `/tratamientos/${tratamientoId2}`,
+            url: `/api/tratamientos/${tratamientoId2}`,
             headers: { Authorization: `Bearer ${farmaceuticoToken}` }
         }) 
         expect(verificarEliminacionResponse.statusCode).to.equal(404) 
@@ -451,7 +451,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir a un paciente añadir un registro de cumplimiento a uno de sus tratamientos', async () => {
         const pacienteLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '11223344E', password: 'paciente567' }
         }) 
         if (pacienteLogin.statusCode !== 200) {
@@ -462,7 +462,7 @@ describe('Tests de Tratamientos', () => {
     
         const primerRegistroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registro',
+            url: '/api/tratamientos/registro',
             headers: {
                 Authorization: `Bearer ${pacienteToken1}`,
                 idTratamiento: tratamientoId1, 
@@ -484,7 +484,7 @@ describe('Tests de Tratamientos', () => {
     
         const tratamientoResponse = await fastify.inject({
             method: 'GET',
-            url: `/tratamientos/${tratamientoId1}`, 
+            url: `/api/tratamientos/${tratamientoId1}`, 
             headers: {
                 Authorization: `Bearer ${pacienteToken1}`,
                 idTratamiento: tratamientoId1, 
@@ -496,7 +496,7 @@ describe('Tests de Tratamientos', () => {
     
         const segundoRegistroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registro',
+            url: '/api/tratamientos/registro',
             headers: {
                 Authorization: `Bearer ${pacienteToken1}`,
                 idTratamiento: tratamientoId1, 
@@ -518,7 +518,7 @@ describe('Tests de Tratamientos', () => {
     
         const tercerRegistroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registro',
+            url: '/api/tratamientos/registro',
             headers: {
                 Authorization: `Bearer ${pacienteToken1}`,
                 idTratamiento: tratamientoId1, 
@@ -543,7 +543,7 @@ describe('Tests de Tratamientos', () => {
         // Autenticación del paciente
         const pacienteLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '11223344E', password: 'paciente567' }
         }) 
         if (pacienteLogin.statusCode !== 200) {
@@ -554,7 +554,7 @@ describe('Tests de Tratamientos', () => {
     
         const primerRegistroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registro',
+            url: '/api/tratamientos/registro',
             headers: {
                 Authorization: `Bearer ${pacienteToken1}`,
                 idTratamiento: tratamientoId3
@@ -576,7 +576,7 @@ describe('Tests de Tratamientos', () => {
     
         const segundoRegistroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registro',
+            url: '/api/tratamientos/registro',
             headers: {
                 Authorization: `Bearer ${pacienteToken1}`,
                 idTratamiento: tratamientoId3 
@@ -601,7 +601,7 @@ describe('Tests de Tratamientos', () => {
     
         const tercerRegistroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registro',
+            url: '/api/tratamientos/registro',
             headers: {
                 Authorization: `Bearer ${pacienteToken1}`,
                 idTratamiento: tratamientoId3 
@@ -626,7 +626,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir a un paciente obtener los tratamientos pendientes de inicio por DNI', async () => {
         const solicitanteLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '11223344E', password: 'paciente567' }
         }) 
         if (solicitanteLogin.statusCode !== 200) {
@@ -637,7 +637,7 @@ describe('Tests de Tratamientos', () => {
     
         const tratamientosPendientesResponse = await fastify.inject({
             method: 'GET',
-            url: '/tratamientos/pendientes',
+            url: '/api/tratamientos/pendientes',
             headers: {
                 Authorization: `Bearer ${solicitanteToken}`,
                 'dnisolicitante': '11223344E',
@@ -667,7 +667,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al farmacéutico obtener tratamientos pendientes para un paciente específico', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         }) 
         if (farmaceuticoLogin.statusCode !== 200) {
@@ -678,7 +678,7 @@ describe('Tests de Tratamientos', () => {
     
         const pendientesResponse = await fastify.inject({
             method: 'GET',
-            url: '/tratamientos/pendientes',
+            url: '/api/tratamientos/pendientes',
             headers: {
                 Authorization: `Bearer ${farmaceuticoToken}`,
                 'dnisolicitante': '33445566G',
@@ -708,7 +708,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al técnico de farmacia obtener tratamientos pendientes para un paciente específico', async () => {
         const tecnicoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '44556677H', password: 'tecnico567' }
         }) 
         if (tecnicoLogin.statusCode !== 200) {
@@ -719,7 +719,7 @@ describe('Tests de Tratamientos', () => {
     
         const pendientesResponse = await fastify.inject({
             method: 'GET',
-            url: '/tratamientos/pendientes',
+            url: '/api/tratamientos/pendientes',
             headers: {
                 Authorization: `Bearer ${tecnicoToken}`,
                 'dnisolicitante': '44556677H',
@@ -749,7 +749,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al farmacéutico añadir un registro en la farmacia a un tratamiento no farmacológico el 30 de octubre', async () => {
         const farmaceuticoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '33445566G', password: 'farmaceutico567' }
         }) 
         expect(farmaceuticoLogin.statusCode).to.equal(200) 
@@ -760,7 +760,7 @@ describe('Tests de Tratamientos', () => {
     
         const registroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registrodatos',
+            url: '/api/tratamientos/registrodatos',
             headers: {
                 Authorization: `Bearer ${farmaceuticoToken}`,
                 'dnisolicitante': '33445566G',
@@ -787,7 +787,7 @@ describe('Tests de Tratamientos', () => {
     it('Debería permitir al técnico añadir un registro en la farmacia a un tratamiento no farmacológico el 31 de octubre', async () => {
         const tecnicoLogin = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: { dni: '44556677H', password: 'tecnico567' }
         }) 
         expect(tecnicoLogin.statusCode).to.equal(200) 
@@ -797,7 +797,7 @@ describe('Tests de Tratamientos', () => {
     
         const registroResponse = await fastify.inject({
             method: 'POST',
-            url: '/tratamientos/registrodatos',
+            url: '/api/tratamientos/registrodatos',
             headers: {
                 Authorization: `Bearer ${tecnicoToken}`,
                 'dnisolicitante': '44556677H',
