@@ -26,18 +26,16 @@ const FarmaciaForm = () => {
   };
 
   const handleSubmit = async (e) => {
-  
-    <AdminCheck />
-
     e.preventDefault();
+    
     if (!validateForm()) return;
-
+  
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-
+  
     const data = { nombre, direccion };
-
+  
     try {
       const response = await fetch(
         "http://localhost:3000/api/farmacias/create",
@@ -50,17 +48,22 @@ const FarmaciaForm = () => {
           body: JSON.stringify(data),
         }
       );
-
+  
       const responseData = await response.json();
-      setTimeout(() => {
+      
       if (response.ok) {
         setSuccessMessage("Farmacia creada con éxito");
         setNombre("");
         setDireccion("");
+        
+        setTimeout(() => setSuccessMessage(""), 3000);
       } else {
-        setErrorMessage(responseData.error || "Error al crear la farmacia");
+        if (response.status === 400) {
+          setErrorMessage("Existe una farmacia con ese nombre o dirección.");
+        } else {
+          setErrorMessage(responseData.error || "Error al crear la farmacia");
+        }
       }
-    }, 1000);
     } catch (error) {
       console.error("Hubo un error de conexión:", error);
       setErrorMessage(
@@ -70,63 +73,112 @@ const FarmaciaForm = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="card bg-base-100 w-full max-w-md shadow-2xl p-8">
-        <form onSubmit={handleSubmit}>
-          <div className="form-control mb-4">
-            <label className="input input-bordered input-primary flex items-center gap-2">
-              <input
-                type="text"
-                className="grow"
-                placeholder="Nombre de la farmacia"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                required
-                maxLength={100}
-              />
-            </label>
-          </div>
-
-          <div className="form-control mb-4">
-            <label className="input input-bordered input-primary flex items-center gap-2">
-              <input
-                type="text"
-                className="grow"
-                placeholder="Dirección de la farmacia"
-                value={direccion}
-                onChange={(e) => setDireccion(e.target.value)}
-                required
-                maxLength={200}
-              />
-            </label>
-          </div>
-
-          <div className="h-6 flex items-center justify-center">
-            {errorMessage && (
-              <p className="text-red-600 text-center">{errorMessage}</p>
-            )}
-            {successMessage && (
-              <p className="text-green-600 text-center">{successMessage}</p>
-            )}
-          </div>
-
-          <div className="form-control mt-4">
-            <button
-              className="btn btn-primary text-white flex items-center justify-center"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="loading loading-dots loading-lg text-white"></span>
-              ) : (
-                "Crear farmacia"
-              )}
-            </button>
-          </div>
-        </form>
+    <>
+      <div className="flex justify-center text-center m-10">
+        <div className="breadcrumbs text-xl">
+          <ul>
+            <li>
+              <a href="/dashboard">Panel de control</a>
+            </li>
+            <li>
+              <a href="/farmacias">Farmacias</a>
+            </li>
+            <li>Crear farmacia</li>
+          </ul>
+        </div>
       </div>
-    </div>
+
+      <div className="flex items-center justify-center">
+        <div className="card bg-base-100 w-full max-w-md shadow-2xl p-10">
+          <p className="text-2xl text-center mb-5">
+            Datos de la nueva farmacia
+          </p>
+
+          <form onSubmit={handleSubmit}>
+            <div className="form-control mb-4">
+              <label className="input input-bordered input-primary flex items-center gap-2">
+                <input
+                  type="text"
+                  className="grow"
+                  placeholder="Nombre de la farmacia"
+                  value={nombre}
+                  onChange={(e) => {
+                    setNombre(e.target.value);
+                    setSuccessMessage("");
+                  }}
+                  required
+                  maxLength={100}
+                />
+              </label>
+            </div>
+
+            <div className="form-control mb-4">
+              <label className="input input-bordered input-primary flex items-center gap-2">
+                <input
+                  type="text"
+                  className="grow"
+                  placeholder="Dirección de la farmacia"
+                  value={direccion}
+                  onChange={(e) => {
+                    setDireccion(e.target.value);
+                    setSuccessMessage("");
+                  }}
+                  required
+                  maxLength={200}
+                />
+              </label>
+            </div>
+
+            <div role="alert" className="alert mt-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="h-6 w-6 shrink-0 stroke-current"
+              >
+                personal
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <p className="text text-xs justify-center">
+                Tenga en cuenta que las farmacias se crean sin personal. Para
+                añadir sanitarios, diríjase a la sección para la administración
+                del personal de farmacias.
+              </p>
+            </div>
+
+            <div className="h-6 flex items-center justify-center m-10">
+              {errorMessage && (
+                <p className="text-red-600 text-center">{errorMessage}</p>
+              )}
+              {successMessage && (
+                <p className="text-green-600 text-center">{successMessage}</p>
+              )}
+            </div>
+
+            <div className="form-control mt-4">
+              <button
+                className="btn btn-primary text-white flex items-center justify-center"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="loading loading-dots loading-lg text-white"></span>
+                ) : (
+                  "Crear farmacia"
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </>
   );
 };
 

@@ -2,17 +2,25 @@ import prisma from '../config/prisma.js'
 import { ROLES, checkPermissions } from '../utils/roles.js'
 
 const createFarmacia = async (req, reply) => {
-    try{
+    try {
         const user = req.user
         const { nombre, direccion } = req.body
 
         if (user.role !== ROLES.ADMIN) 
             return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS can create farmacias.' })
         
-        const existingFarmacia = await prisma.farmacia.findUnique({ where: { nombre }})
-        if (existingFarmacia) 
-            return reply.status(400).send({ error: 'Farmacia already exists.' })
+        const existingFarmacia = await prisma.farmacia.findFirst({
+            where: {
+                OR: [
+                    { nombre: { equals: nombre, mode: "insensitive" } },
+                    { direccion: { equals: direccion, mode: "insensitive" } }
+                ]
+            }
+        })
 
+        if (existingFarmacia) 
+            return reply.status(400).send({ error: 'A farmacia with this name or address already exists.' })
+        
         const farmacia = await prisma.farmacia.create({
             data: { nombre, direccion }
         })
