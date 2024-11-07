@@ -19,7 +19,7 @@ const cardContent = {
     title: "Farmacias",
     description: "Crear, consultar y modificar farmacias del proyecto",
     link: "/farmacias",
-    button: "Explorar"
+    button: "Explorar",
   },
 
   addfarmacia: {
@@ -42,7 +42,53 @@ const cardContent = {
     title: "Añadir farmacia",
     description: "Añadir una nueva farmacia al proyecto",
     link: "/farmacias/crear",
-    button: "Crear"
+    button: "Añadir",
+  },
+
+  editfarmacia: {
+    svg: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1}
+        stroke="currentColor"
+        className="size-24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 0 1-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0 1 12 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"
+        />
+      </svg>
+    ),
+    title: "Gestionar farmacias",
+    description: "Modificar y eliminar farmacias existentes",
+    link: "/farmacias/gestionar",
+    button: "Gestionar",
+  },
+
+  editPersonalFarmacia: {
+    svg: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24.5 24.5"
+        strokeWidth={1}
+        stroke="currentColor"
+        className="size-24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
+        />
+      </svg>
+    ),
+    title: "Administrar personal",
+    description: "Añadir y eliminar personal en farmacias",
+    link: "/farmacias/personal",
+    button: "Administrar",
   },
 
   usuarios: {
@@ -65,7 +111,7 @@ const cardContent = {
     title: "Usuarios",
     description: "Añadir, modificar y eliminar usuarios del sistema",
     link: "/usuarios",
-    button: "Explorar"
+    button: "Explorar",
   },
 
   addusuario: {
@@ -88,7 +134,7 @@ const cardContent = {
     title: "Añadir usuario",
     description: "Añadir un nuevo usuario al sistema",
     link: "/usuarios/crear",
-    button: "Crear"
+    button: "Crear",
   },
 
   default: {
@@ -111,9 +157,8 @@ const cardContent = {
     title: "NO TITLE",
     description: "NO DESCRIPTION",
     link: "/dashboard",
-    button: "Explorar"
+    button: "Explorar",
   },
-
 };
 
 const Card = ({ title }) => {
@@ -128,7 +173,7 @@ const Card = ({ title }) => {
       </div>
       <div className="card-actions">
         <a href={content.link} className="btn btn-primary text-white min-w-56">
-        {content.button}
+          {content.button}
         </a>
       </div>
     </div>
