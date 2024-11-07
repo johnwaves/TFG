@@ -64,7 +64,7 @@ const cardContent = {
     ),
     title: "Gestionar farmacias",
     description: "Modificar y eliminar farmacias existentes",
-    link: "/farmacias/gestionar",
+    link: "/farmacias/listadofarmacias",
     button: "Gestionar",
   },
 
