@@ -12,8 +12,10 @@ export default {
 		themes: [
 			{
 				forest: {
-					"base-100": "#f3f4f6",
-				}
+					...require("daisyui/src/theming/themes")["forest"],
+					"base-100": "#E5E5E5",
+				},
+				
 			}
 		],
 	}

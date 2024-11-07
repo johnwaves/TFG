@@ -11,7 +11,7 @@ describe('Creación de usuarios y asignación a farmacia', () => {
 
     const adminLoginResponse = await fastify.inject({
       method: 'POST',
-      url: '/login',
+      url: '/api/login',
       payload: {
         dni: '10101010X',
         password: 'admin1234',
@@ -24,7 +24,7 @@ describe('Creación de usuarios y asignación a farmacia', () => {
 
     const farmaciaResponse = await fastify.inject({
       method: 'POST',
-      url: '/farmacias/create',
+      url: '/api/farmacias/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -35,6 +35,9 @@ describe('Creación de usuarios y asignación a farmacia', () => {
     })
 
     expect(farmaciaResponse.statusCode).to.equal(201)
+    if (farmaciaResponse.statusCode !== 201) {
+      console.error('Error al crear la farmacia:', farmaciaResponse.payload)
+    }
     farmaciaId = JSON.parse(farmaciaResponse.payload).id
     console.log('ID de farmacia:', farmaciaId)
   })
@@ -42,7 +45,7 @@ describe('Creación de usuarios y asignación a farmacia', () => {
   it('debería crear usuarios pacientes, sanitarios y un tutor', async () => {
     const paciente1Response = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -66,7 +69,7 @@ describe('Creación de usuarios y asignación a farmacia', () => {
 
     const paciente2Response = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -91,7 +94,7 @@ describe('Creación de usuarios y asignación a farmacia', () => {
 
     const farmaceuticoResponse = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -116,7 +119,7 @@ describe('Creación de usuarios y asignación a farmacia', () => {
 
     const tecnicoResponse = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -141,7 +144,7 @@ describe('Creación de usuarios y asignación a farmacia', () => {
 
     const tutorResponse = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },

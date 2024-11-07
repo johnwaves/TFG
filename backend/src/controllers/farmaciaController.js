@@ -55,26 +55,26 @@ const getFarmaciaByID = async (req, reply) => {
 
 const getFarmaciaByNombre = async (req, reply) => {
     try {
-        const { nombre } = req.params
-
-        const farmacia = await prisma.farmacia.findUnique({
-            where: { nombre },
-            include: {
-                sanitarios: true
-            }
-        })
-
-        if (!farmacia) 
-            return reply.status(404).send({ error: 'Farmacia not found.' })
-
-        return reply.status(200).send(farmacia)
-
+      const { nombreFarmacia } = req.params;
+  
+      const farmacia = await prisma.farmacia.findUnique({
+        where: { nombre: nombreFarmacia }, // Usar el campo `nombre` en lugar de `nombreFarmacia`
+        include: {
+          sanitarios: true
+        }
+      });
+  
+      if (!farmacia) 
+        return reply.status(404).send({ error: 'Farmacia not found.' });
+  
+      return reply.status(200).send(farmacia);
+  
     } catch (error) {
-        console.error(error)
-        return reply.status(500).send({ error: 'Error getting farmacia.' })
+      console.error(error);
+      return reply.status(500).send({ error: 'Error getting farmacia.' });
     }
-
-}
+  };
+  
 
 const getFarmaciaSanitariosByID = async (req, reply) => {
     try {

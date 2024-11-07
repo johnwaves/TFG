@@ -12,7 +12,7 @@ describe('User Operations Tests', () => {
 
         const adminLoginResponse = await fastify.inject({
             method: 'POST',
-            url: '/login',
+            url: '/api/login',
             payload: {
                 dni: '10101010X',
                 password: 'admin1234'
@@ -28,7 +28,7 @@ describe('User Operations Tests', () => {
     it('should get user by DNI', async () => {
         const userResponse = await fastify.inject({
             method: 'GET',
-            url: `/users/${dniPaciente}`,
+            url: `/api/users/${dniPaciente}`,
             headers: {
                 Authorization: `Bearer ${adminToken}`
             }
@@ -41,7 +41,7 @@ describe('User Operations Tests', () => {
     it('should get all users', async () => {
         const usersResponse = await fastify.inject({
             method: 'GET',
-            url: '/users',
+            url: '/api/users',
             headers: {
                 Authorization: `Bearer ${adminToken}`
             }
@@ -56,7 +56,7 @@ describe('User Operations Tests', () => {
         const sanitarioDNI = '33445566C'
         const sanitarioResponse = await fastify.inject({
             method: 'GET',
-            url: `/users/sanitarios/${sanitarioDNI}`,
+            url: `/api/users/sanitarios/${sanitarioDNI}`,
             headers: {
                 Authorization: `Bearer ${adminToken}`
             }
@@ -70,7 +70,7 @@ describe('User Operations Tests', () => {
     it('should get paciente data', async () => {
         const pacienteResponse = await fastify.inject({
             method: 'GET',
-            url: `/users/pacientes/${dniPaciente}`,
+            url: `/api/users/pacientes/${dniPaciente}`,
             headers: {
                 Authorization: `Bearer ${adminToken}`
             }
@@ -84,7 +84,7 @@ describe('User Operations Tests', () => {
     it('should get tutor data', async () => {
         const tutorResponse = await fastify.inject({
             method: 'GET',
-            url: `/users/tutores/${dniTutor}`,
+            url: `/api/users/tutores/${dniTutor}`,
             headers: {
                 Authorization: `Bearer ${adminToken}`
             }
@@ -100,7 +100,7 @@ describe('User Operations Tests', () => {
     it('should update user information', async () => {
         const updateResponse = await fastify.inject({
             method: 'PUT',
-            url: `/users/${dniPaciente}`,
+            url: `/api/users/${dniPaciente}`,
             headers: {
                 Authorization: `Bearer ${adminToken}`
             },

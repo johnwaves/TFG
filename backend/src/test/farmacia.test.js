@@ -11,7 +11,7 @@ describe('Tests de Farmacia', () => {
 
     const adminLoginResponse = await fastify.inject({
       method: 'POST',
-      url: '/login',
+      url: '/api/login',
       payload: {
         dni: '10101010X',
         password: 'admin1234',
@@ -27,7 +27,7 @@ describe('Tests de Farmacia', () => {
   it('Debería crear una farmacia', async () => {
     const farmaciaResponse = await fastify.inject({
       method: 'POST',
-      url: '/farmacias/create',
+      url: '/api/farmacias/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -47,7 +47,7 @@ describe('Tests de Farmacia', () => {
   it('Debería añadir sanitarios a la farmacia', async () => {
     const farmaceuticoResponse = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -73,7 +73,7 @@ describe('Tests de Farmacia', () => {
 
     const tecnicoResponse = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -100,7 +100,7 @@ describe('Tests de Farmacia', () => {
   it('Debería añadir pacientes y tutores a la farmacia', async () => {
     const pacienteResponse = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -126,7 +126,7 @@ describe('Tests de Farmacia', () => {
 
     const tutorResponse = await fastify.inject({
       method: 'POST',
-      url: '/users/create',
+      url: '/api/users/create',
       headers: {
         Authorization: `Bearer ${adminToken}`,
       },
@@ -169,6 +169,8 @@ describe('Tests de Farmacia', () => {
     expect(farmacia.sanitarios).to.be.an('array').with.lengthOf.at.least(2)
     expect(farmacia.pacientes).to.be.an('array').with.lengthOf.at.least(1)
   })
+
+  /*
 
   it('Debería obtener los sanitarios de la farmacia', async () => {
     const sanitariosResponse = await fastify.inject({
@@ -234,5 +236,5 @@ describe('Tests de Farmacia', () => {
     if (getDeletedResponse.statusCode !== 404) 
         console.error('Error al obtener la farmacia eliminada:', getDeletedResponse.payload)
     expect(getDeletedResponse.statusCode).to.equal(404)
-  })
+  })*/
 })

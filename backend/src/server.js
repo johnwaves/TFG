@@ -1,6 +1,7 @@
 // Import the framework and instantiate it
 import Fastify from 'fastify'
 import { PORT } from './config/init.js'
+import cors from '@fastify/cors'; 
 import farmaciaRoutes from './routes/farmaciaRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import tratamientoRoutes from './routes/tratamientoRoutes.js'
@@ -17,15 +18,19 @@ const fastify = Fastify({
   }
 })
 
+fastify.register(cors, { 
+  origin: true, 
+  methods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
+})
 fastify.register(jwtPlugin)
 
 // Compatibilidad con JSON  
 fastify.addContentTypeParser('application/json', { parseAs: 'string' }, fastify.getDefaultJsonParser('strict'))
 
-fastify.register(farmaciaRoutes)
-fastify.register(userRoutes)
-fastify.register(tratamientoRoutes)
-fastify.register(authRoutes)
+fastify.register(farmaciaRoutes, { prefix: '/api' })
+fastify.register(userRoutes, { prefix: '/api' })
+fastify.register(tratamientoRoutes, { prefix: '/api' })
+fastify.register(authRoutes, { prefix: '/api' })
 
 // Ruta por defecto
 fastify.get('/', async function handler (request, reply) {
@@ -45,4 +50,4 @@ const startServer = async () => {
 }
 
 export default fastify
-//startServer()
+startServer()
