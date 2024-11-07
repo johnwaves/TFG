@@ -1,8 +1,5 @@
-
-
 import Lenis from "lenis";
 
-// Script to handle Lenis library settings for smooth scrolling
 const lenis = new Lenis();
 
 function raf(time) {
@@ -11,3 +8,5 @@ function raf(time) {
 }
 
 requestAnimationFrame(raf);
+
+export default lenis; 
