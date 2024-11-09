@@ -1,30 +1,11 @@
-import { useState, useEffect } from "react";
-import Card from "../../components/ui/Card";
-import AdminCheck from "../../components/sections/AdminCheck";
+import { useState, useEffect } from "react"  
+import Card from "../../components/ui/Card"  
+import AdminCheck from "./AdminCheck"  
 
 const FarmaciasView = () => {
 
-  <AdminCheck />
-
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}");
-      setUser(storedUser);
-
-      if (storedUser.role !== "ADMIN") {
-        window.location.href = "/unauthorized";
-      }
-    }
-  }, []);
-
-  if (!user) {
-    return null;
-  }
-
   return (
-    <>
+    <AdminCheck>
       <div className="flex justify-center text-center m-10">
         <div className="breadcrumbs text-xl">
           <ul>
@@ -39,8 +20,8 @@ const FarmaciasView = () => {
         <Card title="editfarmacia" />
         <Card title="editPersonalFarmacia" />
       </div>
-    </>
-  );
-};
+    </AdminCheck>
+  )  
+}  
 
-export default FarmaciasView;
+export default FarmaciasView  

@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react"
-import AdminCheck from "../../components/sections/AdminCheck"
+import AdminCheck from "./AdminCheck"
 
 const PersonalFarmacia = () => {
-    <AdminCheck />
-
     const [farmacias, setFarmacias] = useState([])
     const [selectedFarmacia, setSelectedFarmacia] = useState(null)
     const [sanitariosByFarmacia, setSanitariosByFarmacia] = useState({})
@@ -182,7 +180,7 @@ const PersonalFarmacia = () => {
     }
 
     return (
-        <>
+        <AdminCheck>
             <div className="flex justify-center text-center m-10">
                 <div className="breadcrumbs text-xl">
                     <ul>
@@ -324,7 +322,7 @@ const PersonalFarmacia = () => {
                     </div>
                 </div>
             </dialog>
-        </>
+        </AdminCheck>
     )
 }
 

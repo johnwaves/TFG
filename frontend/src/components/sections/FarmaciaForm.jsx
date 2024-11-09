@@ -27,15 +27,15 @@ const FarmaciaForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-  
+
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
-  
+
     const data = { nombre, direccion };
-  
+
     try {
       const response = await fetch(
         "http://localhost:3000/api/farmacias/create",
@@ -48,14 +48,14 @@ const FarmaciaForm = () => {
           body: JSON.stringify(data),
         }
       );
-  
+
       const responseData = await response.json();
-      
+
       if (response.ok) {
         setSuccessMessage("Farmacia creada con éxito");
         setNombre("");
         setDireccion("");
-        
+
         setTimeout(() => setSuccessMessage(""), 3000);
       } else {
         if (response.status === 400) {
@@ -73,10 +73,9 @@ const FarmaciaForm = () => {
       setIsLoading(false);
     }
   };
-  
 
   return (
-    <>
+    <AdminCheck>
       <div className="flex justify-center text-center m-10">
         <div className="breadcrumbs text-xl">
           <ul>
@@ -149,9 +148,9 @@ const FarmaciaForm = () => {
               </svg>
               <p className="text text-xs justify-center">
                 Tenga en cuenta que las farmacias se crean sin personal. Será
-                durante el proceso de creación de usuarios donde podrá añadir 
-                sanitarios a una farmacia. Para añadir pacientes, diríjase a 
-                la sección para la administración de usuarios de farmacias. 
+                durante el proceso de creación de usuarios donde podrá añadir
+                sanitarios a una farmacia. Para añadir pacientes, diríjase a
+                la sección para la administración de usuarios de farmacias.
               </p>
             </div>
 
@@ -179,7 +178,7 @@ const FarmaciaForm = () => {
           </form>
         </div>
       </div>
-    </>
+    </AdminCheck>
   );
 };
 

@@ -1,37 +1,43 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";
+import { useEffect } from 'react'  
 
-const AdminCheck = () => {
-  const navigate = useNavigate();
-
+const AdminCheck = ({ children }) => {
   useEffect(() => {
-    const token = sessionStorage.getItem('jwtToken');
-    
+    const token = sessionStorage.getItem('jwtToken')  
+
     if (!token) {
-      navigate('/login');
-      return;
+      // alert("Redirigiendo a /login: No se encontró token en sessionStorage.")  
+      window.location.href = '/login'  
+      return  
     }
 
     try {
-      const decodedToken = jwtDecode(token);
+      const payload = token.split('.')[1]  
+      const decodedToken = JSON.parse(atob(payload))  
 
       if (decodedToken.role !== 'ADMIN') {
-        navigate('/unauthorized');
+        // alert("Redirigiendo a /unauthorized: El rol no es ADMIN.")  
+        window.location.href = '/unauthorized'  
+        return  
       }
 
-      const currentTime = Date.now() / 1000;
+      const currentTime = Date.now() / 1000  
       if (decodedToken.exp < currentTime) {
-        sessionStorage.removeItem('jwtToken');
-        sessionStorage.removeItem('user');
-        navigate('/login');
-      } else
-        navigate('/unauthorized');
-    } catch (error) {
-      console.error('Error al decodificar el token:', error);
-      navigate('/login');
-    }
-  }, [navigate]);
-};
+        // alert("Redirigiendo a /login: El token ha expirado.")  
+        sessionStorage.removeItem('jwtToken')  
+        sessionStorage.removeItem('user')  
+        window.location.href = '/login'  
+        return  
+      }
 
-export default AdminCheck;
+      alert("Token válido y usuario autorizado.")  
+    } catch (error) {
+      console.error("Error al decodificar el token manualmente:", error)  
+      alert("Error al decodificar el token manualmente.")  
+      window.location.href = '/login'  
+    }
+  }, [])  
+
+  return <>{children}</>  
+}  
+
+export default AdminCheck  
