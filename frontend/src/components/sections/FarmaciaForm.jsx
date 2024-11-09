@@ -148,9 +148,10 @@ const FarmaciaForm = () => {
                 ></path>
               </svg>
               <p className="text text-xs justify-center">
-                Tenga en cuenta que las farmacias se crean sin personal. Para
-                añadir sanitarios, diríjase a la sección para la administración
-                del personal de farmacias.
+                Tenga en cuenta que las farmacias se crean sin personal. Será
+                durante el proceso de creación de usuarios donde podrá añadir 
+                sanitarios a una farmacia. Para añadir pacientes, diríjase a 
+                la sección para la administración de usuarios de farmacias. 
               </p>
             </div>
 
