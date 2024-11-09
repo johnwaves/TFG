@@ -13,14 +13,14 @@ const createUser = async (req, reply) => {
             where: { dni }
         })
 
-        const fechaNacimiento = new Date(fechaNac);
+        const fechaNacimiento = new Date(fechaNac) 
         if (isNaN(fechaNacimiento.getTime())) {
             return reply.status(400).send({ error: 'Fecha de nacimiento no es válida.' })
         }
 
         if (existingUser) return reply.status(400).send({ error: 'Ya existe un usuario con este DNI.' })
 
-        let allowedRoles = [];
+        let allowedRoles = [] 
 
         if (userCreator.role === ROLES.ADMIN) {
             allowedRoles = createUserPermissions[ROLES.ADMIN]
@@ -55,7 +55,7 @@ const createUser = async (req, reply) => {
         if (idFarmacia) {
             const farmacia = await prisma.farmacia.findUnique({
                 where: { id: idFarmacia }
-            });
+            }) 
             if (!farmacia) return reply.status(400).send({ error: 'La farmacia no existe.' })
         }
 
@@ -388,6 +388,32 @@ const deleteUser = async (req, reply) => {
     }
 }
 
+const getPacientesSinFarmacia = async (req, reply) => {
+    try {
+        const pacientesSinFarmacia = await prisma.paciente.findMany({
+            where: {
+                idFarmacia: null
+            },
+            include: {
+                user: {
+                    select: {
+                        dni: true,
+                        nombre: true,
+                        apellidos: true,
+                    }
+                }
+            }
+        }) 
+
+        return reply.status(200).send(pacientesSinFarmacia) 
+
+    } catch (error) {
+        console.error(error) 
+        reply.status(500).send({ error: 'Error retrieving patients without assigned pharmacy.' }) 
+    }
+} 
+
+
 export default { 
     createUser,
     getUserByDNI,
@@ -396,7 +422,8 @@ export default {
     getPacienteData,
     getTutorData,
     updateUser,
-    deleteUser
+    deleteUser,
+    getPacientesSinFarmacia
 
 }
 

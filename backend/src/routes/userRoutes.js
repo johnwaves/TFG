@@ -9,6 +9,7 @@ async function userRouters(fastify, options) {
     fastify.get('/users/sanitarios/:dni', {preValidation: [fastify.jwtAuth]}, userController.getSanitarioData) 
     fastify.get('/users/pacientes/:dni', {preValidation: [fastify.jwtAuth]}, userController.getPacienteData)   
     fastify.get('/users/tutores/:dni', {preValidation: [fastify.jwtAuth]}, userController.getTutorData)  
+    fastify.get('/users/pacientes/sinfarmacia', { preValidation: [fastify.jwtAuth] }, userController.getPacientesSinFarmacia)
 }
 
 export default userRouters
