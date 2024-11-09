@@ -421,60 +421,67 @@ const verifyCumplimiento = async (req, reply) => {
 
 }
 
-const deleteTratamiento = async (req, reply) => {
+export const deleteTratamiento = async (req, reply, skipReply = false) => {
     try {
-        const { id } = req.params 
-        let user = req.user 
+        const { id } = req.params
+        let user = req.user
 
         if (!user.sanitario) {
             const fullUser = await prisma.user.findUnique({
                 where: { dni: user.dni },
                 include: { sanitario: true }
-            }) 
-            user = { ...user, sanitario: fullUser.sanitario } 
+            })
+            user = { ...user, sanitario: fullUser.sanitario }
         }
 
         if (
             user.role !== ROLES.ADMIN &&
             !(user.role === ROLES.SANITARIO && user.sanitario && user.sanitario.tipo === TIPO_SANITARIO.FARMACEUTICO)
         ) {
-            return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or FARMACEUTICO can delete treatments.' }) 
+            if (!skipReply) return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or FARMACEUTICO can delete treatments.' })
+            return
         }
 
         const tratamiento = await prisma.tratamiento.findUnique({
             where: { id: parseInt(id) },
             include: { registro: true, dosis: true }
-        }) 
+        })
 
         if (!tratamiento) {
-            return reply.status(404).send({ error: 'Tratamiento not found.' }) 
+            if (!skipReply) return reply.status(404).send({ error: 'Tratamiento not found.' })
+            return
         }
 
-        const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente) 
-        if (!sameFarmacia) {
-            return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' }) 
+        if (user.role !== ROLES.ADMIN) {
+            const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente)
+            if (!sameFarmacia) {
+                if (!skipReply) return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
+                return
+            }
         }
 
         await prisma.registroTratamiento.deleteMany({
             where: { idTratamiento: parseInt(id) }
-        }) 
+        })
 
         if (tratamiento.dosis) {
             await prisma.dosis.delete({
                 where: { id: tratamiento.dosis.id }
-            }) 
+            })
         }
 
         await prisma.tratamiento.delete({
             where: { id: parseInt(id) }
-        }) 
+        })
 
-        return reply.status(204).send()
+        if (!skipReply) return reply.status(204).send({ message: 'Tratamiento deleted.' })
+
     } catch (error) {
-        console.error('Error deleting tratamiento:', error) 
-        return reply.status(500).send({ error: 'Error deleting tratamiento.' }) 
+        console.error('Error deleting tratamiento:', error)
+        if (!skipReply) return reply.status(500).send({ error: 'Error deleting tratamiento.' })
     }
-} 
+}
+
 
 const getTratamientoByID = async (req, reply) => {
     try {
