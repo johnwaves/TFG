@@ -232,6 +232,52 @@ const getFarmaciaPacientesByID = async (req, reply) => {
     }
 }
 
+const getFarmaciaPacientesSinTutorByID = async (req, reply) => {
+    try {
+        const user = req.user  
+        const { id } = req.params  
+
+        if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO) 
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get this data.' })  
+        
+
+        const farmacia = await prisma.farmacia.findUnique({
+            where: { id: parseInt(id) },
+            include: {
+                pacientes: {
+                    include: {
+                        user: {
+                            select: {
+                                dni: true,
+                                nombre: true,
+                                apellidos: true
+                            }
+                        },
+                        tutor: true
+                    }
+                }
+            }
+        })  
+
+        if (!farmacia) 
+            return reply.status(404).json({ error: 'Farmacia not found.' })  
+        
+
+        const pacientesSinTutor = farmacia.pacientes
+            .filter(paciente => !paciente.tutor) 
+            .map(paciente => ({
+                dni: paciente.user.dni,
+                nombre: paciente.user.nombre,
+                apellidos: paciente.user.apellidos
+            }))  
+
+        return reply.status(200).send(pacientesSinTutor)  
+
+    } catch (error) {
+        console.error(error)  
+        return reply.status(500).send({ error: 'Error getting pacientes without tutor.' })  
+    }
+}  
 
 const updateFarmacia = async (req, reply) => {
     try {
@@ -373,6 +419,7 @@ export default {
     getFarmaciaByNombre,
     getFarmaciaSanitariosByID,
     getFarmaciaPacientesByID,
+    getFarmaciaPacientesSinTutorByID,
     updateFarmacia,
     deleteFarmacia,
     removePacienteFromFarmacia

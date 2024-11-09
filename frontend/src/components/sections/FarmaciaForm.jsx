@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AdminCheck from "./AdminCheck";
+import AdminCheck from "./checks/AdminCheck";
 
 const FarmaciaForm = () => {
   const [nombre, setNombre] = useState("");
