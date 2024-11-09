@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"  
 import Card from "../../components/ui/Card"  
-import AdminCheck from "./AdminCheck"  
+import AdminCheck from "./checks/AdminCheck"  
 
 const FarmaciasView = () => {
 

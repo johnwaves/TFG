@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AuthCheck from "./AuthCheck";
+import AuthCheck from "./checks/AuthCheck";
 
 const LoginForm = () => {
   const [dni, setDni] = useState("");

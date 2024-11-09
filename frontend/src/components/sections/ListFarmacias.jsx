@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"  
-import AdminCheck from "./AdminCheck"
+import AdminCheck from "./checks/AdminCheck"
 
 const splitTextByLength = (text, length) => {
     const lines = []  

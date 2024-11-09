@@ -1,25 +1,8 @@
 import { useState, useEffect } from "react"  
 import Card from "../../components/ui/Card"  
-import AdminCheck from "./AdminCheck"
+import AdminCheck from "./checks/AdminCheck"
 
 const UsuariosView = () => {
-
-  const [user, setUser] = useState(null)  
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(sessionStorage.getItem("user") || "{}")  
-      setUser(storedUser)  
-
-      if (storedUser.role !== "ADMIN") {
-        window.location.href = "/unauthorized"  
-      }
-    }
-  }, [])  
-
-  if (!user) {
-    return null  
-  }
 
   return (
     <AdminCheck>

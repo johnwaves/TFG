@@ -30,9 +30,10 @@ const AdminCheck = ({ children }) => {
       }
 
       alert("Token válido y usuario autorizado.")  
+      
     } catch (error) {
       console.error("Error al decodificar el token manualmente:", error)  
-      alert("Error al decodificar el token manualmente.")  
+      // alert("Error al decodificar el token manualmente.")  
       window.location.href = '/login'  
     }
   }, [])  

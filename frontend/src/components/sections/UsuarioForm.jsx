@@ -1,5 +1,5 @@
 import { useState } from "react"  
-import AdminCheck from "./AdminCheck"
+import AdminCheck from "./checks/AdminCheck"
 
 const UsuarioForm = () => {
   const [dni, setDni] = useState("")  
@@ -112,7 +112,7 @@ const UsuarioForm = () => {
       idFarmacia,
     }  
 
-    console.log("Payload enviado:", data)   // Verificar el payload antes de enviarlo
+    console.log("Payload enviado:", data) 
 
     try {
       const response = await fetch("http://localhost:3000/api/users/create", {
