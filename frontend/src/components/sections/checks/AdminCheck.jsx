@@ -29,7 +29,7 @@ const AdminCheck = ({ children }) => {
         return  
       }
 
-      alert("Token válido y usuario autorizado.")  
+      // alert("Token válido y usuario autorizado.")  
       
     } catch (error) {
       console.error("Error al decodificar el token manualmente:", error)  
