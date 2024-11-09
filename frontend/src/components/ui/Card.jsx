@@ -85,8 +85,8 @@ const cardContent = {
         />
       </svg>
     ),
-    title: "Administrar personal",
-    description: "Añadir y eliminar personal en farmacias",
+    title: "Administrar usuarios",
+    description: "Consultar personal sanitario, añadir y eliminar pacientes en farmacias",
     link: "/farmacias/personal",
     button: "Administrar",
   },
