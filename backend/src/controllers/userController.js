@@ -290,50 +290,68 @@ const getTutorData = async (req, reply) => {
 
 const updateUser = async (req, reply) => {
     try {
-        const { dni } = req.params
-        const dataToUpdate = req.body
-        const userModifier = req.user
+        const { dni } = req.params 
+        const dataToUpdate = req.body 
+        let userModifier = req.user 
+
+        if (userModifier.role === ROLES.SANITARIO) {
+            const completeUserModifier = await prisma.user.findUnique({
+                where: { dni: userModifier.dni },
+                include: { sanitario: true },
+            }) 
+
+            if (!completeUserModifier) {
+                return reply.status(404).send({ error: 'User not found.' }) 
+            }
+
+            userModifier = {
+                ...userModifier,
+                sanitario: completeUserModifier.sanitario,
+            } 
+        }
 
         const userToUpdate = await prisma.user.findUnique({
-            where: {
-                dni
+            where: { dni },
+        }) 
+
+        if (!userToUpdate) return reply.status(404).send({ error: 'User not found.' }) 
+
+        const allowedToUpdate = checkPermissions(userModifier, userToUpdate) 
+
+        if (!allowedToUpdate) return reply.status(403).send({ error: 'You do not have permission to update this user.' }) 
+
+        const allowedFields = ['email', 'nombre', 'apellidos', 'telefono', 'fecha_nacimiento', 'direccion', 'foto'] 
+        const filteredData = {} 
+
+        for (const key of allowedFields) {
+            if (
+                dataToUpdate[key] !== undefined && dataToUpdate[key] !== userToUpdate[key] 
+            ) {
+                filteredData[key] = key === 'fecha_nacimiento'
+                    ? new Date(dataToUpdate[key]) 
+                    : dataToUpdate[key] 
             }
-        })
-
-        if (!userToUpdate) return reply.status(404).send({ error: 'User not found.' })
-
-        const allowedToUpdate = checkPermissions(userModifier, userToUpdate)
-
-        if (!allowedToUpdate) return reply.status(403).send({ error: 'You do not have permission to update this user.' })
-
-        const allowedFields = ['email', 'nombre', 'apellidos', 'telefono', 'fecha_nacimiento', 'direccion', 'foto']
-        const filteredData = {}
-
-        for (const key of allowedFields){
-            if (dataToUpdate[key] !== undefined)
-                filteredData[key] = dataToUpdate[key]
-            
         }
 
-        // Validación adicional para el tipo de sanitario
-        if (dataToUpdate.role === ROLES.SANITARIO && dataToUpdate.tipoSanitario){
-            if (!Object.values(TIPO_SANITARIO).includes(dataToUpdate.tipoSanitario))
-                return reply.status(400).send({ error: 'El tipo de sanitario no es válido.' })
+        // Si no hay cambios, no se modifican los datos
+        if (Object.keys(filteredData).length === 0) {
+            return reply.status(200).send({ message: 'No changes detected. User data is already up to date.' }) 
         }
 
+        // Campos que cambian
         const updatedUser = await prisma.user.update({
             where: { dni },
-            data: filteredData
-        })
+            data: filteredData,
+        }) 
 
-        return reply.status(200).send({ message: 'User updated successfully.', user: updatedUser })
+        return reply.status(200).send({ message: 'User updated successfully.', user: updatedUser }) 
 
     } catch (error) {
-        console.error(error)
-        return reply.status(500).send({ error: 'An error occurred while updating the user.' })
+        console.error("Error in updateUser:", error.message) 
+        console.error("Stack trace:", error.stack) 
+        return reply.status(500).send({ error: 'An error occurred while updating the user.' }) 
     }
-    
-}
+} 
 
 const deleteUser = async (req, reply) => {
     try {

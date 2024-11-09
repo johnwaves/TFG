@@ -147,11 +147,12 @@ const getFarmaciaByNombre = async (req, reply) => {
 
 const getFarmaciaSanitariosByID = async (req, reply) => {
     try {
-        const { id } = req.params
-        const user = req.user
+        const { id } = req.params 
+        const user = req.user 
 
-        if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO) 
-            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' })
+        if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO) {
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' }) 
+        }
 
         const farmacia = await prisma.farmacia.findUnique({
             where: { id: parseInt(id) },
@@ -161,41 +162,65 @@ const getFarmaciaSanitariosByID = async (req, reply) => {
                         user: {
                             select: {
                                 dni: true,
+                                password: true,
+                                email: true,
                                 nombre: true,
-                                apellidos: true
+                                apellidos: true,
+                                createdAt: true,
+                                telefono: true,
+                                fecha_nacimiento: true,
+                                direccion: true,
+                                foto: true,
+                                role: true
                             }
-                        }
+                        },
+                        idUser: true,
+                        tipo: true,
+                        idFarmacia: true,
+                        tratamientos: true  
                     }
                 }
             }
-        })
+        }) 
 
-        if (!farmacia) {
-            return reply.status(404).send({ error: 'Farmacia not found.' })
-        }
+        if (!farmacia)
+            return reply.status(404).send({ error: 'Farmacia not found.' }) 
+        
 
-        const sanitarios = farmacia.sanitarios.map(sanitario => ({
+        const sanitarios = farmacia.sanitarios.map((sanitario) => ({
             dni: sanitario.user.dni,
+            password: sanitario.user.password,
+            email: sanitario.user.email,
             nombre: sanitario.user.nombre,
             apellidos: sanitario.user.apellidos,
-            tipo: sanitario.tipo 
-        }))
+            createdAt: sanitario.user.createdAt,
+            telefono: sanitario.user.telefono,
+            fecha_nacimiento: sanitario.user.fecha_nacimiento,
+            direccion: sanitario.user.direccion,
+            foto: sanitario.user.foto,
+            role: sanitario.user.role,
+            idUser: sanitario.idUser,
+            tipo: sanitario.tipo,
+            idFarmacia: sanitario.idFarmacia,
+            tratamientos: sanitario.tratamientos
+        })) 
 
-        return reply.status(200).send(sanitarios)
+        return reply.status(200).send(sanitarios) 
 
     } catch (error) {
-        console.error(error)
-        return reply.status(500).send({ error: 'Error fetching sanitarios.' })
+        console.error(error) 
+        return reply.status(500).send({ error: 'Error fetching sanitarios.' }) 
     }
-}
+} 
 
 const getFarmaciaPacientesByID = async (req, reply) => {
     try {
-        const user = req.user
-        const { id } = req.params
+        const user = req.user 
+        const { id } = req.params 
 
-        if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO)
-            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' })
+        if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO) {
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' }) 
+        }
 
         const farmacia = await prisma.farmacia.findUnique({
             where: { id: parseInt(id) },
@@ -205,8 +230,111 @@ const getFarmaciaPacientesByID = async (req, reply) => {
                         user: {
                             select: {
                                 dni: true,
+                                email: true,
                                 nombre: true,
-                                apellidos: true
+                                apellidos: true,
+                                createdAt: true,
+                                telefono: true,
+                                fecha_nacimiento: true,
+                                direccion: true,
+                                foto: true,
+                                role: true
+                            }
+                        },
+                        tutor: {
+                            include: {
+                                user: {
+                                    select: {
+                                        dni: true,
+                                        nombre: true,
+                                        apellidos: true,
+                                        email: true
+                                    }
+                                }
+                            }
+                        },
+                        tratamientos: true
+                    }
+                }
+            }
+        }) 
+
+        if (!farmacia) {
+            return reply.status(404).json({ error: 'Farmacia not found.' }) 
+        }
+
+        const pacientes = farmacia.pacientes.map((paciente) => ({
+            dni: paciente.user.dni,
+            nombre: paciente.user.nombre,
+            apellidos: paciente.user.apellidos,
+            telefono: paciente.user.telefono,
+            fecha_nacimiento: paciente.user.fecha_nacimiento,
+            direccion: paciente.user.direccion,
+            email: paciente.user.email,
+            tutor: paciente.tutor ? {
+                dni: paciente.tutor.user.dni,
+                nombre: paciente.tutor.user.nombre,
+                apellidos: paciente.tutor.user.apellidos,
+                email: paciente.tutor.user.email
+            } : null,
+            tratamientos: paciente.tratamientos,
+        })) 
+
+        console.log("Pacientes encontrados:", pacientes)  
+
+        return reply.status(200).send(pacientes) 
+
+    } catch (error) {
+        console.error("Error in getFarmaciaPacientesByID:", error.message) 
+        console.error(error.stack) 
+        return reply.status(500).send({ error: 'Error getting farmacia.' }) 
+    }
+}
+
+const getFarmaciaTutoresByID = async (req, reply) => {
+    try {
+        const user = req.user
+        const { id } = req.params
+
+        if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO) {
+            return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can access this information.' })
+        }
+
+        const farmacia = await prisma.farmacia.findUnique({
+            where: { id: parseInt(id) },
+            include: {
+                tutores: {
+                    include: {
+                        user: {
+                            select: {
+                                dni: true,
+                                email: true,
+                                nombre: true,
+                                apellidos: true,
+                                createdAt: true,
+                                telefono: true,
+                                fecha_nacimiento: true,
+                                direccion: true,
+                                foto: true,
+                                role: true
+                            }
+                        },
+                        pacientes: {
+                            include: {
+                                user: {
+                                    select: {
+                                        dni: true,
+                                        nombre: true,
+                                        apellidos: true,
+                                        email: true,
+                                        telefono: true,
+                                        fecha_nacimiento: true,
+                                        direccion: true,
+                                        foto: true,
+                                        role: true
+                                    }
+                                },
+                                tratamientos: true
                             }
                         }
                     }
@@ -214,23 +342,44 @@ const getFarmaciaPacientesByID = async (req, reply) => {
             }
         })
 
-        if (!farmacia)
+        if (!farmacia) {
             return reply.status(404).json({ error: 'Farmacia not found.' })
+        }
 
-        const pacientes = farmacia.pacientes.map(paciente => ({
-            dni: paciente.user.dni,
-            nombre: paciente.user.nombre,
-            apellidos: paciente.user.apellidos
+        const tutores = farmacia.tutores.map((tutor) => ({
+            dni: tutor.user.dni,
+            nombre: tutor.user.nombre,
+            apellidos: tutor.user.apellidos,
+            telefono: tutor.user.telefono,
+            fecha_nacimiento: tutor.user.fecha_nacimiento,
+            direccion: tutor.user.direccion,
+            email: tutor.user.email,
+            foto: tutor.user.foto,
+            role: tutor.user.role,
+            pacientes: tutor.pacientes.map((paciente) => ({
+                dni: paciente.user.dni,
+                nombre: paciente.user.nombre,
+                apellidos: paciente.user.apellidos,
+                email: paciente.user.email,
+                telefono: paciente.user.telefono,
+                fecha_nacimiento: paciente.user.fecha_nacimiento,
+                direccion: paciente.user.direccion,
+                foto: paciente.user.foto,
+                tratamientos: paciente.tratamientos
+            }))
         }))
 
-        // console.log("Pacientes en la respuesta:", pacientes) 
-        return reply.status(200).send(pacientes)
+        console.log("Tutores encontrados:", tutores)
+
+        return reply.status(200).send(tutores)
 
     } catch (error) {
-        console.error(error)
-        return reply.status(500).send({ error: 'Error getting farmacia.' })
+        console.error("Error in getFarmaciaTutoresByID:", error.message)
+        console.error(error.stack)
+        return reply.status(500).send({ error: 'Error getting tutores from farmacia.' })
     }
 }
+
 
 const getFarmaciaPacientesSinTutorByID = async (req, reply) => {
     try {
@@ -419,6 +568,7 @@ export default {
     getFarmaciaByNombre,
     getFarmaciaSanitariosByID,
     getFarmaciaPacientesByID,
+    getFarmaciaTutoresByID,
     getFarmaciaPacientesSinTutorByID,
     updateFarmacia,
     deleteFarmacia,

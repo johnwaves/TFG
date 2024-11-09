@@ -16,6 +16,7 @@ const PacientesView = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center mt-10 mb-10">
                 <Card title="addpaciente" />
+                <Card title="editpaciente" />
             </div>
         </SanitarioCheck>
 

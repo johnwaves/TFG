@@ -7,6 +7,7 @@ async function farmaciaRoutes(fastify, options) {
     fastify.get('/farmacias/nombre/:nombreFarmacia', {preValidation: [fastify.jwtAuth]}, farmaciaController.getFarmaciaByNombre)
     fastify.get('/farmacias/:id/sanitarios', {preValidation: [fastify.jwtAuth]}, farmaciaController.getFarmaciaSanitariosByID)
     fastify.get('/farmacias/:id/pacientes', {preValidation: [fastify.jwtAuth]}, farmaciaController.getFarmaciaPacientesByID)
+    fastify.get('/farmacias/:id/tutores', { preValidation: [fastify.jwtAuth] }, farmaciaController.getFarmaciaTutoresByID)
     fastify.get('/farmacias/:id/pacientesnotutor', { preValidation: [fastify.jwtAuth] }, farmaciaController.getFarmaciaPacientesSinTutorByID);
     fastify.put('/farmacias/:id', {preValidation: [fastify.jwtAuth]}, farmaciaController.updateFarmacia)
     fastify.delete('/farmacias/:id', {preValidation: [fastify.jwtAuth]}, farmaciaController.deleteFarmacia)
