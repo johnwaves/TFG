@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import AdminCheck from "../checks/AdminCheck"
 
-const PersonalFarmacia = () => {
+const FarmaciaPersonal = () => {
     const [farmacias, setFarmacias] = useState([])
     const [selectedFarmacia, setSelectedFarmacia] = useState(null)
     const [sanitariosByFarmacia, setSanitariosByFarmacia] = useState({})
@@ -326,4 +326,4 @@ const PersonalFarmacia = () => {
     )
 }
 
-export default PersonalFarmacia 
+export default FarmaciaPersonal 
