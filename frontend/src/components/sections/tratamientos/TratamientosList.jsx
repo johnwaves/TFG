@@ -124,23 +124,23 @@ const TratamientosList = () => {
     }
 
     const handleEdit = (index, tratamiento) => {
-        const today = new Date();
-        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today;
+        const today = new Date() 
+        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today 
 
         if (!hasFinalizado) {
-            setEditIndex(index);
-            setSelectedTratamientoIndex(index);
-            setEditedTratamiento({ ...tratamiento });
+            setEditIndex(index) 
+            setSelectedTratamientoIndex(index) 
+            setEditedTratamiento({ ...tratamiento }) 
         } else {
-            setShowActionNotAllowed(true);
+            setShowActionNotAllowed(true) 
         }
-    };
+    } 
 
     const handleTabChange = (tab) => {
-        setActiveTab(tab);
-        setEditIndex(null);
-        setSelectedTratamientoIndex(null);
-    };
+        setActiveTab(tab) 
+        setEditIndex(null) 
+        setSelectedTratamientoIndex(null) 
+    } 
 
     const handleSave = async (tratamientoId) => {
         try {
@@ -187,16 +187,16 @@ const TratamientosList = () => {
 
 
     const confirmDelete = (tratamiento) => {
-        const today = new Date();
-        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today;
+        const today = new Date() 
+        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today 
 
         if (!hasFinalizado) {
-            setTratamientoToDelete(tratamiento);
-            document.getElementById("delete_confirm_modal").showModal();
+            setTratamientoToDelete(tratamiento) 
+            document.getElementById("delete_confirm_modal").showModal() 
         } else {
-            setShowActionNotAllowed(true);
+            setShowActionNotAllowed(true) 
         }
-    };
+    } 
 
 
     const handleDelete = async () => {

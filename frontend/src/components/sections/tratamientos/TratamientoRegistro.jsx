@@ -1,66 +1,66 @@
-import { useState, useEffect } from "react";
-import SanitarioCheck from "../checks/SanitarioCheck";
+import { useState, useEffect } from "react" 
+import SanitarioCheck from "../checks/SanitarioCheck" 
 
 const TratamientoRegistro = () => {
-    const [pacientes, setPacientes] = useState([]);
-    const [tratamientos, setTratamientos] = useState([]);
-    const [selectedPaciente, setSelectedPaciente] = useState("");
-    const [selectedTratamiento, setSelectedTratamiento] = useState("");
-    const [detalles, setDetalles] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
-    const [nextRegistro, setNextRegistro] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [showNoTratamientosDialog, setShowNoTratamientosDialog] = useState(false);
-    const [idFarmacia, setIdFarmacia] = useState(null);
-    const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 });
+    const [pacientes, setPacientes] = useState([]) 
+    const [tratamientos, setTratamientos] = useState([]) 
+    const [selectedPaciente, setSelectedPaciente] = useState("") 
+    const [selectedTratamiento, setSelectedTratamiento] = useState("") 
+    const [detalles, setDetalles] = useState("") 
+    const [errorMessage, setErrorMessage] = useState("") 
+    const [successMessage, setSuccessMessage] = useState("") 
+    const [nextRegistro, setNextRegistro] = useState(null) 
+    const [isLoading, setIsLoading] = useState(false) 
+    const [showNoTratamientosDialog, setShowNoTratamientosDialog] = useState(false) 
+    const [idFarmacia, setIdFarmacia] = useState(null) 
+    const [countdown, setCountdown] = useState({ hours: 0, minutes: 0, seconds: 0 }) 
 
     useEffect(() => {
         const fetchSanitarioData = async () => {
-            const user = JSON.parse(sessionStorage.getItem("user"));
+            const user = JSON.parse(sessionStorage.getItem("user")) 
             if (user && user.dni) {
                 try {
-                    const token = sessionStorage.getItem("jwtToken");
+                    const token = sessionStorage.getItem("jwtToken") 
                     const response = await fetch(`http://localhost:3000/api/users/sanitarios/${user.dni}`, {
                         headers: { Authorization: `Bearer ${token}` },
-                    });
-                    const data = await response.json();
+                    }) 
+                    const data = await response.json() 
                     if (response.ok) {
-                        setIdFarmacia(data.idFarmacia);
-                        fetchPacientes(data.idFarmacia, token);
+                        setIdFarmacia(data.idFarmacia) 
+                        fetchPacientes(data.idFarmacia, token) 
                     } else {
-                        setErrorMessage(data.error || "No se pudo obtener el ID de la farmacia.");
+                        setErrorMessage(data.error || "No se pudo obtener el ID de la farmacia.") 
                     }
                 } catch (error) {
-                    console.error("Error al obtener los datos del sanitario:", error);
-                    setErrorMessage("Error de conexión al obtener los datos del sanitario.");
+                    console.error("Error al obtener los datos del sanitario:", error) 
+                    setErrorMessage("Error de conexión al obtener los datos del sanitario.") 
                 }
             } else {
-                setErrorMessage("No se pudo obtener el DNI del usuario logeado.");
+                setErrorMessage("No se pudo obtener el DNI del usuario logeado.") 
             }
-        };
-        fetchSanitarioData();
-    }, []);
+        } 
+        fetchSanitarioData() 
+    }, []) 
 
     const fetchPacientes = async (farmaciaId, token) => {
         try {
             const response = await fetch(`http://localhost:3000/api/farmacias/${farmaciaId}/pacientes`, {
                 headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await response.json();
+            }) 
+            const data = await response.json() 
             if (response.ok) {
-                setPacientes(data);
+                setPacientes(data) 
             } else {
-                setErrorMessage(data.error || "Error al obtener los pacientes.");
+                setErrorMessage(data.error || "Error al obtener los pacientes.") 
             }
         } catch (error) {
-            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.");
+            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.") 
         }
-    };
+    } 
 
     const fetchTratamientos = async (dniPaciente) => {
         try {
-            const user = JSON.parse(sessionStorage.getItem("user"));
+            const user = JSON.parse(sessionStorage.getItem("user")) 
             const response = await fetch("http://localhost:3000/api/tratamientos/paciente", {
                 method: "POST",
                 headers: {
@@ -71,98 +71,98 @@ const TratamientoRegistro = () => {
                     dniSolicitante: user.dni,
                     dniSolicitado: dniPaciente
                 })
-            });
-            const data = await response.json();
+            }) 
+            const data = await response.json() 
             if (response.ok) {
-                const noFarmacologicos = data.filter(tratamiento => tratamiento.tipo === "NO_FARMACOLOGICO");
+                const noFarmacologicos = data.filter(tratamiento => tratamiento.tipo === "NO_FARMACOLOGICO") 
                 if (noFarmacologicos.length === 0) {
-                    setShowNoTratamientosDialog(true);
+                    setShowNoTratamientosDialog(true) 
                 } else {
-                    setTratamientos(noFarmacologicos);
+                    setTratamientos(noFarmacologicos) 
                 }
             } else {
-                setErrorMessage(data.error || "Error al obtener los tratamientos.");
+                setErrorMessage(data.error || "Error al obtener los tratamientos.") 
             }
         } catch (error) {
-            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.");
+            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.") 
         }
-    };
+    } 
 
     const handlePacienteChange = (e) => {
-        const pacienteDni = e.target.value;
-        setSelectedPaciente(pacienteDni);
-        setSelectedTratamiento("");
-        setDetalles("");
-        setNextRegistro(null);
-        setTratamientos([]);
-        fetchTratamientos(pacienteDni);
-    };
+        const pacienteDni = e.target.value 
+        setSelectedPaciente(pacienteDni) 
+        setSelectedTratamiento("") 
+        setDetalles("") 
+        setNextRegistro(null) 
+        setTratamientos([]) 
+        fetchTratamientos(pacienteDni) 
+    } 
 
     const handleTratamientoChange = async (e) => {
-        const tratamientoId = e.target.value;
-        setSelectedTratamiento(tratamientoId);
-        setDetalles("");
-        setSuccessMessage("");
-        setErrorMessage("");
+        const tratamientoId = e.target.value 
+        setSelectedTratamiento(tratamientoId) 
+        setDetalles("") 
+        setSuccessMessage("") 
+        setErrorMessage("") 
 
         try {
-            const token = sessionStorage.getItem("jwtToken");
+            const token = sessionStorage.getItem("jwtToken") 
             const response = await fetch(`http://localhost:3000/api/tratamientos/${tratamientoId}/lastregistro`, {
                 headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await response.json();
+            }) 
+            const data = await response.json() 
 
             if (response.ok) {
                 if (data.nextAvailable) {
                     // Contador y desaparece descripción
-                    setNextRegistro(new Date(data.nextAvailable));
+                    setNextRegistro(new Date(data.nextAvailable)) 
                 } else {
-                    setNextRegistro(null);
+                    setNextRegistro(null) 
                 }
             } else {
-                setErrorMessage(data.error || "Error al verificar el tiempo para el próximo registro.");
+                setErrorMessage(data.error || "Error al verificar el tiempo para el próximo registro.") 
             }
-            
+
         } catch (error) {
-            setErrorMessage("Error al verificar el tiempo para el próximo registro.");
+            setErrorMessage("Error al verificar el tiempo para el próximo registro.") 
         }
-    };
+    } 
 
 
     useEffect(() => {
-        let intervalId;
+        let intervalId 
 
         if (nextRegistro) {
             intervalId = setInterval(() => {
-                const now = new Date();
-                const diff = nextRegistro - now;
+                const now = new Date() 
+                const diff = nextRegistro - now 
 
                 if (diff <= 0) {
-                    setNextRegistro(null);
-                    clearInterval(intervalId);
+                    setNextRegistro(null) 
+                    clearInterval(intervalId) 
                 } else {
-                    const hours = Math.floor(diff / (1000 * 60 * 60));
-                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-                    setCountdown({ hours, minutes, seconds });
+                    const hours = Math.floor(diff / (1000 * 60 * 60)) 
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)) 
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000) 
+                    setCountdown({ hours, minutes, seconds }) 
                 }
-            }, 1000);
+            }, 1000) 
         }
 
-        return () => clearInterval(intervalId);
-    }, [nextRegistro]);
+        return () => clearInterval(intervalId) 
+    }, [nextRegistro]) 
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        const token = sessionStorage.getItem("jwtToken");
-        const user = JSON.parse(sessionStorage.getItem("user"));
+        e.preventDefault() 
+        setIsLoading(true) 
+        const token = sessionStorage.getItem("jwtToken") 
+        const user = JSON.parse(sessionStorage.getItem("user")) 
 
         const data = {
             cumplimiento: true,
             detalles,
             fecha_registro: new Date().toISOString(),
-        };
+        } 
 
         try {
             const response = await fetch(`http://localhost:3000/api/tratamientos/registro`, {
@@ -174,32 +174,32 @@ const TratamientoRegistro = () => {
                     idtratamiento: selectedTratamiento,
                 },
                 body: JSON.stringify(data),
-            });
+            }) 
 
-            const responseData = await response.json();
+            const responseData = await response.json() 
             if (response.ok) {
-                setSuccessMessage("Registro añadido con éxito.");
-                setNextRegistro(null);
-                setDetalles("");
-                setTimeout(() => setSuccessMessage(""), 3000);
+                setSuccessMessage("Registro añadido con éxito.") 
+                setNextRegistro(null) 
+                setDetalles("") 
+                setTimeout(() => setSuccessMessage(""), 3000) 
             } else {
-                setErrorMessage(responseData.error || "Error al registrar tratamiento.");
+                setErrorMessage(responseData.error || "Error al registrar tratamiento.") 
                 if (responseData.error.includes("un registro al día")) {
-                    const nextTime = new Date();
-                    nextTime.setHours(23, 59, 59, 999);
-                    setNextRegistro(nextTime);
+                    const nextTime = new Date() 
+                    nextTime.setHours(23, 59, 59, 999) 
+                    setNextRegistro(nextTime) 
                 }
             }
         } catch (error) {
-            setErrorMessage("Error de conexión.");
+            setErrorMessage("Error de conexión.") 
         } finally {
-            setIsLoading(false);
+            setIsLoading(false) 
         }
-    };
+    } 
 
     const renderCountdown = () => {
-        if (!nextRegistro) return null;
-        const { hours, minutes, seconds } = countdown;
+        if (!nextRegistro) return null 
+        const { hours, minutes, seconds } = countdown 
 
         return (
             <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
@@ -222,8 +222,8 @@ const TratamientoRegistro = () => {
                     sec
                 </div>
             </div>
-        );
-    };
+        ) 
+    } 
 
     return (
         <SanitarioCheck>
@@ -319,7 +319,7 @@ const TratamientoRegistro = () => {
                 </dialog>
             )}
         </SanitarioCheck>
-    );
-};
+    ) 
+} 
 
-export default TratamientoRegistro;
+export default TratamientoRegistro 

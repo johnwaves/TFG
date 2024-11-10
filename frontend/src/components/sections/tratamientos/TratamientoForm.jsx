@@ -1,90 +1,90 @@
-import { useState, useEffect } from "react";
-import SanitarioCheck from "../checks/SanitarioCheck";
+import { useState, useEffect } from "react" 
+import SanitarioCheck from "../checks/SanitarioCheck" 
 
 const TratamientoForm = () => {
-    const [nombre, setNombre] = useState("");
-    const [descripcion, setDescripcion] = useState("");
-    const [tipo, setTipo] = useState("");
-    const [dosis, setDosis] = useState({ cantidad: "", intervalo: "", duracion: "" });
-    const [fechaFin, setFechaFin] = useState("");
-    const [idFarmacia, setIdFarmacia] = useState(null);
-    const [pacientes, setPacientes] = useState([]);
-    const [idPaciente, setIdPaciente] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [successMessage, setSuccessMessage] = useState("");
+    const [nombre, setNombre] = useState("") 
+    const [descripcion, setDescripcion] = useState("") 
+    const [tipo, setTipo] = useState("") 
+    const [dosis, setDosis] = useState({ cantidad: "", intervalo: "", duracion: "" }) 
+    const [fechaFin, setFechaFin] = useState("") 
+    const [idFarmacia, setIdFarmacia] = useState(null) 
+    const [pacientes, setPacientes] = useState([]) 
+    const [idPaciente, setIdPaciente] = useState("") 
+    const [isLoading, setIsLoading] = useState(false) 
+    const [errorMessage, setErrorMessage] = useState("") 
+    const [successMessage, setSuccessMessage] = useState("") 
 
     useEffect(() => {
         const fetchSanitarioData = async () => {
-            const user = JSON.parse(sessionStorage.getItem("user"));
+            const user = JSON.parse(sessionStorage.getItem("user")) 
             if (user && user.dni) {
                 try {
-                    const token = sessionStorage.getItem("jwtToken");
+                    const token = sessionStorage.getItem("jwtToken") 
                     const response = await fetch(`http://localhost:3000/api/users/sanitarios/${user.dni}`, {
                         headers: { Authorization: `Bearer ${token}` },
-                    });
+                    }) 
 
-                    const data = await response.json();
+                    const data = await response.json() 
                     if (response.ok) {
-                        setIdFarmacia(data.idFarmacia);
-                        fetchPacientes(data.idFarmacia, token);
+                        setIdFarmacia(data.idFarmacia) 
+                        fetchPacientes(data.idFarmacia, token) 
                     } else {
-                        setErrorMessage(data.error || "No se pudo obtener el ID de la farmacia.");
+                        setErrorMessage(data.error || "No se pudo obtener el ID de la farmacia.") 
                     }
                 } catch (error) {
-                    console.error("Error al obtener los datos del sanitario:", error);
-                    setErrorMessage("Error de conexión al obtener los datos del sanitario.");
+                    console.error("Error al obtener los datos del sanitario:", error) 
+                    setErrorMessage("Error de conexión al obtener los datos del sanitario.") 
                 }
             } else {
-                setErrorMessage("No se pudo obtener el DNI del usuario logeado.");
+                setErrorMessage("No se pudo obtener el DNI del usuario logeado.") 
             }
-        };
+        } 
 
-        fetchSanitarioData();
-    }, []);
+        fetchSanitarioData() 
+    }, []) 
 
     const fetchPacientes = async (farmaciaId, token) => {
         try {
             const response = await fetch(`http://localhost:3000/api/farmacias/${farmaciaId}/pacientes`, {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await response.json();
+            }) 
+            const data = await response.json() 
             if (response.ok) {
-                setPacientes(data);
+                setPacientes(data) 
             } else {
-                setErrorMessage(data.error || "Error al obtener los pacientes.");
+                setErrorMessage(data.error || "Error al obtener los pacientes.") 
             }
         } catch (error) {
-            console.error("Error fetching pacientes:", error);
-            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.");
+            console.error("Error fetching pacientes:", error) 
+            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.") 
         }
-    };
+    } 
 
     const validateForm = () => {
         if (!nombre || !descripcion || !tipo || !idPaciente) {
-            setErrorMessage("Todos los campos son obligatorios.");
-            return false;
+            setErrorMessage("Todos los campos son obligatorios.") 
+            return false 
         }
         if (tipo === "FARMACOLOGICO" && (!dosis.cantidad || !dosis.intervalo || !dosis.duracion)) {
-            setErrorMessage("Todos los campos de dosis son obligatorios para un tratamiento farmacológico.");
-            return false;
+            setErrorMessage("Todos los campos de dosis son obligatorios para un tratamiento farmacológico.") 
+            return false 
         }
         if (tipo === "NO_FARMACOLOGICO" && !fechaFin) {
-            setErrorMessage("La fecha de fin es obligatoria para un tratamiento no farmacológico.");
-            return false;
+            setErrorMessage("La fecha de fin es obligatoria para un tratamiento no farmacológico.") 
+            return false 
         }
-        setErrorMessage("");
-        return true;
-    };
+        setErrorMessage("") 
+        return true 
+    } 
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateForm()) return;
+        e.preventDefault() 
+        if (!validateForm()) return 
 
-        setIsLoading(true);
-        setErrorMessage("");
-        setSuccessMessage("");
+        setIsLoading(true) 
+        setErrorMessage("") 
+        setSuccessMessage("") 
 
         const data = {
             nombre,
@@ -93,7 +93,7 @@ const TratamientoForm = () => {
             idPaciente,
             dosis: tipo === "FARMACOLOGICO" ? dosis : null,
             fecha_fin: tipo === "NO_FARMACOLOGICO" ? fechaFin : null,
-        };
+        } 
 
         try {
             const response = await fetch("http://localhost:3000/api/tratamientos/create", {
@@ -103,28 +103,28 @@ const TratamientoForm = () => {
                     Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
                 },
                 body: JSON.stringify(data),
-            });
+            }) 
 
-            const responseData = await response.json();
+            const responseData = await response.json() 
             if (response.ok) {
-                setSuccessMessage("Tratamiento creado con éxito");
-                setTimeout(() => setSuccessMessage(""), 3000);
-                setNombre("");
-                setDescripcion("");
-                setTipo("");
-                setDosis({ cantidad: "", intervalo: "", duracion: "" });
-                setFechaFin("");
-                setIdPaciente("");
+                setSuccessMessage("Tratamiento creado con éxito") 
+                setTimeout(() => setSuccessMessage(""), 3000) 
+                setNombre("") 
+                setDescripcion("") 
+                setTipo("") 
+                setDosis({ cantidad: "", intervalo: "", duracion: "" }) 
+                setFechaFin("") 
+                setIdPaciente("") 
             } else {
-                setErrorMessage(responseData.error || "Error al crear el tratamiento");
+                setErrorMessage(responseData.error || "Error al crear el tratamiento") 
             }
         } catch (error) {
-            console.error("Hubo un error de conexión:", error);
-            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.");
+            console.error("Hubo un error de conexión:", error) 
+            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.") 
         } finally {
-            setIsLoading(false);
+            setIsLoading(false) 
         }
-    };
+    } 
 
     return (
         <SanitarioCheck>
@@ -295,7 +295,7 @@ const TratamientoForm = () => {
                 </div>
             </div>
         </SanitarioCheck>
-    );
-};
+    ) 
+} 
 
-export default TratamientoForm;
+export default TratamientoForm 

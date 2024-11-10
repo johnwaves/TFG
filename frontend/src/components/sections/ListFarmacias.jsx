@@ -1,24 +1,26 @@
-import { useState, useEffect } from "react"  
-import AdminCheck from "./checks/AdminCheck"
+import { useState, useEffect } from "react" 
+import AdminCheck from "./checks/AdminCheck" 
 
 const splitTextByLength = (text, length) => {
-    const lines = []  
-    for (let i = 0; i < text.length; i += length) 
-        lines.push(text.slice(i, i + length))  
+    const lines = [] 
+
+    for (let i = 0; i < text.length; i += length) {
+        lines.push(text.slice(i, i + length)) 
+    }
     
-    return lines  
-}  
+    return lines 
+} 
 
 const ListFarmacias = () => {
-    const [farmacias, setFarmacias] = useState([])  
-    const [errorMessage, setErrorMessage] = useState("")  
-    const [editIndex, setEditIndex] = useState(null)  
+    const [farmacias, setFarmacias] = useState([]) 
+    const [errorMessage, setErrorMessage] = useState("") 
+    const [editIndex, setEditIndex] = useState(null) 
     const [editedFarmacia, setEditedFarmacia] = useState({
         nombre: "",
         direccion: "",
-    })  
+    }) 
 
-    const [farmaciaToDelete, setFarmaciaToDelete] = useState(null)  
+    const [farmaciaToDelete, setFarmaciaToDelete] = useState(null) 
 
     useEffect(() => {
         const fetchFarmacias = async () => {
@@ -28,37 +30,38 @@ const ListFarmacias = () => {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
                     },
-                })  
-                const data = await response.json()  
+                }) 
+                const data = await response.json() 
 
                 if (response.ok) {
-                    setFarmacias(data)  
+                    setFarmacias(data) 
                 } else {
-                    setErrorMessage("Error al obtener las farmacias.")  
+                    setErrorMessage("Error al obtener las farmacias.") 
                 }
             } catch (error) {
+                console.error("Hubo un error de conexión:", error) 
                 setErrorMessage(
                     "Hubo un problema con la conexión. Inténtelo de nuevo más tarde."
-                )  
+                ) 
             }
-        }  
+        } 
 
-        fetchFarmacias()  
-    }, [])  
+        fetchFarmacias() 
+    }, []) 
 
     useEffect(() => {
         if (errorMessage) {
-            document.getElementById("update_error_modal").showModal()  
+            document.getElementById("update_error_modal").showModal() 
         }
-    }, [errorMessage])  
+    }, [errorMessage]) 
 
     const handleEdit = (index, farmacia) => {
-        setEditIndex(index)  
+        setEditIndex(index) 
         setEditedFarmacia({
             nombre: farmacia.nombre,
             direccion: farmacia.direccion,
-        })  
-    }  
+        }) 
+    } 
 
     const handleSave = async (farmaciaId) => {
         try {
@@ -72,34 +75,35 @@ const ListFarmacias = () => {
                     },
                     body: JSON.stringify(editedFarmacia),
                 }
-            )  
-            const data = await response.json()  
+            ) 
+            const data = await response.json() 
 
             if (response.ok) {
-                const updatedFarmacias = [...farmacias]  
+                const updatedFarmacias = [...farmacias] 
                 updatedFarmacias[editIndex] = {
                     ...updatedFarmacias[editIndex],
                     ...editedFarmacia,
-                }  
-                setFarmacias(updatedFarmacias)  
-                setEditIndex(null)  
-                setErrorMessage("")  
+                } 
+                setFarmacias(updatedFarmacias) 
+                setEditIndex(null) 
+                setErrorMessage("") 
             } else if (response.status === 400) {
-                setErrorMessage("Ya existe una farmacia con ese nombre o dirección.")  
+                setErrorMessage("Ya existe una farmacia con ese nombre o dirección.") 
             } else {
-                setErrorMessage(data.error || "Error al actualizar la farmacia.")  
+                setErrorMessage(data.error || "Error al actualizar la farmacia.") 
             }
         } catch (error) {
+            console.error("Hubo un error al actualizar la farmacia:", error) 
             setErrorMessage(
                 "Hubo un problema con la actualización. Inténtelo de nuevo más tarde."
-            )  
+            ) 
         }
-    }  
+    } 
 
     const confirmDelete = (farmacia) => {
-        setFarmaciaToDelete(farmacia)  
-        document.getElementById("delete_confirm_modal").showModal()  
-    }  
+        setFarmaciaToDelete(farmacia) 
+        document.getElementById("delete_confirm_modal").showModal() 
+    } 
 
     const handleDelete = async () => {
         try {
@@ -111,27 +115,28 @@ const ListFarmacias = () => {
                         Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
                     },
                 }
-            )  
+            ) 
 
             if (response.ok) {
                 setFarmacias(
                     farmacias.filter((farmacia) => farmacia.id !== farmaciaToDelete.id)
-                )  
-                setFarmaciaToDelete(null)  
-                document.getElementById("delete_confirm_modal").close()  
+                ) 
+                setFarmaciaToDelete(null) 
+                document.getElementById("delete_confirm_modal").close() 
             } else {
-                const data = await response.json()  
-                setErrorMessage(data.error || "Error al eliminar la farmacia.")  
+                const data = await response.json() 
+                setErrorMessage(data.error || "Error al eliminar la farmacia.") 
             }
         } catch (error) {
+            console.error("Hubo un error al eliminar la farmacia:", error) 
             setErrorMessage(
                 "Hubo un problema con la eliminación. Inténtelo de nuevo más tarde."
-            )  
+            ) 
         }
-    }  
+    } 
 
     return (
-        <AdminCheck> 
+        <AdminCheck>
             <div className="flex justify-center text-center m-10">
                 <div className="breadcrumbs text-xl">
                     <ul>
@@ -273,8 +278,8 @@ const ListFarmacias = () => {
                         <button
                             className="btn"
                             onClick={() => {
-                                setErrorMessage("")  
-                                document.getElementById("update_error_modal").close()  
+                                setErrorMessage("") 
+                                document.getElementById("update_error_modal").close() 
                             }}
                         >
                             Cerrar
@@ -308,7 +313,7 @@ const ListFarmacias = () => {
                 </div>
             </dialog>
         </AdminCheck>
-    )  
-}  
+    ) 
+} 
 
-export default ListFarmacias  
+export default ListFarmacias 
