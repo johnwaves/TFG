@@ -25,6 +25,11 @@ const authCheck = showNavbar;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
+  <style>
+    html {
+      overflow-y: scroll;
+    }
+  </style>
   <body class="bg-base-100 w-full">
     <div class="grid min-h-screen grid-rows-[auto_1fr_auto]">
       {showNavbar && <Navbarreact client:load />}
