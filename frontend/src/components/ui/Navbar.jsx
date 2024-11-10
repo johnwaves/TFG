@@ -72,11 +72,9 @@ const Navbarreact = () => {
               role="button"
               className="btn btn-ghost flex items-center space-x-2"
             >
-              {/* Nombre del usuario con efecto de desplazamiento si es muy largo */}
-              <span className="text-lg text-white font-semibold overflow-hidden whitespace-nowrap max-w-[150px] text-ellipsis">
+              <span className="text-lg text-white font-semibold overflow-hidden whitespace-nowrap max-w-[250px] text-ellipsis">
                 {userName}
               </span>
-              {/* Icono de perfil */}
               <div className="avatar">
                 <div className="mask mask-squircle w-10">
                   <img

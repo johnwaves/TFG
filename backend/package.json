@@ -6,7 +6,7 @@
   "scripts": {
     "hash": "node ./src/utils/pass.js",
     "start": "nodemon --env-file .env ./src/server.js",
-    "test": "mocha ./src/test/admin.test.js"
+    "test": "mocha ./src/test/tratamientos.test.js"
   },
   "keywords": [],
   "author": "",

@@ -84,10 +84,6 @@ const updateTratamiento = async (req, reply) => {
             user = { ...user, ...fullUser }
         }
 
-        if ((nombre || descripcion) && user.role !== ROLES.ADMIN) {
-            return reply.status(403).send({ error: 'UNAUTHORIZED. Only ADMIN can modify name or description of treatments.' })
-        }
-
         const tratamiento = await prisma.tratamiento.findUnique({
             where: { id: tratamientoId },
             include: { dosis: true, paciente: true }
@@ -95,6 +91,14 @@ const updateTratamiento = async (req, reply) => {
         if (!tratamiento) {
             return reply.status(404).send({ error: 'Treatment not found.' })
         }
+
+        const isNombreOrDescripcionModified = 
+            (nombre && nombre !== tratamiento.nombre) || 
+            (descripcion && descripcion !== tratamiento.descripcion)
+
+        if (isNombreOrDescripcionModified && !(user.role === ROLES.ADMIN || user.sanitario.tipo === TIPO_SANITARIO.FARMACEUTICO))
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only ADMIN or FARMACÉUTICO can modify name or description of treatments.' })
+        
 
         const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.paciente.idUser)
         if (!sameFarmacia) {
@@ -132,6 +136,53 @@ const updateTratamiento = async (req, reply) => {
     }
 }
 
+const fetchLastRegistro = async (idTratamiento) => {
+    return await prisma.registroTratamiento.findFirst({
+        where: { idTratamiento: idTratamiento },
+        orderBy: { fecha_registro: 'desc' },
+        include: {
+            tratamiento: true
+        }
+    }) 
+} 
+
+const checkLastRegistro = async (req, reply) => {
+    try {
+        const idTratamiento = parseInt(req.params.id) 
+        const user = req.user 
+
+        if (isNaN(idTratamiento)) {
+            return reply.status(400).send({ error: 'Invalid treatment ID provided.' }) 
+        }
+
+        const tratamiento = await prisma.tratamiento.findUnique({
+            where: { id: idTratamiento },
+            include: { paciente: true, sanitario: true }
+        }) 
+
+        if (!tratamiento) {
+            return reply.status(404).send({ error: 'Treatment not found.' }) 
+        }
+
+        if (user.role === ROLES.PACIENTE && user.dni !== tratamiento.paciente.idUser) {
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only the patient can access this treatment record.' }) 
+        }
+
+        const lastRegistro = await prisma.registroTratamiento.findFirst({
+            where: { idTratamiento: idTratamiento },
+            orderBy: { fecha_registro: 'desc' }
+        }) 
+
+        if (!lastRegistro) {
+            return reply.status(200).send({ message: 'No records found for this treatment.' }) 
+        }
+
+        return reply.status(200).send({ lastRegistroDate: lastRegistro.fecha_registro }) 
+    } catch (error) {
+        console.error("Error fetching last registro:", error) 
+        return reply.status(500).send({ error: 'Error fetching the last registro for the treatment.' }) 
+    }
+}
 
 const registroTratamiento = async (req, reply) => {
     try {
@@ -148,46 +199,52 @@ const registroTratamiento = async (req, reply) => {
             include: {
                 paciente: true,
                 dosis: true,
-                sanitario: true
+                sanitario: {
+                    include: { farmacia: true }
+                }
             }
         }) 
-
-        console.log('User:', user) 
-        console.log('Tratamiento:', tratamiento) 
 
         if (!tratamiento) {
             return reply.status(400).send({ error: 'No se ha encontrado el tratamiento.' }) 
         }
 
-        if (user.role === ROLES.PACIENTE && user.dni.trim() !== tratamiento.paciente.idUser.trim()) {
-            return reply.status(403).send({ error: 'UNAUTHORIZED. Only the patient can add a RegistroTratamiento.' }) 
-        }
-
-        if (user.role === ROLES.TUTOR && user.dni.trim() !== tratamiento.paciente.idTutor?.trim()) {
-            return reply.status(403).send({ error: 'UNAUTHORIZED. Only the tutor can add a RegistroTratamiento.' }) 
-        }
-
         if (user.role === ROLES.SANITARIO) {
-            const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente, tratamiento.paciente.idTutor || null) 
-            if (!sameFarmacia) {
-                return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' }) 
+            if (!tratamiento.paciente || !tratamiento.paciente.idFarmacia) {
+                return reply.status(400).send({ error: 'El paciente no tiene farmacia asociada.' }) 
+            }
+            
+            if (tratamiento.sanitario?.farmacia?.id !== tratamiento.paciente.idFarmacia) {
+                return reply.status(403).send({ error: 'UNAUTHORIZED. You can only add treatments for patients from your own pharmacy.' }) 
             }
         }
 
         if (tratamiento.tipo === 'FARMACOLOGICO') {
             const lastRegistro = await prisma.registroTratamiento.findFirst({
-                where: {
-                    idTratamiento
-                },
-                orderBy: {
-                    fecha_registro: 'desc'
-                }
+                where: { idTratamiento },
+                orderBy: { fecha_registro: 'desc' }
             }) 
+
+            if (!lastRegistro) {
+                const fechaInicio = new Date(fecha_registro) 
+                const fechaFin = new Date(fechaInicio) 
+                if (tratamiento.dosis && tratamiento.dosis.duracion) {
+                    fechaFin.setDate(fechaFin.getDate() + tratamiento.dosis.duracion) 
+                }
+
+                await prisma.tratamiento.update({
+                    where: { id: idTratamiento },
+                    data: {
+                        fecha_inicio: fechaInicio,
+                        fecha_fin: fechaFin
+                    }
+                }) 
+            }
 
             if (lastRegistro) {
                 const lastRegistroTime = new Date(lastRegistro.fecha_registro) 
                 const nextAllowedTime = new Date(lastRegistroTime) 
-
+                
                 if (tratamiento.dosis && tratamiento.dosis.intervalo) {
                     nextAllowedTime.setHours(nextAllowedTime.getHours() + tratamiento.dosis.intervalo) 
                 } else {
@@ -201,22 +258,15 @@ const registroTratamiento = async (req, reply) => {
         }
 
         if (tratamiento.tipo === 'NO_FARMACOLOGICO') {
-            if (user.role === ROLES.SANITARIO && user.sanitario.idFarmacia !== tratamiento.paciente.idFarmacia) {
-                return reply.status(403).send({ error: 'UNAUTHORIZED. You can only add treatments for patients from your own pharmacy.' }) 
-            }
-        
-            const existingRegistro = await prisma.registroTratamiento.findFirst({
-                where: {
-                    idTratamiento,
-                    fecha_registro: {
-                        // Aquí se prefiere usar fecha_registro en lugar de new Date()
-                        gte: new Date(new Date(fecha_registro).setHours(0, 0, 0, 0)),
-                        lt: new Date(new Date(fecha_registro).setHours(23, 59, 59, 999))
-                    }
+            const lastRegistro = await fetchLastRegistro(idTratamiento) 
+
+            if (lastRegistro) {
+                const lastRegistroDate = new Date(lastRegistro.fecha_registro) 
+                const registroDate = new Date(fecha_registro) 
+                if (registroDate.toDateString() === lastRegistroDate.toDateString()) {
+                    return reply.status(400).send({ error: 'Sólo se puede añadir un registro al día para este tipo de tratamiento.' }) 
                 }
-            }) 
-        
-            if (existingRegistro) return reply.status(400).send({ error: 'Sólo se puede añadir un registro al día para este tipo de tratamiento.' }) 
+            }
         }
 
         const registro = await prisma.registroTratamiento.create({
@@ -235,6 +285,157 @@ const registroTratamiento = async (req, reply) => {
     }
 } 
 
+
+
+const getAllTratamientosByDNI = async (req, reply) => {
+    try {
+        const { dniSolicitante, dniSolicitado } = req.body 
+
+        console.log("dniSolicitante:", dniSolicitante, "dniSolicitado:", dniSolicitado) 
+
+        if (!dniSolicitante || !dniSolicitado) {
+            return reply.status(400).send({ error: 'Both dniSolicitante and dniSolicitado are required.' }) 
+        }
+
+        const solicitante = await prisma.user.findUnique({
+            where: { dni: dniSolicitante },
+            include: {
+                sanitario: true,
+                tutor: true,
+                paciente: true
+            }
+        }) 
+
+        if (!solicitante) {
+            return reply.status(404).send({ error: 'Solicitante not found.' }) 
+        }
+
+        let tratamientos = [] 
+
+        if (dniSolicitante === dniSolicitado && solicitante.role === 'PACIENTE') {
+            tratamientos = await prisma.tratamiento.findMany({
+                where: {
+                    idPaciente: dniSolicitado
+                },
+                include: {
+                    dosis: true,
+                    registro: true,
+                    sanitario: {
+                        include: {
+                            user: {
+                                select: {
+                                    dni: true,
+                                    nombre: true,
+                                    apellidos: true
+                                }
+                            }
+                        }
+                    },
+                    paciente: {
+                        include: { 
+                            user: {
+                                select: {
+                                    dni: true,
+                                    nombre: true,
+                                    apellidos: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }) 
+
+        } else if (solicitante.role === 'SANITARIO') {
+            const paciente = await prisma.paciente.findUnique({ where: { idUser: dniSolicitado } }) 
+
+            if (!paciente || paciente.idFarmacia !== solicitante.sanitario.idFarmacia) {
+                return reply.status(403).send({ error: 'UNAUTHORIZED. The patient does not belong to your pharmacy.' }) 
+            }
+
+            tratamientos = await prisma.tratamiento.findMany({
+                where: {
+                    idPaciente: dniSolicitado
+                },
+                include: {
+                    dosis: true,
+                    registro: true,
+                    sanitario: {
+                        include: {
+                            user: {
+                                select: {
+                                    dni: true,
+                                    nombre: true,
+                                    apellidos: true
+                                }
+                            }
+                        }
+                    },
+                    paciente: {
+                        include: {
+                            user: {
+                                select: {
+                                    dni: true,
+                                    nombre: true,
+                                    apellidos: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }) 
+
+        } else if (solicitante.role === 'TUTOR') {
+            const paciente = await prisma.paciente.findUnique({
+                where: { idUser: dniSolicitado },
+                select: { idTutor: true, idFarmacia: true }
+            }) 
+
+            if (!paciente || paciente.idTutor !== dniSolicitante || paciente.idFarmacia !== solicitante.tutor.idFarmacia) {
+                return reply.status(403).send({ error: 'UNAUTHORIZED. You can only view treatments of your assigned patients within the same pharmacy.' }) 
+            }
+
+            tratamientos = await prisma.tratamiento.findMany({
+                where: {
+                    idPaciente: dniSolicitado
+                },
+                include: {
+                    dosis: true,
+                    registro: true,
+                    sanitario: {
+                        include: {
+                            user: {
+                                select: {
+                                    dni: true,
+                                    nombre: true,
+                                    apellidos: true
+                                }
+                            }
+                        }
+                    },
+                    paciente: {
+                        include: {
+                            user: {
+                                select: {
+                                    dni: true,
+                                    nombre: true,
+                                    apellidos: true
+                                }
+                            }
+                        }
+                    }
+                }
+            }) 
+
+        } else {
+            return reply.status(403).send({ error: 'UNAUTHORIZED. You do not have permission to view these treatments.' }) 
+        }
+
+        return reply.status(200).send(tratamientos) 
+    } catch (error) {
+        console.error("Error fetching all tratamientos:", error) 
+        return reply.status(500).send({ error: 'Error fetching all tratamientos.' }) 
+    }
+} 
 
 const getPendingTratamientosByDNI = async (req, reply) => {
     try {
@@ -421,60 +622,67 @@ const verifyCumplimiento = async (req, reply) => {
 
 }
 
-const deleteTratamiento = async (req, reply) => {
+export const deleteTratamiento = async (req, reply, skipReply = false) => {
     try {
-        const { id } = req.params 
-        let user = req.user 
+        const { id } = req.params
+        let user = req.user
 
         if (!user.sanitario) {
             const fullUser = await prisma.user.findUnique({
                 where: { dni: user.dni },
                 include: { sanitario: true }
-            }) 
-            user = { ...user, sanitario: fullUser.sanitario } 
+            })
+            user = { ...user, sanitario: fullUser.sanitario }
         }
 
         if (
             user.role !== ROLES.ADMIN &&
             !(user.role === ROLES.SANITARIO && user.sanitario && user.sanitario.tipo === TIPO_SANITARIO.FARMACEUTICO)
         ) {
-            return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or FARMACEUTICO can delete treatments.' }) 
+            if (!skipReply) return reply.status(403).send({ error: 'UNAUTHORIZED. Only an ADMIN or FARMACEUTICO can delete treatments.' })
+            return
         }
 
         const tratamiento = await prisma.tratamiento.findUnique({
             where: { id: parseInt(id) },
             include: { registro: true, dosis: true }
-        }) 
+        })
 
         if (!tratamiento) {
-            return reply.status(404).send({ error: 'Tratamiento not found.' }) 
+            if (!skipReply) return reply.status(404).send({ error: 'Tratamiento not found.' })
+            return
         }
 
-        const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente) 
-        if (!sameFarmacia) {
-            return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' }) 
+        if (user.role !== ROLES.ADMIN) {
+            const sameFarmacia = await verifySameFarmacia(user.dni, tratamiento.idPaciente)
+            if (!sameFarmacia) {
+                if (!skipReply) return reply.status(403).send({ error: 'UNAUTHORIZED. Users do not belong to the same pharmacy.' })
+                return
+            }
         }
 
         await prisma.registroTratamiento.deleteMany({
             where: { idTratamiento: parseInt(id) }
-        }) 
+        })
 
         if (tratamiento.dosis) {
             await prisma.dosis.delete({
                 where: { id: tratamiento.dosis.id }
-            }) 
+            })
         }
 
         await prisma.tratamiento.delete({
             where: { id: parseInt(id) }
-        }) 
+        })
 
-        return reply.status(204).send()
+        if (!skipReply) return reply.status(204).send({ message: 'Tratamiento deleted.' })
+
     } catch (error) {
-        console.error('Error deleting tratamiento:', error) 
-        return reply.status(500).send({ error: 'Error deleting tratamiento.' }) 
+        console.error('Error deleting tratamiento:', error)
+        if (!skipReply) return reply.status(500).send({ error: 'Error deleting tratamiento.' })
     }
-} 
+}
+
 
 const getTratamientoByID = async (req, reply) => {
     try {
@@ -530,7 +738,6 @@ const getTratamientoByID = async (req, reply) => {
     }
 } 
 
-// Añadir función para verificar si se ha marcado o no la casilla de cumplimiento
 export const verifySameFarmacia = async (sanitarioID, pacienteID, tutorID = null) => {
     if (!sanitarioID) throw new Error("ID del sanitario es requerido para verificar la farmacia.") 
 
@@ -576,7 +783,9 @@ export const verifySameFarmacia = async (sanitarioID, pacienteID, tutorID = null
 export default{
     createTratamiento,
     updateTratamiento,
+    checkLastRegistro,
     registroTratamiento,
+    getAllTratamientosByDNI,
     getPendingTratamientosByDNI,
     registroDatosEnFarmacia,
     getTratamientoByID,

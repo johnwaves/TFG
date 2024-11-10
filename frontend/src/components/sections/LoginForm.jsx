@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import AuthCheck from "./AuthCheck";
+import AuthCheck from "./checks/AuthCheck";
 
 const LoginForm = () => {
   const [dni, setDni] = useState("");
@@ -31,15 +31,22 @@ const LoginForm = () => {
           sessionStorage.setItem("jwtToken", responseData.token);
           sessionStorage.setItem("user", JSON.stringify(responseData.user));
           window.location.href = "/dashboard";
+          
         } else {
-          setErrorMessage(
-            responseData.message ||
+          if (response.status === 404) {
+            setErrorMessage("No existe el usuario.");
+          } else if (response.status === 401) {
+            setErrorMessage("Contraseña incorrecta.");
+          } else {
+            setErrorMessage(
+              responseData.message ||
               "Ha ocurrido un error. Por favor, inténtelo de nuevo más tarde."
-          );
+            );
+          }
         }
         setIsLoading(false);
       }, 500);
-
+      
     } catch (error) {
         console.error("Hubo un error de conexión:", error);
         setErrorMessage(
