@@ -158,7 +158,7 @@ const getFarmaciaSanitariosByID = async (req, reply) => {
             where: { id: parseInt(id) },
             select: {
                 sanitarios: {
-                    include: {
+                    select: {
                         user: {
                             select: {
                                 dni: true,
@@ -181,8 +181,8 @@ const getFarmaciaSanitariosByID = async (req, reply) => {
                     }
                 }
             }
-        }) 
-
+        })
+        
         if (!farmacia)
             return reply.status(404).send({ error: 'Farmacia not found.' }) 
         
