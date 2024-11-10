@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import '../../../assets/utils/styles.css';
 
 const Navbarreact = () => {
   const [userName, setUserName] = useState("");
