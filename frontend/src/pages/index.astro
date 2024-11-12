@@ -29,54 +29,120 @@ import Layout from "../layouts/Layout.astro";
 
   <section id="about" class="w-full bg-base-200 py-20 text-center">
     <div class="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-4xl font-bold mb-8">La importancia de la adherencia</h2>
-      <p class="text-lg text-nblack">
-        Añadir resumen sobre el estudio de la adherencia, datos estadísticos
-        sobre la mejora en la salud de los pacientes respetando los tratamientos
-        e información extra
+      <h2 class="text-4xl font-bold mb-8">
+        La adherencia terapéutica y su importancia
+      </h2>
+      <p class="text-lg text-nblack text-justify">
+        En el ámbito científico, concretamente en el sector sanitario, existen
+        distintos términos utilizados para describir las malas conductas,
+        hábitos o formas no adecuadas de seguir las instrucciones y
+        recomendaciones recibidas por parte de los profesionales de la salud.
+        Sin embargo, “adherencia” es el término usado como referencia por la
+        Organización Mundial de la Salud (OMS), y se define como el grado en que
+        la conducta de un paciente, en relación con la toma de medicación, el
+        seguimiento de una dieta o la modificación en los hábitos de vida, se
+        ajusta o corresponde con las recomendaciones acordadas con los
+        profesionales sanitarios.
+      </p>
+    
+      <p class="text-lg text-nblack text-justify mt-4">
+        El proceso de adherencia se divide en tres etapas:
+      </p>
+    
+      <ul class="timeline timeline-horizontal max-md:timeline-compact mt-8">
+        <li>
+          <div class="timeline-middle">
+            <div class="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center text-lg font-bold">1</div>
+          </div>
+          <div class="timeline-start mb-10 md:text-center">
+            <div class="text-lg font-black inline-block mt-2">Iniciación</div>
+            <p class="text-nblack">Cuando el paciente comienza el tratamiento.</p>
+          </div>
+          <hr class="bg-secondary w-full" />
+        </li>
+        <li>
+          <hr class="bg-secondary w-full" />
+          <div class="timeline-middle">
+            <div class="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center text-lg font-bold">2</div>
+          </div>
+          <div class="timeline-end mb-10 md:text-center">
+            <div class="text-lg font-black inline-block mt-2">Ejecución</div>
+            <p class="text-nblack">Se refiere al cumplimiento continuo del régimen prescrito.</p>
+          </div>
+          <hr class="bg-secondary w-full" />
+        </li>
+        <li>
+          <hr class="bg-secondary w-full" />
+          <div class="timeline-middle">
+            <div class="bg-primary text-white rounded-full h-8 w-8 flex items-center justify-center text-lg font-bold">3</div>
+          </div>
+          <div class="timeline-start mb-10 md:text-center">
+            <div class="text-lg font-black inline-block mt-2">Discontinuación</div>
+            <p class="text-nblack">Ocurre cuando el tratamiento se interrumpe antes de lo indicado.</p>
+          </div>
+        </li>
+      </ul>
+      
+    
+      <p class="text-lg text-nblack text-justify mt-1">
+        Interrupciones como el retraso en empezar el tratamiento o la
+        finalización prematura son ejemplos de fallas en la adherencia que
+        pueden darse en cualquier fase del proceso.
+      </p>
+    
+      <p class="text-lg text-nblack text-justify mt-4">
+        En lo que respecta al tratamiento, la incertidumbre generada por el
+        desconocimiento acerca de lo recetado conlleva a una peor adherencia,
+        destacando el impacto que generan los efectos adversos, entre otros.
+        Varios estudios han demostrado la existencia de una relación entre el
+        número y frecuencia de dosis y el cumplimiento farmacológico, de tal
+        forma que este último se consigue garantizar si el número de dosis es
+        bajo, preferiblemente siendo una única dosis diaria. En otros casos se
+        ve afectado y no se obtiene con pautas de más de dos dosis diarias.
       </p>
     </div>
+    
+
+    <section class="w-full bg-base-100 py-20 text-center mt-20">
+      <div class="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-bold mb-8">Para qué sirve esta plataforma</h2>
+        <p class="text-lg text-black">
+          Añadir objetivos de la plataforma, cómo interviene en la mejorea de la
+          adherencia terapéutica en los pacientes y en qué se basa su
+          funcionamiento.
+        </p>
+      </div>
+    </section>
+
+    <section class="w-full bg-base-200 py-20 text-center">
+      <div class="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-4xl font-bold mb-8">Sobre el proyecto</h2>
+        <p class="text-lg text-black">
+          De dónde surgió la idea, objetivo de expansión, etc.
+          <br />
+
+          añadir también que se trata de un TFG
+          <br />
+          sdfs
+          <br />
+          sdfs
+          <br />
+          sdfs
+          <br />
+          sdfs
+          <br />
+          sdfs
+        </p>
+      </div>
+    </section>
+
+    <script type="module">
+      import lenis from "../../assets/scripts/lenisSmoothScroll.js";
+
+      document.getElementById("scrollToAbout").addEventListener("click", () => {
+        const aboutSection = document.getElementById("about");
+        lenis.scrollTo(aboutSection);
+      });
+    </script>
   </section>
-
-  <section class="w-full bg-base-100 py-20 text-center">
-    <div class="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-4xl font-bold mb-8">Para qué sirve esta plataforma</h2>
-      <p class="text-lg text-black">
-        Añadir objetivos de la plataforma, cómo interviene en la mejorea de la
-        adherencia terapéutica en los pacientes y en qué se basa su
-        funcionamiento.
-      </p>
-    </div>
-  </section>
-
-  <section class="w-full bg-base-200 py-20 text-center">
-    <div class="max-w-[80rem] mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-4xl font-bold mb-8">Sobre el proyecto</h2>
-      <p class="text-lg text-black">
-        De dónde surgió la idea, objetivo de expansión, etc.
-        <br />
-
-        añadir también que se trata de un TFG
-        <br>
-        sdfs
-        <br>
-        sdfs
-        <br>
-        sdfs
-        <br>
-        sdfs
-        <br>
-        sdfs
-      </p>
-    </div>
-  </section>
-
-  <script type="module">
-    import lenis from "../../assets/scripts/lenisSmoothScroll.js";
-
-    document.getElementById("scrollToAbout").addEventListener("click", () => {
-      const aboutSection = document.getElementById("about");
-      lenis.scrollTo(aboutSection);
-    });
-  </script>
 </Layout>
