@@ -3,7 +3,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Entorno de diseño general}
-Tras analizar detenidamente las especificaciones y los requisitos del sistema, se ha decidido desarrollar el proyecto en un entorno web en lugar de crear una aplicación nativa para dispositivos móviles. A continuación, se presentan las razones que sustentan esta decisión:
+Tras analizar detenidamente las especificaciones y los requisitos del sistema, se ha decidido desarrollar el proyecto en un entorno web en lugar de crear una aplicación nativa para dispositivos móviles. Se presentan las razones que sustentan esta decisión:
 
 \begin{enumerate} 
 	\item \textbf{Accesibilidad multidispositivo y compatibilidad (RFN4.3)}
@@ -15,7 +15,7 @@ Tras analizar detenidamente las especificaciones y los requisitos del sistema, s
 	
 	\item \textbf{Usabilidad para el personal sanitario (RFN4)}
 	
-	El personal sanitario en las farmacias está acostumbrado a utilizar sistemas basados en navegadores web en computadoras de escritorio o tablets. Una interfaz web intuitiva facilita la adopción del sistema y reduce la curva de aprendizaje, alineándose con el requisito de usabilidad que considera el nivel de familiaridad con las tecnologías existentes.
+	El personal sanitario en las farmacias está acostumbrado a utilizar sistemas basados en navegadores web en ordenadores de sobremesa o tablets. Una interfaz web intuitiva facilita la adopción del sistema y reduce la curva de aprendizaje, alineándose con el requisito de usabilidad que considera el nivel de familiaridad con las tecnologías existentes.
 	
 	\item \textbf{Seguridad y cumplimiento normativo (RFN1 y RFN6)}
 	
@@ -58,108 +58,40 @@ Tras analizar detenidamente las especificaciones y los requisitos del sistema, s
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Selección de herramientas y tecnologías para el desarrollo}
 
-En esta sección se realiza un estudio comparativo de diversas herramientas y tecnologías para el desarrollo del sistema, y se justifica la elección de las siguientes: \textbf{PostgreSQL}, \textbf{PrismaJS}, \textbf{Node.js}, \textbf{Fastify}, \textbf{Astro} y \textbf{React}. La selección se basa en los requisitos funcionales y no funcionales especificados, así como en la necesidad de ofrecer una solución eficiente, escalable y segura.
+En esta sección se presenta la elección de las herramientas y tecnologías que se utilizarán para el desarrollo del sistema, basándose en los requisitos funcionales y no funcionales establecidos. La selección busca cumplir con los objetivos de eficiencia, escalabilidad y seguridad, según las necesidades específicas del proyecto.
 
 \subsection{Base de datos: PostgreSQL}
 
-\textbf{Alternativas consideradas:} MySQL, MongoDB, Oracle Database, Microsoft SQL Server.
+Para almacenar y gestionar los datos se ha seleccionado \textbf{PostgreSQL}, un sistema de gestión de bases de datos relacionales de código abierto que garantiza el cumplimiento de los estándares SQL, asegurando la integridad y consistencia de los datos. Esta característica es especialmente relevante para manejar información médica (RFN1, RFN2, RFN3, RFN6). Además, su extensibilidad permite definir tipos de datos personalizados y funciones que facilitan la adaptación a las necesidades específicas del sistema, garantizando así su escalabilidad (RFN5). El soporte comunitario de PostgreSQL también asegura que la base de datos reciba actualizaciones y mantenimiento constantes, alineándose con los requisitos de mantenimiento (RFN7).
 
-\textbf{Comparación y justificación:}
+\subsection{Contenedor de base de datos: Docker Compose}
 
-\begin{itemize} 
-	\item \textbf{Conformidad con estándares SQL:} PostgreSQL es un sistema de gestión de bases de datos relacionales de código abierto que cumple con los estándares SQL, lo que facilita la integridad y consistencia de los datos. Esto es fundamental para manejar información médica sensible, alineándose con los requisitos de seguridad y cumplimiento normativo (RFN1, RFN6).
-	
-	\item \textbf{Características avanzadas:} Ofrece soporte para transacciones ACID, claves foráneas, vistas, triggers y procedimientos almacenados. Estas funcionalidades son esenciales para operaciones críticas en el sistema, cumpliendo con los requisitos de rendimiento y disponibilidad (RFN2, RFN3).
-	
-	\item \textbf{Extensibilidad y flexibilidad:} Permite la definición de tipos de datos personalizados, funciones y operadores, lo que facilita la adaptación a las necesidades específicas del sistema y contribuye a la escalabilidad (RFN5).
-	
-	\item \textbf{Comunidad y soporte:} Cuenta con una amplia comunidad de usuarios y desarrolladores, garantizando soporte continuo y actualizaciones, lo que cumple con los requisitos de mantenimiento (RFN7).
-	
-	\item \textbf{Alternativas:} Aunque MySQL es popular y también de código abierto, PostgreSQL ofrece un conjunto más completo de características avanzadas. Oracle Database y Microsoft SQL Server son soluciones propietarias con costos de licencia elevados, lo que no se alinea con el objetivo de optimizar recursos. MongoDB, al ser una base de datos NoSQL, no es tan adecuada para las relaciones complejas y la integridad transaccional que requiere el sistema.
-	
-\end{itemize}
+Para simplificar la configuración, despliegue y mantenimiento de la base de datos \textbf{PostgreSQL} se ha utilizado un contenedor Docker Compose, mediante el cual se permite una fácil replicación del entorno de desarrollo y se asegura que el sistema pueda desplegarse de forma consistente en distintos entornos. Esto contribuye al cumplimiento de los requisitos de disponibilidad (RFN2) y escalabilidad (RFN5), permitiendo que el sistema se adapte a nuevas farmacias y usuarios sin interrupciones en el servicio.
 
 \subsection{ORM: PrismaJS}
 
-\textbf{Alternativas consideradas:} Sequelize, TypeORM, Knex.js.
+Para interactuar con la base de datos de manera eficiente y segura se ha optado por \textbf{PrismaJS} como el ORM (Object-Relational Mapping) del sistema. Esta herramienta proporciona tipado estático y autocompletado, lo cual minimiza errores y mejora la productividad en el desarrollo (RFN7, RFN4). También incluye funcionalidades para gestionar migraciones de esquema de manera segura y eficiente, lo que se ha usado para el mantenimiento y actualización de la estructura de la base de datos. Asimismo, sus consultas optimizadas contribuyen al rendimiento del sistema (RFN3).
 
-\textbf{Comparación y justificación:}
+\subsection{Entorno de ejecución: Node.js}
 
-\begin{itemize} 
-	\item \textbf{Tipado estático y autocompletado:} PrismaJS es un ORM moderno para Node.js y TypeScript que proporciona tipado estático y autocompletado. Esto reduce errores y mejora la productividad, alineándose con los requisitos de mantenimiento y usabilidad (RFN7, RFN4).
-	
-	\item \textbf{Migraciones de esquema:} Incluye herramientas para gestionar migraciones de esquema de forma segura y eficiente, esencial para el mantenimiento continuo del sistema.
-	
-	\item \textbf{Rendimiento:} Ofrece consultas eficientes y optimizadas, contribuyendo al rendimiento general del sistema (RFN3).
-	
-	\item \textbf{Alternativas:} Aunque Sequelize y TypeORM son opciones maduras, PrismaJS ofrece una experiencia más moderna y simplificada, con mejor soporte para TypeScript y herramientas de desarrollo más avanzadas.
-	
-\end{itemize}
-
-\subsection{Entorno de Ejecución: Node.js}
-
-\textbf{Alternativas consideradas:} Python (Django, Flask), Ruby on Rails, PHP (Laravel).
-
-\textbf{Comparación y justificación:}
-
-\begin{itemize} 
-	\item \textbf{Eficiencia y rendimiento:} Node.js es un entorno de ejecución de JavaScript en el lado del servidor que utiliza un modelo de E/S no bloqueante y basado en eventos. Esto permite manejar un gran número de conexiones simultáneas sin degradación del rendimiento, cumpliendo con los requisitos de rendimiento y escalabilidad (RFN3, RFN5).
-	
-	\item \textbf{Unificación del stack tecnológico:} Al utilizar JavaScript tanto en el servidor como en el cliente, se facilita el desarrollo y mantenimiento, mejorando la productividad y cumpliendo con el requisito de mantenimiento (RFN7).
-	
-	\item \textbf{Ecosistema y comunidad:} Node.js cuenta con una amplia variedad de paquetes y herramientas disponibles, lo que acelera el desarrollo y facilita la implementación de funcionalidades.
-	
-	\item \textbf{Alternativas:} Aunque lenguajes como Python y PHP son populares para el desarrollo web, Node.js ofrece ventajas en aplicaciones en tiempo real y de alta concurrencia, relevantes para los requisitos del sistema.
-	
-\end{itemize}
+\textbf{Node.js} se ha elegido como entorno de ejecución del servidor debido a su modelo basado en eventos, el cual permite manejar un gran número de conexiones simultáneas sin degradar el rendimiento. De esta forma se cumple con los requisitos de rendimiento y escalabilidad (RFN3, RFN5) del sistema. Este entorno permite unificar el stack tecnológico en JavaScript tanto para el lado del cliente como del servidor, mejorando así la productividad y alineándose con los requisitos de mantenimiento (RFN7).
 
 \subsection{Framework Backend: Fastify}
 
-\textbf{Alternativas consideradas:} Express.js, Koa.js, Hapi.js.
+Para el desarrollo del backend se ha optado por \textbf{Fastify}, un framework para Node.js que destaca por resultar una solución ideal para sistemas que requieren tiempos de respuesta mínimos y eficiencia en el procesamiento, satisfaciendo los requisitos de rendimiento del proyecto (RFN3). Una característica que ha resultado primordial ha sido la estructura modular que presenta Fastify gracias a su sistema de plugins, facilitando la expansión del sistema conforme crezca en funcionalidad y permitiendo un fácil mantenimiento (RFN5, RFN7). Además, Fastify incorpora validación de esquemas JSON, lo cual refuerza la seguridad y confiabilidad de las API, alineándose con los requisitos de seguridad (RFN1).
 
-\textbf{Comparación y justificación:}
+\subsection{Generador de sitios estáticos: Astro}
 
-\begin{itemize} 
-	\item \textbf{Alto rendimiento:} Fastify es un framework web para Node.js enfocado en ofrecer el máximo rendimiento. Esto contribuye al cumplimiento de los requisitos de rendimiento (RFN3).
-	
-	\item \textbf{Modularidad y extensibilidad:} Su sistema de plugins permite una gran modularidad, facilitando el mantenimiento y la escalabilidad del sistema (RFN5, RFN7).
-	
-	\item \textbf{Validación de esquemas:} Incorpora validación de esquemas JSON, mejorando la seguridad y confiabilidad de las API, alineándose con los requisitos de seguridad (RFN1).
-	
-	\item \textbf{Alternativas:} Aunque Express.js es el framework más popular para Node.js, Fastify ofrece un rendimiento superior y características modernas que mejoran la eficiencia del desarrollo.
-	
-\end{itemize}
+Para el desarrollo de la interfaz de usuario y generación de contenido estático se ha seleccionado \textbf{Astro} como generador de sitios estáticos. Astro se ha diseñado para crear sitios web rápidos y optimizados, lo cual mejora la experiencia del usuario y cumple con los requisitos de rendimiento (RFN3) al minimizar la carga de JavaScript en el cliente, lo que se conoce como \textit{Server Side Rendering}. Astro permite utilizar componentes de diferentes frameworks, como React, ofreciendo flexibilidad en el desarrollo del frontend. Esta característica permite construir interfaces de usuario modernas y responsivas, alineándose con los requisitos de usabilidad (RFN4).
 
-\subsection{Generador de Sitios Estáticos: Astro}
+\subsection{Biblioteca frontend: React}
 
-\textbf{Alternativas consideradas:} Next.js, Gatsby, Nuxt.js.
+Para añadir interactividad en la interfaz de usuario se ha elegido \textbf{React}, una biblioteca de JavaScript ampliamente adoptada, la cual ofrece un enfoque basado en componentes a la par que facilita la creación de interfaces reutilizables y mantenibles (RFN7).
 
-\textbf{Comparación y justificación:}
+\subsection{Framework de diseño: Tailwind CSS}
 
-\begin{itemize} 
-	\item \textbf{Optimización de rendimiento:} Astro es un moderno generador de sitios estáticos diseñado para crear sitios web rápidos y optimizados, mejorando la experiencia del usuario y cumpliendo con los requisitos de rendimiento (RFN3).
-	
-	\item \textbf{Flexibilidad en el desarrollo:} Permite utilizar componentes de diferentes frameworks como React, ofreciendo flexibilidad en el desarrollo del frontend.
-	
-	\item \textbf{Reducción de JavaScript en el cliente:} Genera páginas estáticas con mínima carga de JavaScript en el cliente, mejorando el tiempo de carga y la usabilidad (RFN4).
-	
-	\item \textbf{Alternativas:} Aunque Next.js y Gatsby son opciones populares, Astro ofrece ventajas en rendimiento y simplicidad para proyectos donde el contenido estático es predominante.
-	
+Para el diseño y estilización de la interfaz se ha optado por \textbf{Tailwind CSS}. Este framework permite crear diseños gracias a su sistema de utilidades predefinidas, característica que simplifican la personalización de estilos.
 
-\end{itemize}
 
-\subsection{Biblioteca Frontend: React}
 
-\textbf{Alternativas consideradas:} Vue.js, Angular, Svelte.
 
-\textbf{Comparación y justificación:}
-
-\begin{itemize} 
-	\item \textbf{Adopción y comunidad:} React es una biblioteca de JavaScript ampliamente utilizada para construir interfaces de usuario interactivas y cuenta con una gran comunidad, facilitando el acceso a recursos y soporte.
-	
-\item \textbf{Componentización:} Su enfoque en componentes permite crear interfaces de usuario reutilizables y mantenibles, cumpliendo con el requisito de mantenimiento (RFN7).
-
-\item \textbf{Integración con Astro:} React es compatible con Astro, lo que permite aprovechar las ventajas de ambos en el desarrollo del frontend.
-
-\item \textbf{Alternativas:} Si bien Vue.js y Angular son también opciones viables, React ofrece una curva de aprendizaje manejable y gran flexibilidad, beneficiosos para el equipo de desarrollo y los plazos del proyecto.
-\end{itemize}

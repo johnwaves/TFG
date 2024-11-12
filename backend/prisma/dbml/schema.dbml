@@ -1,0 +1,126 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Farmacia {
+  id Int [pk, increment]
+  nombre String [unique, not null]
+  direccion String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  sanitarios Sanitario [not null]
+  pacientes Paciente [not null]
+}
+
+Table User {
+  dni String [pk]
+  password String [not null]
+  email String [not null]
+  nombre String [not null]
+  apellidos String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  telefono String [not null]
+  fecha_nacimiento DateTime [not null]
+  direccion String [not null]
+  foto String
+  role UserRole [not null]
+  sanitario Sanitario
+  paciente Paciente
+  tutor Tutor
+}
+
+Table Sanitario {
+  user User [not null]
+  idUser String [pk]
+  tipo TipoSanitario [not null]
+  idFarmacia Int [not null]
+  farmacia Farmacia [not null]
+  tratamientos Tratamiento [not null]
+}
+
+Table Paciente {
+  user User [not null]
+  idUser String [pk]
+  tutor Tutor
+  idTutor String
+  tratamientos Tratamiento [not null]
+  farmacia Farmacia
+  idFarmacia Int
+}
+
+Table Tutor {
+  user User [not null]
+  idUser String [pk]
+  pacientes Paciente [not null]
+}
+
+Table Dosis {
+  id Int [pk, increment]
+  cantidad Int [not null]
+  intervalo Int [not null]
+  duracion Int [not null]
+  tratamiento Tratamiento
+}
+
+Table Tratamiento {
+  id Int [pk, increment]
+  nombre String [not null]
+  tipo TipoTratamiento [not null]
+  createdAt DateTime [default: `now()`, not null]
+  descripcion String [not null]
+  dosis Dosis
+  idDosis Int [unique]
+  fecha_inicio DateTime
+  fecha_fin DateTime
+  idSanitario String [not null]
+  sanitario Sanitario [not null]
+  idPaciente String [not null]
+  paciente Paciente [not null]
+  registro RegistroTratamiento [not null]
+  puntuacion Int [not null, default: 0]
+}
+
+Table RegistroTratamiento {
+  id Int [pk, increment]
+  fecha_registro DateTime [default: `now()`, not null]
+  cumplimiento Boolean [not null]
+  detalles String
+  tratamiento Tratamiento [not null]
+  idTratamiento Int [not null]
+}
+
+Enum UserRole {
+  ADMIN
+  SANITARIO
+  PACIENTE
+  TUTOR
+}
+
+Enum TipoSanitario {
+  FARMACEUTICO
+  TECNICO
+}
+
+Enum TipoTratamiento {
+  FARMACOLOGICO
+  NO_FARMACOLOGICO
+}
+
+Ref: Sanitario.idUser - User.dni
+
+Ref: Sanitario.idFarmacia > Farmacia.id
+
+Ref: Paciente.idUser - User.dni
+
+Ref: Paciente.idTutor > Tutor.idUser
+
+Ref: Paciente.idFarmacia > Farmacia.id
+
+Ref: Tutor.idUser - User.dni
+
+Ref: Tratamiento.idDosis - Dosis.id
+
+Ref: Tratamiento.idSanitario > Sanitario.idUser
+
+Ref: Tratamiento.idPaciente > Paciente.idUser
+
+Ref: RegistroTratamiento.idTratamiento > Tratamiento.id

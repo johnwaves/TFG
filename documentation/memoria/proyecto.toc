@@ -1,37 +1,56 @@
 \babel@toc {spanish}{}\relax 
 \contentsline {chapter}{\numberline {1}Introducción}{1}{chapter.1}%
 \contentsline {section}{\numberline {1.1}Concepto de adherencia terapéutica}{1}{section.1.1}%
-\contentsline {section}{\numberline {1.2}Predictores de la adherencia y no adherencia}{1}{section.1.2}%
-\contentsline {section}{\numberline {1.3}Formas de incumplir el tratamiento}{2}{section.1.3}%
+\contentsline {section}{\numberline {1.2}Predictores de la adherencia y no adherencia}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Formas de incumplir el tratamiento}{3}{section.1.3}%
 \contentsline {section}{\numberline {1.4}Métodos de seguimiento y estimación de la adherencia}{3}{section.1.4}%
-\contentsline {section}{\numberline {1.5}Estado del arte: iniciativas y programas desarrollados}{4}{section.1.5}%
-\contentsline {section}{\numberline {1.6}Motivación}{5}{section.1.6}%
-\contentsline {section}{\numberline {1.7}Objetivos}{5}{section.1.7}%
-\contentsline {chapter}{\numberline {2}Análisis y especificaciones del proyecto}{7}{chapter.2}%
-\contentsline {section}{\numberline {2.1}Identificación de actores}{7}{section.2.1}%
-\contentsline {section}{\numberline {2.2}Historias de usuario}{8}{section.2.2}%
-\contentsline {section}{\numberline {2.3}Requisitos}{9}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Requisitos funcionales}{9}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Requisitos no funcionales}{11}{subsection.2.3.2}%
-\contentsline {section}{\numberline {2.4}Casos de uso}{12}{section.2.4}%
-\contentsline {chapter}{\numberline {3}Planificación}{17}{chapter.3}%
-\contentsline {section}{\numberline {3.1}Metodología a utilizar}{17}{section.3.1}%
-\contentsline {subsection}{\numberline {3.1.1}Introducción a SCRUM}{17}{subsection.3.1.1}%
-\contentsline {subsubsection}{Adopción de Scrum en el proyecto}{17}{section*.8}%
-\contentsline {paragraph}{Roles}{17}{section*.9}%
-\contentsline {paragraph}{Artefactos}{18}{section*.10}%
-\contentsline {paragraph}{Eventos}{18}{section*.11}%
-\contentsline {subsection}{\numberline {3.1.2}Adaptación de Scrum al contexto del proyecto}{18}{subsection.3.1.2}%
-\contentsline {subsection}{\numberline {3.1.3}Planificación con Scrum}{18}{subsection.3.1.3}%
-\contentsline {section}{\numberline {3.2}Organización y planificación temporal}{19}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Control de versiones}{20}{section.3.3}%
-\contentsline {chapter}{\numberline {4}Diseño general y herramientas}{21}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Entorno de diseño general}{21}{section.4.1}%
-\contentsline {section}{\numberline {4.2}Selección de herramientas y tecnologías para el desarrollo}{23}{section.4.2}%
-\contentsline {subsection}{\numberline {4.2.1}Base de datos: PostgreSQL}{23}{subsection.4.2.1}%
-\contentsline {subsection}{\numberline {4.2.2}ORM: PrismaJS}{23}{subsection.4.2.2}%
-\contentsline {subsection}{\numberline {4.2.3}Entorno de Ejecución: Node.js}{24}{subsection.4.2.3}%
-\contentsline {subsection}{\numberline {4.2.4}Framework Backend: Fastify}{24}{subsection.4.2.4}%
-\contentsline {subsection}{\numberline {4.2.5}Generador de Sitios Estáticos: Astro}{25}{subsection.4.2.5}%
-\contentsline {subsection}{\numberline {4.2.6}Biblioteca Frontend: React}{25}{subsection.4.2.6}%
-\contentsline {chapter}{Bibliografía}{27}{chapter*.12}%
+\contentsline {section}{\numberline {1.5}Estado del arte: iniciativas y programas desarrollados}{6}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Motivación}{6}{section.1.6}%
+\contentsline {section}{\numberline {1.7}Objetivos}{7}{section.1.7}%
+\contentsline {chapter}{\numberline {2}Análisis y especificaciones del proyecto}{9}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Identificación de actores}{9}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Historias de usuario}{10}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Requisitos}{11}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Requisitos funcionales}{11}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Requisitos no funcionales}{13}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}Casos de uso}{14}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Planificación}{19}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Metodología a utilizar}{19}{section.3.1}%
+\contentsline {subsection}{\numberline {3.1.1}Introducción a SCRUM}{19}{subsection.3.1.1}%
+\contentsline {subsection}{\numberline {3.1.2}Adaptación de Scrum al contexto del proyecto}{20}{subsection.3.1.2}%
+\contentsline {subsection}{\numberline {3.1.3}Planificación con Scrum}{20}{subsection.3.1.3}%
+\contentsline {section}{\numberline {3.2}Organización y planificación temporal}{21}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Control de versiones}{22}{section.3.3}%
+\contentsline {chapter}{\numberline {4}Diseño general y herramientas}{23}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Entorno de diseño general}{23}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Selección de herramientas y tecnologías para el desarrollo}{25}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Base de datos: PostgreSQL}{25}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Contenedor de base de datos: Docker Compose}{25}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}ORM: PrismaJS}{25}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Entorno de ejecución: Node.js}{25}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Framework Backend: Fastify}{26}{subsection.4.2.5}%
+\contentsline {subsection}{\numberline {4.2.6}Generador de sitios estáticos: Astro}{26}{subsection.4.2.6}%
+\contentsline {subsection}{\numberline {4.2.7}Biblioteca frontend: React}{26}{subsection.4.2.7}%
+\contentsline {subsection}{\numberline {4.2.8}Framework de diseño: Tailwind CSS}{26}{subsection.4.2.8}%
+\contentsline {chapter}{\numberline {5}Desarrollo e implementación}{27}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Desarrollo del backend}{27}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1}Docker}{27}{subsection.5.1.1}%
+\contentsline {subsection}{\numberline {5.1.2}Prisma}{28}{subsection.5.1.2}%
+\contentsline {subsection}{\numberline {5.1.3}Fastify, desarrollo de API}{29}{subsection.5.1.3}%
+\contentsline {subsection}{\numberline {5.1.4}Dependencias de Node.js}{35}{subsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.1.5}Flujo de peticiones a API}{35}{subsection.5.1.5}%
+\contentsline {subsection}{\numberline {5.1.6}Organización de directorios}{36}{subsection.5.1.6}%
+\contentsline {section}{\numberline {5.2}Desarrollo del frontend}{36}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}Desarrollo del frontend con Astro}{36}{subsection.5.2.1}%
+\contentsline {subsubsection}{Configuración del layout base}{36}{section*.8}%
+\contentsline {subsubsection}{Uso del layout en una vista específica}{37}{section*.9}%
+\contentsline {subsection}{\numberline {5.2.2}Uso de React}{38}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Uso de Tailwind CSS y DaisyUI}{41}{subsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.2.4}Dependencias adicionales en el Frontend}{41}{subsection.5.2.4}%
+\contentsline {subsection}{\numberline {5.2.5}Organización de directorios}{42}{subsection.5.2.5}%
+\contentsline {section}{\numberline {5.3}Diseño de la interfaz de usuario}{43}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Conclusiones}{49}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Despliegue}{49}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Dificultades encontradas}{49}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Conclusión final}{50}{section.6.3}%
+\contentsline {chapter}{Bibliografía}{52}{chapter*.10}%
