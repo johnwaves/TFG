@@ -8,7 +8,7 @@ Se definen tres categorías de actores:
 \begin{itemize}
 	\item \textbf{Personal sanitario.} Dado que este proyecto está orientado de forma exclusiva a farmacias comunitarias\footnote{Las farmacias comunitarias son establecimientos sanitarios de carácter privado pero de interés público donde el farmacéutico titular-propietario, asistido, en su caso, de ayudantes o auxiliares, presta servicios básicos a la población: dispensación de los medicamentos y productos sanitarios, control y custodia de las recetas médicas dispensadas, seguimiento de los tratamientos farmacológicos y no farmacológicos a los pacientes, entre otros. \cite{Ley16_1997}}, se distinguen los siguientes tipos de personal sanitario:
 	\begin{itemize}
-		\item \textbf{Farmacéutico.} Es la persona cualificada y encargada para elaborar y dispensar medicación, recomendar la implantación de hábitos de vida, dietas, controlar las recetas médicas dispensadas y realizar un seguimiento del tratamiento en los pacientes con el fin de determinar la adherencia y ofrecer recomendaciones para mejorarla. A los farmacéuticos se les atribuye más tareas y cargos dentro de una oficina de farmacia, pero las  funciones anteriores serán las principales para el desarrollo de este proyecto.
+		\item \textbf{Farmacéutico.} Es la persona cualificada y encargada para elaborar y dispensar medicación, recomendar la implantación de hábitos de vida, dietas, controlar las recetas médicas dispensadas y realizar un seguimiento del tratamiento en los pacientes con el fin de determinar la adherencia y ofrecer recomendaciones para mejorarla. A los farmacéuticos se les atribuye más tareas y cargos dentro de una oficina de farmacia, pero las  funciones anteriores serán las principales para este proyecto.
 		
 		\item \textbf{Técnico de farmacia.} Es una persona con formación en el campo de la farmacia que asiste al farmacéutico titular en diferentes tareas: dispensación de productos farmacéuticos junto con sus indicaciones de uso, toma de constantes vitales, bajo la supervisión del facultativo, y parámetros somatométricos (como el peso y la altura), además de realizar tareas administrativas.
 	\end{itemize}
@@ -30,13 +30,13 @@ Las historias de usuario en el desarrollo de software son descripciones informal
 Para este proyecto se detallan las siguientes historias de usuario, las cuales irán nombradas de la forma HU-XX, siendo XX el número de historia en orden creciente:
 
 \begin{itemize}
-	\item \textbf{HU-01: Farmacéutico.} El farmacéutico titular de una farmacia atiende a una variedad de clientes a lo largo de un día. La mayoría de ellos acude a recoger la medicación prescrita, otros para que se les dispense una medicación personalizada y algunos llegan para aclarar sus dudas o incertidumbres sobre la toma de medicamentos y comunicar sus avances en cuanto a todo tipo de tratamientos. El farmacéutico despacha a todas las personas de igual manera, aunque emplea un mayor tiempo en aquellas consultas más complejas, como es el caso del seguimiento de un tratamiento, su cumplimiento o el estudio del uso individualizado de los medicamentos, con el propósito de detectar reacciones adversas que puedan producirse. Para poder ser más eficiente en su jornada laboral, requiere que muchas de estas tareas se automaticen, pues algunos de los datos que recoge manualmente son de carácter estadístico y no se precisa su presencia obligatoria.
+	\item \textbf{HU-01: Farmacéutico.} El farmacéutico titular de una farmacia atiende a una variedad de clientes a lo largo de un día. La mayoría de ellos acude a recoger la medicación prescrita, otros para que se les dispense una medicación personalizada y algunos llegan para aclarar sus dudas o incertidumbres sobre la toma de medicamentos y comunicar sus avances en cuanto a todo tipo de tratamientos. El farmacéutico despacha a todas las personas por igual, aunque emplea un mayor tiempo en aquellas consultas más complejas, como es el caso del seguimiento de un tratamiento, su cumplimiento o el estudio del uso individualizado de los medicamentos, con el propósito de detectar reacciones adversas que puedan producirse. Para poder ser más eficiente en su jornada laboral, requiere que muchas de estas tareas se automaticen, pues algunos de los datos que recoge manualmente son de carácter estadístico y no se precisa su presencia obligatoria.
 	
-	\item \textbf{HU-02: Técnico de farmacia.} El técnico de farmacia es añadido a una farmacia por su farmacéutico titular y no tiene las mismas responsabilidades que el este, pero también puede dispensar medicamentos y atender consultas de los pacientes sobre sus tratamientos en curso. El farmacéutico delega en el técnico varias funciones, como contribuir al análisis del cumplimiento de tratamientos, dietas o hábitos de vida, y medir constantes vitales y parámetros somatométricos. Además, el técnico es responsable de registrar a los pacientes en el sistema de la farmacia, 
+	\item \textbf{HU-02: Técnico de farmacia.} El técnico de farmacia es incorporado a una farmacia por el farmacéutico titular y, aunque no tiene las mismas responsabilidades que este, también puede dispensar medicamentos y atender consultas de los pacientes sobre sus tratamientos en curso. El farmacéutico delega en el técnico diversas funciones, como contribuir al análisis del cumplimiento de tratamientos, dietas o hábitos de vida, y medir constantes vitales y parámetros somatométricos. Además, el técnico puede ser responsable de registrar a los pacientes en el sistema de la farmacia.
 	
-	\item \textbf{HU-03. Paciente.} Un paciente llega a la farmacia para retirar su medicación recetada. Tras comenzar el tratamiento, puede regresar para que se le dispense nuevamente el medicamento necesario o para realizar un seguimiento de su tratamiento o hábito prescrito. Sin embargo, en algunas ocasiones no es necesaria la dispensación de nueva medicación y el paciente sólo necesita informar sobre el cumplimiento de lo prescrito. Estas tareas son algo que el paciente puede, y a menudo prefiere, realizar desde su domicilio, sin necesidad de acudir presencialmente a la farmacia.
+	\item \textbf{HU-03. Paciente.} Un paciente llega a la farmacia para retirar su medicación prescrita. Tras comenzar el tratamiento, puede regresar para que se le dispense nuevamente el medicamento necesario o para realizar un seguimiento de su tratamiento o de los hábitos recomendados. Sin embargo, en algunas ocasiones no es necesaria la dispensación de nueva medicación, y el paciente solo necesita informar sobre el cumplimiento de lo prescrito. Estas tareas son algo que el paciente puede, y a menudo prefiere, realizar desde su domicilio, sin necesidad de acudir presencialmente a la farmacia.
 	
-	\item \textbf{HU-03. Acompañante del paciente.} Un paciente menor de edad debe informar sobre su estado de salud unos días después de iniciar su tratamiento. Sin embargo, debido a su corta edad, son sus padres quienes deben realizar esta tarea, ya que el menor no puede acudir solo a la farmacia. Los padres preferirían que esta gestión pudiera realizarse desde su domicilio o desde cualquier lugar donde se encuentren, ya que es posible que estén lejos de la farmacia donde registraron el inicio del tratamiento.
+	\item \textbf{HU-03. Acompañante del paciente.} Un paciente menor de edad necesita informar sobre su estado de salud unos días después de iniciar su tratamiento. Sin embargo, debido a su corta edad, son sus padres quienes deben realizar esta tarea, ya que el menor no puede acudir solo a la farmacia. Los padres preferirían poder gestionar esto desde su domicilio o desde cualquier lugar donde se encuentren, dado que podrían estar lejos de la farmacia donde se registró el inicio del tratamiento.
 
 \end{itemize}
 
@@ -72,7 +72,7 @@ Los requisitos funcionales especifican lo que debe realizar el sistema en cuanto
 	\begin{itemize}
 		\item \textbf{RF3.1}: El farmacéutico podrá registrar observaciones sobre el progreso del tratamiento de un paciente.
 		\item \textbf{RF3.2}: El técnico de farmacia podrá ingresar datos de seguimiento como constantes vitales y parámetros somatométricos del paciente.
-		\item \textbf{RF3.3}: El paciente, o su tutor o acompañante, podrá ingresar datos de sequimiento de un tratamiento y notificar problemas surgidos en el sistema.
+		\item \textbf{RF3.3}: El paciente, o su tutor o acompañante, podrá ingresar datos de sequimiento de un tratamiento en el sistema y notificar las dificultades surgidas.
 		\item \textbf{RF3.4}: El sistema generará alertas y recordatorios para el seguimiento de tratamientos a pacientes con condiciones críticas o crónicas.
 		\item \textbf{RF3.5}: El sistema realizará un análisis del seguimiento del tratamiento e informará sobre las estadísticas obtenidas para determinar el grado de adherencia 
 	\end{itemize}
@@ -127,7 +127,6 @@ Los requisitos funcionales especifican lo que debe realizar el sistema en cuanto
 	
 	\begin{itemize}
 		\item \textbf{RFN2.1}: El sistema garantizará una alta disponibilidad para asegurar que los servicios no se vean interrumpidos durante el horario de atención de las farmacias.
-		\item \textbf{RFN2.2}: El sistema deberá contar con mecanismos de respaldo y recuperación ante fallos o desastres, para minimizar el tiempo de inactividad.
 	\end{itemize}
 	
 	\item \textbf{RFN3: Rendimiento.} El sistema deberá ser capaz de manejar un alto volumen de transacciones y consultas sin afectar su rendimiento.
@@ -162,7 +161,6 @@ Los requisitos funcionales especifican lo que debe realizar el sistema en cuanto
 	
 	\begin{itemize}
 		\item \textbf{RFN7.1}: El sistema deberá permitir actualizaciones y parches sin necesidad de detener las operaciones críticas.
-		\item \textbf{RFN7.2}: El sistema deberá proporcionar herramientas de diagnóstico y monitoreo para detectar y corregir problemas rápidamente.
 	\end{itemize}
 	
 \end{itemize}
@@ -170,7 +168,7 @@ Los requisitos funcionales especifican lo que debe realizar el sistema en cuanto
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Casos de uso}
-
+Los casos de uso son una técnica utilizada para describir cómo los usuarios interactúan con un sistema para lograr un objetivo específico. Un caso de uso representa una secuencia de acciones o pasos que detallan la interacción entre un actor y el sistema en sí. \\
 
 \begin{longtable}{|p{3cm}|p{9cm}|p{2cm}|}
 	\hline

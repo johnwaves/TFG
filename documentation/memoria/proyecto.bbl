@@ -31,6 +31,11 @@ A.~J. Claxton, J.~Cramer, and C.~Pierce.
   medication compliance.
 \newblock {\em Clinical Therapeutics}, 23(8):1296--1310, 2001.
 
+\bibitem{pages2018metodos}
+Neus Pagès-Puigdemont and M.~Isabel Valverde-Merino.
+\newblock Métodos para medir la adherencia terapéutica.
+\newblock {\em Ars Pharm}, 59(3):163--172, 9 2018.
+
 \bibitem{CONTHE2014336}
 P.~Conthe, E.~{Márquez Contreras}, A.~{Aliaga Pérez}, B.~{Barragán García},
   M.N. {Fernández de Cano Martín}, M.~{González Jurado}, M.~{Ollero
@@ -75,5 +80,10 @@ El~Farmacéutico.
 {Clínica Universidad de Navarra}.
 \newblock Paciente. diccionario médico, 2024.
 \newblock Accedido: 1-sep-2024.
+
+\bibitem{screwfast}
+{Screwfast Foundations Ltd}.
+\newblock Screwfast foundations: Helical piles and pile foundations.
+\newblock \url{https://screwfast.uk/}.
 
 \end{thebibliography}
