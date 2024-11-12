@@ -16,7 +16,7 @@ const SanitarioCheck = ({ children }) => {
 
 			if (decodedToken.role !== 'SANITARIO') {
 				// alert("Redirigiendo a /unauthorized: El rol no es SANITARIO.")
-				window.location.href = '/unauthorized'
+				window.location.href = '/dashboard'
 				return
 			}
 

@@ -16,7 +16,7 @@ const AdminCheck = ({ children }) => {
 
       if (decodedToken.role !== 'ADMIN') {
         // alert("Redirigiendo a /unauthorized: El rol no es ADMIN.")  
-        window.location.href = '/unauthorized'  
+        window.location.href = '/dashboard'  
         return  
       }
 
