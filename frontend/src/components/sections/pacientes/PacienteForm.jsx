@@ -10,7 +10,7 @@ const PacienteForm = () => {
     const [telefono, setTelefono] = useState("")
     const [fechaNac, setFechaNac] = useState("")
     const [direccion, setDireccion] = useState("")
-    const [role, setRole] = useState("PACIENTE")
+    const [role, setRole] = useState("")
     const [idFarmacia, setIdFarmacia] = useState(null)
     const [pacientes, setPacientes] = useState([])
     const [selectedPacienteDni, setSelectedPacienteDni] = useState("")
@@ -178,8 +178,7 @@ const PacienteForm = () => {
                 </div>
             </div>
 
-
-            <div className="flex items-center justify-center min-h-screen">
+            <div className="flex items-center justify-center m-10">
                 <div className="card bg-base-100 w-full max-w-md shadow-2xl p-8">
 
                     <form onSubmit={handleSubmit}>
@@ -264,19 +263,6 @@ const PacienteForm = () => {
                         <div className="form-control mb-4">
                             <label className="input input-bordered input-primary flex items-center gap-2">
                                 <input
-                                    type="date"
-                                    className="grow"
-                                    placeholder="Fecha de nacimiento"
-                                    value={fechaNac}
-                                    onChange={(e) => setFechaNac(e.target.value)}
-                                    required
-                                />
-                            </label>
-                        </div>
-
-                        <div className="form-control mb-4">
-                            <label className="input input-bordered input-primary flex items-center gap-2">
-                                <input
                                     type="text"
                                     className="grow"
                                     placeholder="Dirección"
@@ -311,6 +297,20 @@ const PacienteForm = () => {
                             </label>
                         </div>
 
+                        <div className="form-control mb-4">
+                            <span className="text-lg">Fecha de nacimiento:</span>
+                            <label className="input input-bordered input-primary flex items-center gap-2 mt-2">
+                                <input
+                                    type="date"
+                                    className="grow"
+                                    placeholder="Fecha de nacimiento"
+                                    value={fechaNac}
+                                    onChange={(e) => setFechaNac(e.target.value)}
+                                    required
+                                />
+                            </label>
+                        </div>
+
                         {role === "TUTOR" && (
                             <div className="form-control mb-4">
                                 <label className="text-lg mb-2">Seleccionar paciente:</label>
@@ -336,7 +336,6 @@ const PacienteForm = () => {
                             {successMessage && <p className="text-green-600 text-center">{successMessage}</p>}
                         </div>
 
-                        {/* Botón de envío */}
                         <div className="form-control mt-4">
                             <button className="btn btn-primary text-white" disabled={isLoading}>
                                 {isLoading ? (
