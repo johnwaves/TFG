@@ -7,6 +7,7 @@ const TratamientosPaciente = () => {
     const [activeTab, setActiveTab] = useState("activos") 
     const [noTratamientos, setNoTratamientos] = useState(false) 
     const [expandedIndex, setExpandedIndex] = useState(null) 
+    const [adherencias, setAdherencias] = useState({}) 
 
     useEffect(() => {
         const fetchTratamientos = async () => {
@@ -27,6 +28,7 @@ const TratamientosPaciente = () => {
                         setTratamientos(data) 
                         setNoTratamientos(data.length === 0) 
                         fetchSanitariosData(data) 
+                        fetchAdherencias(data) 
                     } else {
                         console.error("Error al obtener los tratamientos:", data.error) 
                     }
@@ -41,6 +43,7 @@ const TratamientosPaciente = () => {
     const fetchSanitariosData = async (tratamientos) => {
         const token = sessionStorage.getItem("jwtToken") 
         const newSanitariosData = {} 
+
         for (const tratamiento of tratamientos) {
             const sanitarioId = tratamiento.idSanitario 
             if (!sanitariosData[sanitarioId]) {
@@ -62,6 +65,32 @@ const TratamientosPaciente = () => {
         setSanitariosData((prevSanitariosData) => ({ ...prevSanitariosData, ...newSanitariosData })) 
     } 
 
+    const fetchAdherencias = async (tratamientos) => {
+        const token = sessionStorage.getItem("jwtToken") 
+        const newAdherencias = {} 
+        for (const tratamiento of tratamientos) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/tratamientos/${tratamiento.id}/adherencia`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ id: tratamiento.id })
+                }) 
+                const data = await response.json() 
+                if (response.ok) {
+                    newAdherencias[tratamiento.id] = data 
+                } else {
+                    console.error(`Error fetching adherence for treatment ${tratamiento.id}: ${data.error}`) 
+                }
+            } catch (error) {
+                console.error(`Error fetching adherence for treatment ${tratamiento.id}:`, error) 
+            }
+        }
+        setAdherencias(newAdherencias) 
+    } 
+
     const filteredTratamientos = () => {
         const today = new Date() 
         if (activeTab === "activos") {
@@ -76,11 +105,17 @@ const TratamientosPaciente = () => {
 
     const handleTabChange = (tab) => {
         setActiveTab(tab) 
-        setExpandedIndex(null)  
+        setExpandedIndex(null) 
     } 
 
     const toggleDetails = (index) => {
         setExpandedIndex(expandedIndex === index ? null : index) 
+    } 
+
+    const getProgressClass = (percentage) => {
+        if (percentage < 33) return "progress-error" 
+        if (percentage < 66) return "progress-warning" 
+        return "progress-primary" 
     } 
 
     return (
@@ -130,14 +165,22 @@ const TratamientosPaciente = () => {
                                 <tr>
                                     <th style={{ width: "50px" }}></th>
                                     <th style={{ width: "300px" }}>Nombre</th>
-                                    <th style={{ width: "100px" }}>Fecha de inicio</th>
-                                    <th style={{ width: "100px" }}>Fecha de fin</th>
-                                    <th style={{ width: "150px" }}>Prescito por</th>
+                                    <th style={{ width: "75px" }}>Fecha de inicio</th>
+                                    <th style={{ width: "75px" }}>Fecha de fin</th>
+                                    <th style={{ width: "150px" }}>Prescrito por</th>
+                                    <th style={{ width: "100px" }}>Adherencia</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredTratamientos().map((tratamiento, index) => {
                                     const sanitario = sanitariosData[tratamiento.idSanitario] 
+                                    const adherencia = adherencias[tratamiento.id] 
+                                    
+                                    let totalAdherenciaPercentage = 0 
+                                    if (adherencia) {
+                                        totalAdherenciaPercentage = Math.round((adherencia.adherenciaTotal.actual / adherencia.adherenciaTotal.maximo) * 100) 
+                                    }
+
                                     return (
                                         <tr key={tratamiento.id} className="hover">
                                             <th>{index + 1}</th>
@@ -168,20 +211,27 @@ const TratamientosPaciente = () => {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td>
-                                                {tratamiento.fecha_inicio
-                                                    ? new Date(tratamiento.fecha_inicio).toLocaleDateString('es-ES')
-                                                    : "No iniciada"}
-                                            </td>
-                                            <td>
-                                                {tratamiento.fecha_fin
-                                                    ? new Date(tratamiento.fecha_fin).toLocaleDateString('es-ES')
-                                                    : "No definida"}
-                                            </td>
+                                            <td>{tratamiento.fecha_inicio ? new Date(tratamiento.fecha_inicio).toLocaleDateString('es-ES') : "No iniciada"}</td>
+                                            <td>{tratamiento.fecha_fin ? new Date(tratamiento.fecha_fin).toLocaleDateString('es-ES') : "No definida"}</td>
                                             <td>{sanitario ? `${sanitario.apellidos}, ${sanitario.nombre}` : "No disponible"}</td>
+                                            <td>
+                                                {adherencia ? (
+                                                    <>
+                                                        {/* <p><strong>Parcial:</strong></p>
+                                                        <progress className="progress progress-warning w-56" value={adherencia.adherenciaParcial.actual} max={adherencia.adherenciaParcial.hipotetico}></progress> */} 
+                                                        {/* <p><strong>Total:</strong></p> */}
+                                                        <div className="flex items-center">
+                                                            <progress className={`progress ${getProgressClass(totalAdherenciaPercentage)} w-56`} value={adherencia.adherenciaTotal.actual} max={adherencia.adherenciaTotal.maximo}></progress>
+                                                            <span className="ml-2">{totalAdherenciaPercentage}%</span>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <span>No definida</span>
+                                                )}
+                                            </td>
                                         </tr>
                                     ) 
-                                })}
+                                }) }
                             </tbody>
                         </table>
                     </div>

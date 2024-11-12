@@ -7,6 +7,13 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("user"));
+    if (user)
+      window.location.href = "/dashboard";
+
+  }, []);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -31,7 +38,7 @@ const LoginForm = () => {
           sessionStorage.setItem("jwtToken", responseData.token);
           sessionStorage.setItem("user", JSON.stringify(responseData.user));
           window.location.href = "/dashboard";
-          
+
         } else {
           if (response.status === 404) {
             setErrorMessage("No existe el usuario.");
@@ -46,14 +53,14 @@ const LoginForm = () => {
         }
         setIsLoading(false);
       }, 500);
-      
+
     } catch (error) {
-        console.error("Hubo un error de conexión:", error);
-        setErrorMessage(
-          "Hubo un problema con la conexión. Inténtalo de nuevo más tarde."
-        );
-        setIsLoading(false);
-      }
+      console.error("Hubo un error de conexión:", error);
+      setErrorMessage(
+        "Hubo un problema con la conexión. Inténtalo de nuevo más tarde."
+      );
+      setIsLoading(false);
+    }
   };
 
   return (

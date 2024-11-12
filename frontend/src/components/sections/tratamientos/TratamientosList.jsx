@@ -5,6 +5,7 @@ const TratamientosList = () => {
     const [pacientes, setPacientes] = useState([])
     const [selectedPaciente, setSelectedPaciente] = useState(null)
     const [pacienteHeader, setPacienteHeader] = useState("")
+    const [tipoSanitario, setTipoSanitario] = useState("")
     const [tratamientos, setTratamientos] = useState([])
     const [sanitariosData, setSanitariosData] = useState({})
     const [activeTab, setActiveTab] = useState("activos")
@@ -15,7 +16,7 @@ const TratamientosList = () => {
     const [tratamientoToDelete, setTratamientoToDelete] = useState(null)
     const [noTratamientos, setNoTratamientos] = useState(false)
     const [showActionNotAllowed, setShowActionNotAllowed] = useState(false)
-
+    const [adherencias, setAdherencias] = useState({})
 
     useEffect(() => {
         const fetchSanitarioData = async () => {
@@ -29,6 +30,7 @@ const TratamientosList = () => {
                     const data = await response.json()
                     if (response.ok) {
                         fetchPacientes(data.idFarmacia, token)
+                        setTipoSanitario(data.tipo)
                     } else {
                         setErrorMessage(data.error || "No se pudo obtener el ID de la farmacia.")
                     }
@@ -79,9 +81,11 @@ const TratamientosList = () => {
                 setTratamientos(data)
                 setNoTratamientos(data.length === 0)
                 fetchSanitariosData(data)
-                if (selectedPaciente) {
+                fetchAdherencias(data)
+
+                if (selectedPaciente)
                     setPacienteHeader(`${selectedPaciente.dni} - ${selectedPaciente.apellidos}, ${selectedPaciente.nombre}`)
-                }
+
             } else {
                 setErrorMessage(data.error || "Error al obtener los tratamientos.")
             }
@@ -124,23 +128,28 @@ const TratamientosList = () => {
     }
 
     const handleEdit = (index, tratamiento) => {
-        const today = new Date() 
-        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today 
-
-        if (!hasFinalizado) {
-            setEditIndex(index) 
-            setSelectedTratamientoIndex(index) 
-            setEditedTratamiento({ ...tratamiento }) 
-        } else {
-            setShowActionNotAllowed(true) 
+        const today = new Date()
+        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today
+    
+        if (tipoSanitario === "TECNICO") {
+            setShowActionNotAllowed(true)
+            return
         }
-    } 
+    
+        if (!hasFinalizado) {
+            setEditIndex(index)
+            setSelectedTratamientoIndex(index)
+            setEditedTratamiento({ ...tratamiento })
+        } else {
+            setShowActionNotAllowed(true)
+        }
+    }
 
     const handleTabChange = (tab) => {
-        setActiveTab(tab) 
-        setEditIndex(null) 
-        setSelectedTratamientoIndex(null) 
-    } 
+        setActiveTab(tab)
+        setEditIndex(null)
+        setSelectedTratamientoIndex(null)
+    }
 
     const handleSave = async (tratamientoId) => {
         try {
@@ -185,19 +194,22 @@ const TratamientosList = () => {
         }
     }
 
-
     const confirmDelete = (tratamiento) => {
-        const today = new Date() 
-        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today 
-
-        if (!hasFinalizado) {
-            setTratamientoToDelete(tratamiento) 
-            document.getElementById("delete_confirm_modal").showModal() 
-        } else {
-            setShowActionNotAllowed(true) 
+        const today = new Date()
+        const hasFinalizado = tratamiento.fecha_fin && new Date(tratamiento.fecha_fin) < today
+    
+        if (tipoSanitario === "TECNICO") {
+            setShowActionNotAllowed(true)
+            return
         }
-    } 
-
+    
+        if (!hasFinalizado) {
+            setTratamientoToDelete(tratamiento)
+            document.getElementById("delete_confirm_modal").showModal()
+        } else {
+            setShowActionNotAllowed(true)
+        }
+    }
 
     const handleDelete = async () => {
         try {
@@ -235,6 +247,38 @@ const TratamientosList = () => {
         return tratamientos
     }
 
+    const fetchAdherencias = async (tratamientos) => {
+        const token = sessionStorage.getItem("jwtToken")
+        const newAdherencias = {}
+        for (const tratamiento of tratamientos) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/tratamientos/${tratamiento.id}/adherencia`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ id: tratamiento.id })
+                })
+                const data = await response.json()
+                if (response.ok) {
+                    newAdherencias[tratamiento.id] = data
+                } else {
+                    console.error(`Error fetching adherence for treatment ${tratamiento.id}: ${data.error}`)
+                }
+            } catch (error) {
+                console.error(`Error fetching adherence for treatment ${tratamiento.id}:`, error)
+            }
+        }
+        setAdherencias(newAdherencias)
+    }
+
+    const getProgressClass = (percentage) => {
+        if (percentage < 33) return "progress-error"
+        if (percentage < 66) return "progress-warning"
+        return "progress-primary"
+    }
+
     return (
         <SanitarioCheck>
             <div className="flex justify-center text-center m-10">
@@ -249,7 +293,7 @@ const TratamientosList = () => {
 
             <div className="flex items-center justify-center mb-10">
                 <select
-                    className="select select-primary w-full max-w-xs"
+                    className="select select-primary w-full max-w-md"
                     value={selectedPaciente?.dni || ""}
                     onChange={(e) => {
                         const paciente = pacientes.find(p => p.dni === e.target.value)
@@ -269,19 +313,6 @@ const TratamientosList = () => {
             {noTratamientos && (
                 <div role="alert" className="alert alert-warning flex justify-between items-center">
                     <div className="flex items-center">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-6 w-6 shrink-0 stroke-current mr-2"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                            />
-                        </svg>
                         <span>No se han encontrado tratamientos para el usuario seleccionado.</span>
                     </div>
                     <button onClick={() => setNoTratamientos(false)} className="btn btn-sm ml-2">Aceptar</button>
@@ -324,12 +355,23 @@ const TratamientosList = () => {
                                 <tr>
                                     <th style={{ width: "50px" }}></th>
                                     <th style={{ width: "400px" }}>Nombre</th>
+                                    <th style={{ width: "150px" }}>Adherencia</th>
                                     <th style={{ width: "150px" }}>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredTratamientos().map((tratamiento, index) => {
+                                    
                                     const sanitario = sanitariosData[tratamiento.idSanitario]
+                                    const adherencia = adherencias[tratamiento.id]
+                                    // alert(tipoSanitario)
+
+                                    let totalAdherenciaPercentage = 0
+
+                                    if (adherencia) {
+                                        totalAdherenciaPercentage = Math.round((adherencia.adherenciaTotal.actual / adherencia.adherenciaTotal.maximo) * 100)
+                                    }
+
                                     return (
                                         <tr key={tratamiento.id} className="hover">
                                             <th>{index + 1}</th>
@@ -378,10 +420,7 @@ const TratamientosList = () => {
                                                                                 ? new Date(tratamiento.fecha_inicio).toLocaleString('es-ES', {
                                                                                     day: '2-digit',
                                                                                     month: '2-digit',
-                                                                                    year: 'numeric',
-                                                                                    // hour: '2-digit',
-                                                                                    // minute: '2-digit',
-                                                                                    // second: '2-digit'
+                                                                                    year: 'numeric'
                                                                                 })
                                                                                 : "No iniciada"
                                                                         }
@@ -403,10 +442,7 @@ const TratamientosList = () => {
                                                                                     ? new Date(tratamiento.fecha_fin).toLocaleString('es-ES', {
                                                                                         day: '2-digit',
                                                                                         month: '2-digit',
-                                                                                        year: 'numeric',
-                                                                                        // hour: '2-digit',
-                                                                                        // minute: '2-digit',
-                                                                                        // second: '2-digit'
+                                                                                        year: 'numeric'
                                                                                     })
                                                                                     : "No definida"
                                                                         }
@@ -487,6 +523,7 @@ const TratamientosList = () => {
                                                                     </div>
                                                                 </div>
                                                             )}
+
                                                             {sanitario && (
                                                                 <p><strong>Sanitario creador:</strong> {sanitario.apellidos}, {sanitario.nombre}</p>
                                                             )}
@@ -494,6 +531,23 @@ const TratamientosList = () => {
                                                         </div>
                                                     )}
                                                 </div>
+                                            </td>
+                                            <td>
+                                                {adherencia ? (
+                                                    <>
+                                                        <p><strong>Total:</strong></p>
+                                                        <div className="flex items-center">
+                                                            <progress
+                                                                className={`progress ${getProgressClass(totalAdherenciaPercentage)} w-56`}
+                                                                value={adherencia.adherenciaTotal.actual}
+                                                                max={adherencia.adherenciaTotal.maximo}
+                                                            ></progress>
+                                                            <span className="ml-2">{totalAdherenciaPercentage}%</span>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <span>No definida</span>
+                                                )}
                                             </td>
                                             <td>
                                                 <div className="flex">
@@ -557,7 +611,7 @@ const TratamientosList = () => {
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Acción no permitida</h3>
                         <p className="py-4">
-                            No se puede editar o eliminar un tratamiento que ya ha finalizado.
+                            { tipoSanitario === 'TECNICO' ? "No tiene permisos para editar o eliminar un tratamiento." : "No se puede editar o eliminar un tratamiento que ya ha finalizado."}
                         </p>
                         <div className="modal-action">
                             <button onClick={() => setShowActionNotAllowed(false)} className="btn">
@@ -567,10 +621,8 @@ const TratamientosList = () => {
                     </div>
                 </dialog>
             )}
-
-
         </SanitarioCheck>
     )
 }
 
-export default TratamientosList
+export default TratamientosList 

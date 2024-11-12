@@ -1,75 +1,95 @@
-import { useState, useEffect } from "react";
-import Card from "../ui/Card";
-import UserRole from "./UserRole";
+import { useState, useEffect } from "react" 
+import Card from "../ui/Card" 
+import UserCard from "../ui/UserCard" 
+import UserRole from "./UserRole" 
 
 const DashboardView = () => {
-  const userRole = UserRole();
-  const [patientData, setPatientData] = useState(null);
-  const [errorMessage, setErrorMessage] = useState("");
+  const userRole = UserRole() 
+  const [patientData, setPatientData] = useState(null) 
+  const [errorMessage, setErrorMessage] = useState("") 
 
   useEffect(() => {
     const fetchPatientData = async () => {
-      const user = JSON.parse(sessionStorage.getItem("user"));
+      const user = JSON.parse(sessionStorage.getItem("user")) 
       if (user && userRole === "PACIENTE") {
         try {
-          const token = sessionStorage.getItem("jwtToken");
+          const token = sessionStorage.getItem("jwtToken") 
           const response = await fetch(`http://localhost:3000/api/users/pacientes/${user.dni}`, {
             headers: { Authorization: `Bearer ${token}` },
-          });
-          const data = await response.json();
+          }) 
+          const data = await response.json() 
           if (response.ok) {
-            setPatientData(data);
+            setPatientData(data) 
           } else {
-            setErrorMessage(data.error || "Error fetching patient data.");
+            setErrorMessage(data.error || "Error fetching patient data.") 
           }
         } catch (error) {
-          console.error("Error fetching patient data:", error);
-          setErrorMessage("Connection error while fetching patient data.");
+          console.error("Error fetching patient data:", error) 
+          setErrorMessage("Connection error while fetching patient data.") 
         }
       }
-    };
-    fetchPatientData();
-  }, [userRole]);
+    } 
+    fetchPatientData() 
+  }, [userRole]) 
 
-  if (!userRole) return null;
+  if (!userRole) return null 
 
   return (
     <>
       <h2 className="text-2xl font-bold text-center m-10">PANEL DE CONTROL</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4 place-items-center mt-10 mb-10">
-        {userRole === "ADMIN" && (
+
+      <div
+  className={`grid gap-4 p-4 mt-10 w-full ${
+    userRole !== "ADMIN" ? "lg:grid-cols-2" : "lg:grid-cols-1 flex justify-center"
+  }`}
+>
+  {userRole !== "ADMIN" && <UserCard title="mifarmacia" />}
+  <UserCard title="reloj" />
+</div>
+
+      {userRole === "ADMIN" && (
+        <div className="grid lg:grid-cols-3 gap-6 p-4 place-items-center mb-10">
           <>
             <Card title="farmacias" />
             <Card title="usuarios" />
-            <Card title="reportes" />
-            <Card title="configuraciones" />
           </>
-        )}
-        {userRole === "SANITARIO" && (
-          <>
+        </div>
+      )}
+      {userRole === "SANITARIO" && (
+        <>
+          <div className="grid lg:grid-cols-3 gap-6 p-4 place-items-center mb-10">
+
             <Card title="pacientes" />
             <Card title="tratamientos" />
-          </>
-        )}
-        {userRole === "PACIENTE" && (
-          <>
+            <Card title="addregistro" />
+          </div>
+        </>
+      )}
+      {userRole === "PACIENTE" && (
+        <>
+          <div className="grid lg:grid-cols-3 gap-6 p-4 place-items-center mb-10">
 
-                <Card title="mistratamientos" />
-                <Card title="registro" />
-                <Card title="contacto con farmacia" />
-              </>
-        )}
-        {userRole === "TUTOR" && (
-          <>
+            <Card title="mistratamientos" />
+            <Card title="registro" />
+            <Card title="adherencia" />
+          </div>
+        </>
+      )}
+      {userRole === "TUTOR" && (
+        <>
+          <div className="grid lg:grid-cols-3 gap-6 p-4 place-items-center mb-10">
+
             <Card title="pacientes a cargo" />
             <Card title="tratamientos de pacientes" />
             <Card title="informes de cumplimiento" />
-          </>
-        )}
-      </div>
+          </div>
+        </>
+
+      )}
+
       {errorMessage && <p className="text-red-600 text-center">{errorMessage}</p>}
     </>
-  );
-};
+  ) 
+} 
 
-export default DashboardView;
+export default DashboardView 

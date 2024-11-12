@@ -249,7 +249,7 @@ const TratamientoRegistroPaciente = () => {
                                 <option disabled value="">Seleccione un tratamiento</option>
                                 {tratamientos.map(tratamiento => (
                                     <option key={tratamiento.id} value={tratamiento.id}>
-                                        {tratamiento.nombre} - {tratamiento.descripcion}
+                                        {tratamiento.nombre}
                                     </option>
                                 ))}
                             </select>

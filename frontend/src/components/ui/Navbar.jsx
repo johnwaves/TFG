@@ -7,8 +7,9 @@ const Navbarreact = () => {
     try {
       const user = JSON.parse(sessionStorage.getItem("user"));
       if (user) {
+        setUserName(user.name);
         const fullName = `${user.name} ${user.surname}`;
-        setUserName(fullName.length > 25 ? `${fullName.slice(0, 25)}...` : fullName);
+        {/* setUserName(fullName.length > 25 ? `${fullName.slice(0, 25)}...` : fullName); */ }
       }
     } catch (error) {
       console.error("Error loading user data from sessionStorage:", error);
@@ -18,7 +19,7 @@ const Navbarreact = () => {
   const handleLogout = () => {
     sessionStorage.removeItem("jwtToken");
     sessionStorage.removeItem("user");
-    
+
     window.location.href = "/";
   };
 
@@ -29,6 +30,7 @@ const Navbarreact = () => {
           <a href="/dashboard" className="btn btn-ghost text-xl text-white">PharmAD</a>
         </div>
         <div className="flex-none">
+          {/* 
           <div className="dropdown dropdown-end">
             <div tabIndex={0} role="button" className="btn btn-ghost">
               <div className="indicator">
@@ -65,38 +67,45 @@ const Navbarreact = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="dropdown dropdown-end">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost flex items-center space-x-2"
+              className="btn btn-ghost flex items-center"
             >
-              <span className="text-lg text-white font-semibold overflow-hidden whitespace-nowrap max-w-[250px] text-ellipsis">
-                {userName}
+              <span className="text-lg text-white font-semibold overflow-hidden whitespace-nowrap">
+                ¡Hola, {userName}!
               </span>
-              <div className="avatar">
-                <div className="mask mask-squircle w-10">
-                  <img
-                    alt="User avatar"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+              <div className="flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1}
+                  stroke="white"
+                  className="size-8"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                   />
-                </div>
+                </svg>
               </div>
+
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+              className="menu menu-md dropdown-content bg-white rounded-box z-[1] mt-3 w-64 p-2 shadow"
             >
               <li>
                 <a className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
+                  Perfil
+                  {/* <span className="badge">New</span> */}
                 </a>
               </li>
-              <li>
-                <a>Settings</a>
-              </li>
+
               <li>
                 <button onClick={handleLogout}>Cerrar sesión</button>
               </li>

@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
-import SanitarioCheck from "../checks/SanitarioCheck";
+import { useState, useEffect } from "react"
+import SanitarioCheck from "../checks/SanitarioCheck"
 
 const PacientesList = () => {
-    const [pacientes, setPacientes] = useState([]);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [editIndex, setEditIndex] = useState(null);
-    const [selectedPacienteIndex, setSelectedPacienteIndex] = useState(null);
+    const [pacientes, setPacientes] = useState([])
+    const [errorMessage, setErrorMessage] = useState("")
+    const [editIndex, setEditIndex] = useState(null)
+    const [adherenciaTotal, setAdherenciaTotal] = useState(0)
+    const [selectedPacienteIndex, setSelectedPacienteIndex] = useState(null)
     const [editedPaciente, setEditedPaciente] = useState({
         dni: "",
         nombre: "",
@@ -15,60 +16,88 @@ const PacientesList = () => {
         direccion: "",
         email: "",
         tutor: null,
-    });
-    const [pacienteToDelete, setPacienteToDelete] = useState(null);
-    const [idFarmacia, setIdFarmacia] = useState(null);
+    })
+    const [pacienteToDelete, setPacienteToDelete] = useState(null)
+    const [idFarmacia, setIdFarmacia] = useState(null)
+    const [newPassword, setNewPassword] = useState("")
+    const [passwordError, setPasswordError] = useState("")
+    const [passwordSuccess, setPasswordSuccess] = useState("")
 
     useEffect(() => {
         const fetchSanitarioData = async () => {
-            const user = JSON.parse(sessionStorage.getItem("user"));
+            const user = JSON.parse(sessionStorage.getItem("user"))
             if (user && user.dni) {
                 try {
-                    const token = sessionStorage.getItem("jwtToken");
+                    const token = sessionStorage.getItem("jwtToken")
                     const response = await fetch(`http://localhost:3000/api/users/sanitarios/${user.dni}`, {
                         headers: { Authorization: `Bearer ${token}` },
-                    });
-                    const data = await response.json();
+                    })
+                    const data = await response.json()
                     if (response.ok) {
-                        setIdFarmacia(data.idFarmacia);
-                        fetchPacientes(data.idFarmacia, token);
+                        setIdFarmacia(data.idFarmacia)
+                        fetchPacientes(data.idFarmacia, token)
                     } else {
-                        setErrorMessage(data.error || "No se pudo obtener el ID de la farmacia.");
+                        setErrorMessage(data.error || "No se pudo obtener el ID de la farmacia.")
                     }
                 } catch (error) {
-                    console.error("Error al obtener los datos del sanitario:", error);
-                    setErrorMessage("Error de conexión al obtener los datos del sanitario.");
+                    console.error("Error al obtener los datos del sanitario:", error)
+                    setErrorMessage("Error de conexión al obtener los datos del sanitario.")
                 }
             } else {
-                setErrorMessage("No se pudo obtener el DNI del usuario logeado.");
+                setErrorMessage("No se pudo obtener el DNI del usuario logeado.")
             }
-        };
+        }
 
-        fetchSanitarioData();
-    }, []);
+        fetchSanitarioData()
+    }, [])
+
+    const fetchAdherenciaTotal = async (pacienteDni) => {
+        const user = JSON.parse(sessionStorage.getItem("user"))
+
+        if (user && user.dni) {
+            try {
+                const token = sessionStorage.getItem("jwtToken")
+                const adherenciaResponse = await fetch(`http://localhost:3000/api/tratamientos/adherencia/${pacienteDni}`, {
+                    method: "GET",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                const adherenciaData = await adherenciaResponse.json()
+                if (adherenciaResponse.ok) {
+                    setAdherenciaTotal(adherenciaData.adherenciaTotal)
+                } else {
+                    console.error("Error al obtener la adherencia total:", adherenciaData.error)
+                }
+
+            } catch (error) {
+                console.error("Error al obtener la adherencia total:", error)
+            }
+        }
+    }
 
     const fetchPacientes = async (farmaciaId, token) => {
-        if (!farmaciaId) return;
+        if (!farmaciaId) return
         try {
             const response = await fetch(`http://localhost:3000/api/farmacias/${farmaciaId}/pacientes`, {
                 method: "GET",
                 headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await response.json();
+            })
+            const data = await response.json()
             if (response.ok) {
-                setPacientes(data);
+                setPacientes(data)
             } else {
-                setErrorMessage(data.error || "Error al obtener los pacientes.");
+                setErrorMessage(data.error || "Error al obtener los pacientes.")
             }
         } catch (error) {
-            console.error("Error fetching pacientes:", error);
-            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.");
+            console.error("Error fetching pacientes:", error)
+            setErrorMessage("Hubo un problema con la conexión. Inténtelo de nuevo más tarde.")
         }
-    };
+    }
 
     const handleEdit = (index, paciente) => {
-        setEditIndex(index);
-        setSelectedPacienteIndex(index);
+        setEditIndex(index)
+        setSelectedPacienteIndex(index)
         setEditedPaciente({
             dni: paciente.dni,
             nombre: paciente.nombre,
@@ -84,8 +113,8 @@ const PacientesList = () => {
                     dni: paciente.tutor.dni,
                 }
                 : null,
-        });
-    };
+        })
+    }
 
     const handleSave = async (pacienteDni) => {
         try {
@@ -96,27 +125,27 @@ const PacientesList = () => {
                     Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`,
                 },
                 body: JSON.stringify(editedPaciente),
-            });
-            const data = await response.json();
+            })
+            const data = await response.json()
             if (response.ok) {
-                const updatedPacientes = [...pacientes];
-                updatedPacientes[editIndex] = { ...updatedPacientes[editIndex], ...editedPaciente };
-                setPacientes(updatedPacientes);
-                setEditIndex(null);
-                setSelectedPacienteIndex(null);
-                setErrorMessage("");
+                const updatedPacientes = [...pacientes]
+                updatedPacientes[editIndex] = { ...updatedPacientes[editIndex], ...editedPaciente }
+                setPacientes(updatedPacientes)
+                setEditIndex(null)
+                setSelectedPacienteIndex(null)
+                setErrorMessage("")
             } else {
-                setErrorMessage(data.error || "Error al actualizar el paciente.");
+                setErrorMessage(data.error || "Error al actualizar el paciente.")
             }
         } catch (error) {
-            setErrorMessage("Hubo un problema con la actualización. Inténtelo de nuevo más tarde.");
+            setErrorMessage("Hubo un problema con la actualización. Inténtelo de nuevo más tarde.")
         }
-    };
+    }
 
     const confirmDelete = (paciente) => {
-        setPacienteToDelete(paciente);
-        document.getElementById("delete_confirm_modal").showModal();
-    };
+        setPacienteToDelete(paciente)
+        document.getElementById("delete_confirm_modal").showModal()
+    }
 
     const handleDelete = async () => {
         try {
@@ -126,28 +155,62 @@ const PacientesList = () => {
                     method: "DELETE",
                     headers: { Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}` },
                 }
-            );
-            const data = await response.json();
+            )
+            const data = await response.json()
             if (response.ok) {
-                setPacientes(pacientes.filter((paciente) => paciente.dni !== pacienteToDelete.dni));
-                setPacienteToDelete(null);
-                document.getElementById("delete_confirm_modal").close();
+                setPacientes(pacientes.filter((paciente) => paciente.dni !== pacienteToDelete.dni))
+                setPacienteToDelete(null)
+                document.getElementById("delete_confirm_modal").close()
             } else {
-                setErrorMessage(data.error || "Error al eliminar el paciente.");
+                setErrorMessage(data.error || "Error al eliminar el paciente.")
             }
         } catch (error) {
-            setErrorMessage("Hubo un problema con la eliminación. Inténtelo de nuevo más tarde.");
+            setErrorMessage("Hubo un problema con la eliminación. Inténtelo de nuevo más tarde.")
         }
-    };
+    }
 
-    const togglePacienteDetails = (index) => {
-        if (selectedPacienteIndex === index) {
-            setSelectedPacienteIndex(null);
-            setEditIndex(null);
-        } else {
-            setSelectedPacienteIndex(index);
+    const handleResetPassword = async (pacienteDni) => {
+        if (!newPassword || newPassword.length < 6) {
+            setPasswordError("La contraseña debe tener al menos 6 caracteres.")
+            return
         }
-    };
+        try {
+            const response = await fetch(`http://localhost:3000/api/users/${pacienteDni}/password`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionStorage.getItem("jwtToken")}`
+                },
+                body: JSON.stringify({ newPassword })
+            })
+            const data = await response.json()
+            if (response.ok) {
+                setPasswordSuccess("Contraseña restablecida con éxito.")
+                setNewPassword("")
+            } else {
+                setPasswordError(data.error || "Error al restablecer la contraseña.")
+            }
+        } catch (error) {
+            setPasswordError("Hubo un problema al restablecer la contraseña. Inténtelo más tarde.")
+        }
+    }
+
+    const togglePacienteDetails = (index, pacienteDni) => {
+        if (selectedPacienteIndex === index) {
+            setSelectedPacienteIndex(null)
+            setEditIndex(null)
+            setAdherenciaTotal(0)
+        } else {
+            setSelectedPacienteIndex(index)
+            fetchAdherenciaTotal(pacienteDni)
+        }
+    }
+
+    const getProgressClass = (percentage) => {
+        if (percentage < 33) return "progress-error"
+        if (percentage < 66) return "progress-warning"
+        return "progress-primary"
+    }
 
     return (
         <SanitarioCheck>
@@ -181,7 +244,7 @@ const PacientesList = () => {
                                         <input
                                             type="checkbox"
                                             checked={selectedPacienteIndex === index}
-                                            onChange={() => togglePacienteDetails(index)}
+                                            onChange={() => togglePacienteDetails(index, paciente.dni)}
                                         />
                                         <div className="collapse-title">
                                             {paciente.apellidos}, {paciente.nombre}
@@ -265,6 +328,50 @@ const PacientesList = () => {
                                                         disabled
                                                     />
                                                 </label>
+                                                <label className="form-control w-full max-w-xs">
+                                                    <div className="label">
+                                                        <span className="label-text">Nivel de adherencia:</span>
+                                                    </div>
+                                                    {adherenciaTotal ? (
+                                                        <>
+                                                            <div className="flex items-center">
+                                                                <progress
+                                                                    className={`progress ${getProgressClass(adherenciaTotal)} w-56`}
+                                                                    value={adherenciaTotal}
+                                                                    max={100}
+                                                                ></progress>
+                                                                <span className="ml-2">{adherenciaTotal}%</span>
+                                                            </div>
+
+                                                        </>
+                                                    ) : (
+                                                        <span>No definida</span>
+                                                    )}
+                                                </label>
+                                                <label className="form-control w-full max-w-xs mt-4">
+                                                    <div className="label">
+                                                        <span className="label-text">Restablecer contraseña</span>
+                                                    </div>
+                                                    <input
+                                                        type="password"
+                                                        placeholder="Nueva contraseña"
+                                                        value={newPassword}
+                                                        onChange={(e) => {
+                                                            setNewPassword(e.target.value)
+                                                            setPasswordError("")
+                                                            setPasswordSuccess("")
+                                                        }}
+                                                        className="input input-bordered w-full max-w-xs"
+                                                    />
+                                                </label>
+                                                <button
+                                                    className="btn btn-primary mt-2 text-white"
+                                                    onClick={() => handleResetPassword(paciente.dni)}
+                                                >
+                                                    Restablecer contraseña
+                                                </button>
+                                                {passwordError && <p className="text-error mt-2">{passwordError}</p>}
+                                                {passwordSuccess && <p className="text-success mt-2">{passwordSuccess}</p>}
                                             </div>
                                         )}
                                     </div>
@@ -323,7 +430,7 @@ const PacientesList = () => {
                 </dialog>
             )}
         </SanitarioCheck>
-    );
-};
+    )
+}
 
-export default PacientesList;
+export default PacientesList 

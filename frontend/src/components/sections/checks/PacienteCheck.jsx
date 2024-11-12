@@ -16,7 +16,7 @@ const PacienteTutorCheck = ({ children }) => {
 
             if (decodedToken.role !== 'PACIENTE') {
 				// alert("Redirigiendo a /unauthorized: El rol no es PACIENTE.")
-                window.location.href = '/unauthorized' 
+                window.location.href = '/dashboard' 
                 return 
             }
 
