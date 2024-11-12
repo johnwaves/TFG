@@ -99,18 +99,28 @@ const getFarmaciaByID = async (req, reply) => {
     try {
         const { id } = req.params
         const user = req.user
+        let farmacia = null
 
-        if (user.role !== ROLES.ADMIN && user.role !== ROLES.SANITARIO)
+        if (user.role === ROLES.ADMIN || user.role === ROLES.SANITARIO) {
+            
+            farmacia = await prisma.farmacia.findUnique({
+                where: { id: parseInt(id) },
+                include: {
+                    sanitarios: true,
+                    pacientes: true
+                }
+    
+            })
+
+        } else if (user.role === ROLES.PACIENTE || user.role === ROLES.TUTOR) {
+
+            farmacia = await prisma.farmacia.findUnique({
+                where: { id: parseInt(id) },
+            })
+
+        } else 
             return reply.status(401).send({ error: 'UNAUTHORIZED. Only ADMINS and SANITARIOS can get farmacias.' })
-
-        const farmacia = await prisma.farmacia.findUnique({
-            where: { id: parseInt(id) },
-            include: {
-                sanitarios: true,
-                pacientes: true
-            }
-
-        })
+        
 
         if (!farmacia)
             return reply.status(404).send({ error: 'Farmacia not found.' })

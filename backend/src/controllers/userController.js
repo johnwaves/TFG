@@ -13,14 +13,14 @@ const createUser = async (req, reply) => {
             where: { dni }
         })
 
-        const fechaNacimiento = new Date(fechaNac) 
+        const fechaNacimiento = new Date(fechaNac)
         if (isNaN(fechaNacimiento.getTime())) {
             return reply.status(400).send({ error: 'Fecha de nacimiento no es válida.' })
         }
 
         if (existingUser) return reply.status(400).send({ error: 'Ya existe un usuario con este DNI.' })
 
-        let allowedRoles = [] 
+        let allowedRoles = []
 
         if (userCreator.role === ROLES.ADMIN) {
             allowedRoles = createUserPermissions[ROLES.ADMIN]
@@ -50,6 +50,10 @@ const createUser = async (req, reply) => {
 
         if (role === ROLES.SANITARIO && !Object.values(TIPO_SANITARIO).includes(tipoSanitario)) {
             return reply.status(400).send({ error: 'El tipo de sanitario no es válido.' })
+        }
+
+        if (role === ROLES.SANITARIO && !idFarmacia) {
+            return reply.status(400).send({ error: 'El id de la farmacia es requerido para sanitarios.' })
         }
 
         if (idFarmacia) {
@@ -117,6 +121,7 @@ const createUser = async (req, reply) => {
         reply.status(500).send({ error: 'Error creating user.' })
     }
 }
+
 
 const getUserByDNI = async (req, reply) => {
     try {
@@ -431,6 +436,40 @@ const getPacientesSinFarmacia = async (req, reply) => {
     }
 } 
 
+const updatePassword = async (req, reply) => {
+    try {
+        const { dni } = req.params 
+        const { newPassword, role } = req.body 
+        const userModifier = req.user
+
+        if (![ROLES.ADMIN, ROLES.SANITARIO].includes(userModifier.role)) {
+            return reply.status(403).send({ error: 'UNAUTHORIZED. Only ADMIN or SANITARIO can update passwords.' })
+        }
+
+        const userToUpdate = await prisma.user.findUnique({
+            where: { dni }
+        })
+
+        if (!userToUpdate) return reply.status(404).send({ error: 'User not found.' })
+        
+        if (!newPassword || newPassword.length < 6) {
+            return reply.status(400).send({ error: 'New password is invalid or too short (minimum 6 characters).' })
+        }
+            
+        const hashedPassword = await hashPassword(newPassword)
+
+        await prisma.user.update({
+            where: { dni },
+            data: { password: hashedPassword }
+        })
+
+        return reply.status(200).send({ message: 'Password updated successfully.' })
+
+    } catch (error) {
+        console.error("Error in updatePassword:", error.message)
+        reply.status(500).send({ error: 'Error updating password.' })
+    }
+}
 
 export default { 
     createUser,
@@ -441,7 +480,7 @@ export default {
     getTutorData,
     updateUser,
     deleteUser,
-    getPacientesSinFarmacia
-
+    getPacientesSinFarmacia,
+    updatePassword
 }
 
